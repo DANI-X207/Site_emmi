@@ -348,16 +348,19 @@
             // Actions
             let actionsHtml = '';
             if (status === 'en_attente' && !o.cancelRequested) {
-                actionsHtml = `<button class="btn-cancel-req" onclick="doRequestCancel('${o.id}')">
+                actionsHtml = `
+                <button class="btn-cancel-req" onclick="doRequestCancel('${o.id}')" title="Annuler ma commande">
                     <svg width="12" height="12" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5"><circle cx="12" cy="12" r="10"></circle><line x1="15" y1="9" x2="9" y2="15"></line><line x1="9" y1="9" x2="15" y2="15"></line></svg>
-                    Demander annulation
+                    Annuler la commande
                 </button>`;
             } else if (o.cancelRequested && !cancelExpired) {
                 actionsHtml = `
-                    <div class="cancel-countdown"><div class="dot"></div>Annulation dans <span id="cd-${o.id}">--:--</span></div>
-                    <button class="btn-undo-cancel" onclick="doUndoCancel('${o.id}')">↩ Annuler la demande</button>`;
-            } else if (cancelExpired) {
-                actionsHtml = `<div class="cancel-expired-msg">⏰ Annulation soumise — en attente de traitement admin</div>`;
+                    <div class="cancel-countdown"><div class="dot"></div>Annulation effective dans <span id="cd-${o.id}">--:--</span></div>
+                    <button class="btn-undo-cancel" onclick="doUndoCancel('${o.id}')">↩ Ne pas annuler</button>`;
+            } else if (cancelExpired || isAnnulee) {
+                actionsHtml = isAnnulee 
+                    ? `<div class="cancel-expired-msg" style="color:#ff3366;">Commande annulée</div>`
+                    : `<div class="cancel-expired-msg">Traitement de l'annulation en cours...</div>`;
             }
 
             return `
@@ -414,6 +417,8 @@
                 const remaining = Math.max(0, 2 * 60 * 1000 - elapsed);
                 if (remaining <= 0) {
                     clearInterval(countdownTimers[order.id]);
+                    // Auto-finalize cancellation in status
+                    db.cancelOrder(order.id);
                     renderOrders();
                     return;
                 }

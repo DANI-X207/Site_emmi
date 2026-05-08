@@ -465,13 +465,12 @@
                                     <td style="color:var(--admin-accent); font-weight:800">${parseFloat(o.total||0).toFixed(2)} €</td>
                                     <td>
                                         <span class="badge ${getStatusBadge(o.status)}">${statusLabel}</span>
-                                        ${cancelInfo}
                                     </td>
                                     <td>
-                                        ${canAdvance ? `<button class="action-btn" title="${nextLabel}" onclick="advanceStatus('${o.id}')" style="background:rgba(255,107,0,0.08); color:var(--admin-accent); border-color:rgba(255,107,0,0.2); font-size:0.78rem; padding:8px 12px; white-space:nowrap;">→ ${nextLabel}</button>` : ''}
-                                        ${canDelete ? `<button class="action-btn danger" onclick="confirmDeleteOrder('${o.id}')" style="font-size:0.78rem; padding:8px 12px;">🗑️ Supprimer</button>` : ''}
-                                        ${o.status === 'livree' ? `<span style="font-size:0.78rem; color:#00b386;">✓ Terminé</span>` : ''}
-                                        ${!canAdvance && !canDelete && o.status !== 'livree' && !o.cancelRequested ? `<span style="font-size:0.72rem; color:var(--text-dim);">En cours</span>` : ''}
+                                         ${canAdvance ? `<button class="action-btn" title="${nextLabel}" onclick="advanceStatus('${o.id}')" style="background:rgba(255,107,0,0.08); color:var(--admin-accent); border-color:rgba(255,107,0,0.2); font-size:0.78rem; padding:8px 12px; white-space:nowrap;">→ ${nextLabel}</button>` : ''}
+                                         ${o.status !== 'annulee' && o.status !== 'livree' ? `<button class="action-btn danger" onclick="adminCancelOrder('${o.id}')" title="Annuler la commande" style="font-size:0.78rem; padding:8px 12px; margin-left:5px;">🚫 Annuler</button>` : ''}
+                                         ${o.status === 'annulee' ? `<button class="action-btn danger" onclick="confirmDeleteOrder('${o.id}')" style="font-size:0.78rem; padding:8px 12px;">🗑️ Supprimer</button>` : ''}
+                                         ${o.status === 'livree' ? `<span style="font-size:0.78rem; color:#00b386;">✓ Terminé</span>` : ''}
                                     </td>
                                 </tr>`;
                             }).join('')}
@@ -491,13 +490,22 @@
             }
         }
 
+        function adminCancelOrder(orderId) {
+            if (confirm('Êtes-vous sûr de vouloir annuler cette commande ?')) {
+                const ok = db.cancelOrder(orderId);
+                if (ok) {
+                    showAdminToast('Commande annulée.', 'info');
+                    renderOrders(document.getElementById('section-view'));
+                }
+            }
+        }
+
         function confirmDeleteOrder(orderId) {
-            if (confirm('Supprimer définitivement cette commande annulée ?')) {
+            if (confirm('Supprimer définitivement cette commande annulée du système ?')) {
                 const ok = db.adminDeleteOrder(orderId);
                 if (ok) {
+                    showAdminToast('Commande supprimée.', 'info');
                     renderOrders(document.getElementById('section-view'));
-                } else {
-                    alert('Suppression impossible : le délai de 2 minutes n\'est pas encore écoulé.');
                 }
             }
         }

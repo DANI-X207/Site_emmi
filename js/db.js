@@ -159,14 +159,22 @@ const db = {
     return true;
   },
 
-  // Admin deletes order (only if cancel requested 2+ min ago)
+  // Admin deletes order (completely remove from DB)
   adminDeleteOrder(orderId) {
     const idx = this.orders.findIndex(o => o.id === orderId);
     if (idx === -1) return false;
-    const order = this.orders[idx];
-    const elapsed = Date.now() - (order.cancelRequestedAt || 0);
-    if (!order.cancelRequested || elapsed < 2 * 60 * 1000) return false;
     this.orders.splice(idx, 1);
+    this.save();
+    return true;
+  },
+
+  // Cancel order (status -> annulee)
+  cancelOrder(orderId) {
+    const order = this.orders.find(o => o.id === orderId);
+    if (!order) return false;
+    order.status = 'annulee';
+    order.cancelRequested = false;
+    order.cancelRequestedAt = null;
     this.save();
     return true;
   },
