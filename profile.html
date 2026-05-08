@@ -1,0 +1,227 @@
+<!DOCTYPE html>
+<html lang="fr">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Mon Profil | SLJ Otaku Paradise</title>
+    <link href="https://fonts.googleapis.com/css2?family=Outfit:wght@300;400;600;700;900&display=swap" rel="stylesheet">
+    <link rel="stylesheet" href="css/style.css">
+    <link rel="stylesheet" href="css/animations.css">
+    <style>
+        body { overflow-x: hidden; }
+
+        .profile-wrapper {
+            min-height: 100vh;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            padding: 120px 20px 60px;
+        }
+        .profile-card {
+            background: var(--black-light);
+            border-radius: 30px;
+            padding: 50px;
+            width: 100%;
+            max-width: 750px;
+            border: 1px solid var(--glass-border);
+            box-shadow: 0 20px 60px rgba(0,0,0,0.4);
+        }
+        .profile-header {
+            display: flex;
+            align-items: center;
+            gap: 30px;
+            margin-bottom: 40px;
+            border-bottom: 1px solid var(--glass-border);
+            padding-bottom: 30px;
+        }
+        .profile-avatar {
+            width: 90px;
+            height: 90px;
+            background: var(--orange);
+            border-radius: 50%;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            font-size: 2.2rem;
+            font-weight: 900;
+            color: white;
+            flex-shrink: 0;
+        }
+        .profile-name h2 { margin: 0 0 4px; font-size: 1.6rem; }
+        .profile-role {
+            color: var(--orange);
+            font-weight: 700;
+            font-size: 0.75rem;
+            text-transform: uppercase;
+            letter-spacing: 2px;
+        }
+        .profile-info-grid {
+            display: grid;
+            grid-template-columns: 1fr 1fr;
+            gap: 25px;
+            margin-bottom: 40px;
+        }
+        @media (max-width: 500px) {
+            .profile-info-grid { grid-template-columns: 1fr; }
+        }
+        .info-item label {
+            display: block;
+            color: var(--gray);
+            font-size: 0.75rem;
+            text-transform: uppercase;
+            letter-spacing: 1px;
+            margin-bottom: 6px;
+        }
+        .info-item .value {
+            font-size: 1rem;
+            font-weight: 600;
+        }
+        .profile-actions {
+            display: flex;
+            gap: 15px;
+            flex-wrap: wrap;
+        }
+        .btn-logout {
+            background: #ff3366;
+            color: white;
+            border: none;
+            padding: 14px 28px;
+            border-radius: 12px;
+            font-family: inherit;
+            font-weight: 700;
+            font-size: 0.85rem;
+            letter-spacing: 1px;
+            text-transform: uppercase;
+            cursor: pointer;
+            transition: opacity 0.2s;
+        }
+        .btn-logout:hover { opacity: 0.85; }
+        .btn-secondary {
+            background: transparent;
+            color: white;
+            border: 1px solid var(--glass-border);
+            padding: 14px 28px;
+            border-radius: 12px;
+            font-family: inherit;
+            font-weight: 700;
+            font-size: 0.85rem;
+            letter-spacing: 1px;
+            text-transform: uppercase;
+            cursor: pointer;
+            transition: border-color 0.2s;
+        }
+        .btn-secondary:hover { border-color: var(--orange); color: var(--orange); }
+    </style>
+</head>
+<body>
+
+    <!-- ✅ products.js FIRST, then db.js — order matters! -->
+    <script src="js/products.js"></script>
+    <script src="js/db.js"></script>
+    <script>
+        // Auth guard — redirect if not logged in
+        if (!db.isLoggedIn()) {
+            window.location.href = 'login.html';
+        }
+    </script>
+
+    <!-- Navigation -->
+    <nav id="navbar">
+        <div class="container">
+            <a href="index.html" class="logo">SLJ <span>OTAKU</span></a>
+            <div class="nav-links">
+                <a href="index.html">Accueil</a>
+                <a href="shop.html">Boutique</a>
+                <a href="admin.html" id="nav-admin" style="display:none;">Admin</a>
+            </div>
+            <div class="nav-actions">
+                <a href="admin.html" class="nav-icon" id="admin-icon" title="Administration">
+                    <svg width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M12 22s8-4 8-10V5l-8-3-8 3v7c0 6 8 10 8 10z"></path></svg>
+                </a>
+                <a href="profile.html" class="nav-icon active">
+                    <svg width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M20 21v-2a4 4 0 0 0-4-4H8a4 4 0 0 0-4 4v2"></path><circle cx="12" cy="7" r="4"></circle></svg>
+                </a>
+                <a href="shop.html" class="cart-btn" title="Panier" style="color:white; display:flex; align-items:center; gap:6px;">
+                    <svg width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><circle cx="9" cy="21" r="1"></circle><circle cx="20" cy="21" r="1"></circle><path d="M1 1h4l2.68 13.39a2 2 0 0 0 2 1.61h9.72a2 2 0 0 0 2-1.61L23 6H6"></path></svg>
+                </a>
+            </div>
+        </div>
+    </nav>
+
+    <!-- Profile Content -->
+    <div class="profile-wrapper">
+        <div class="profile-card">
+            <div class="profile-header">
+                <div class="profile-avatar" id="prof-avatar">?</div>
+                <div class="profile-name">
+                    <h2 id="prof-username">Chargement...</h2>
+                    <div class="profile-role" id="prof-role">Membre</div>
+                </div>
+            </div>
+
+            <div class="profile-info-grid">
+                <div class="info-item">
+                    <label>📧 Email</label>
+                    <div class="value" id="prof-email">—</div>
+                </div>
+                <div class="info-item">
+                    <label>📞 Téléphone</label>
+                    <div class="value" id="prof-phone">—</div>
+                </div>
+                <div class="info-item">
+                    <label>📍 Ville</label>
+                    <div class="value" id="prof-city">—</div>
+                </div>
+                <div class="info-item">
+                    <label>📅 Membre depuis</label>
+                    <div class="value" id="prof-date">—</div>
+                </div>
+            </div>
+
+            <div class="profile-actions">
+                <button class="btn-logout" id="btn-logout">Déconnexion</button>
+                <button class="btn-secondary">Modifier le profil</button>
+            </div>
+        </div>
+    </div>
+
+    <!-- Profile Logic — no main.js needed -->
+    <script>
+        (function renderProfile() {
+            const u = db.getLoggedUser();
+
+            if (!u) {
+                window.location.href = 'login.html';
+                return;
+            }
+
+            // Render fields
+            document.getElementById('prof-avatar').textContent  = u.username.charAt(0).toUpperCase();
+            document.getElementById('prof-username').textContent = u.username;
+            document.getElementById('prof-email').textContent    = u.email || '—';
+            document.getElementById('prof-phone').textContent    = u.phone || 'Non renseigné';
+            document.getElementById('prof-city').textContent     = u.city  || 'Non renseigné';
+            document.getElementById('prof-date').textContent     = u.createdAt || '—';
+
+            if (u.role === 'admin') {
+                document.getElementById('prof-role').textContent = 'Administrateur';
+                const adminLink = document.getElementById('nav-admin');
+                if (adminLink) adminLink.style.display = 'block';
+            }
+
+            // Logout button
+            document.getElementById('btn-logout').addEventListener('click', function() {
+                db.logout();
+                window.location.href = 'vitrine.html';
+            });
+        })();
+
+        // Navbar scroll effect (standalone, no main.js required)
+        window.addEventListener('scroll', function() {
+            const nav = document.getElementById('navbar');
+            if (nav) nav.classList.toggle('scrolled', window.scrollY > 40);
+        });
+    </script>
+
+</body>
+</html>

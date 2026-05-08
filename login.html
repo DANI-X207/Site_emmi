@@ -1,0 +1,569 @@
+<!DOCTYPE html>
+<html lang="fr">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Connexion | SLJ Otaku Paradise</title>
+    <link href="https://fonts.googleapis.com/css2?family=Outfit:wght@300;400;600;700;900&display=swap" rel="stylesheet">
+    <link rel="stylesheet" href="css/style.css">
+    <link rel="stylesheet" href="css/animations.css">
+    <style>
+        html, body { height: 100%; overflow: hidden; margin: 0; }
+
+        .auth-page {
+            display: grid;
+            grid-template-columns: 1fr 1fr;
+            height: 100vh;
+            overflow: hidden;
+        }
+
+        /* --- Left Panel --- */
+        .auth-visual {
+            position: relative;
+            overflow: hidden;
+        }
+        .auth-visual-bg {
+            position: absolute;
+            inset: 0;
+            background: url('images/hero-bg.jpg') center/cover no-repeat;
+            filter: brightness(0.35);
+        }
+        .auth-visual-overlay {
+            position: absolute;
+            inset: 0;
+            background: linear-gradient(135deg, rgba(255,107,0,0.45) 0%, rgba(10,10,10,0.65) 100%);
+        }
+        .auth-visual-content {
+            position: relative;
+            z-index: 2;
+            height: 100%;
+            display: flex;
+            flex-direction: column;
+            justify-content: space-between;
+            padding: 44px 50px;
+        }
+        .auth-visual-logo { font-size: 1.8rem; font-weight: 900; color: white; text-decoration: none; }
+        .auth-visual-logo span { color: var(--orange); }
+        .auth-visual-body h2 { font-size: 2.6rem; font-weight: 900; line-height: 1.15; margin-bottom: 16px; }
+        .auth-visual-body p { color: rgba(255,255,255,0.72); font-size: 1rem; line-height: 1.7; max-width: 360px; }
+        .auth-visual-tags { display: flex; gap: 10px; flex-wrap: wrap; margin-top: 24px; }
+        .auth-tag {
+            padding: 6px 14px;
+            border-radius: 50px;
+            background: rgba(255,255,255,0.1);
+            border: 1px solid rgba(255,255,255,0.15);
+            font-size: 0.78rem;
+            color: rgba(255,255,255,0.8);
+            font-weight: 600;
+        }
+        .auth-visual-footer { color: rgba(255,255,255,0.4); font-size: 0.78rem; }
+
+        /* --- Right Panel --- */
+        .auth-form-panel {
+            height: 100vh;
+            overflow-y: auto;
+            display: flex;
+            flex-direction: column;
+            justify-content: center;
+            align-items: center;
+            padding: 50px 50px;
+            background: var(--black);
+        }
+        .auth-form-inner { width: 100%; max-width: 400px; }
+
+        .auth-form-header { margin-bottom: 32px; }
+        .auth-step-label {
+            display: inline-block;
+            color: var(--orange);
+            font-size: 0.75rem;
+            font-weight: 700;
+            text-transform: uppercase;
+            letter-spacing: 2px;
+            margin-bottom: 10px;
+        }
+        .auth-form-header h1 { font-size: 2rem; font-weight: 900; margin-bottom: 6px; }
+        .auth-form-header p { color: var(--gray); font-size: 0.9rem; }
+
+        .form-field { margin-bottom: 18px; }
+        .form-field label {
+            display: block;
+            font-size: 0.82rem;
+            font-weight: 700;
+            margin-bottom: 7px;
+            color: rgba(255,255,255,0.85);
+        }
+        .input-wrap { position: relative; }
+        .input-icon {
+            position: absolute;
+            left: 14px;
+            top: 50%;
+            transform: translateY(-50%);
+            opacity: 0.38;
+            pointer-events: none;
+            display: flex;
+            align-items: center;
+        }
+        .input-wrap input {
+            width: 100%;
+            padding: 13px 44px 13px 44px;
+            background: var(--black-light);
+            border: 1.5px solid var(--glass-border);
+            border-radius: 12px;
+            color: white;
+            font-family: inherit;
+            font-size: 0.93rem;
+            transition: var(--transition);
+            box-sizing: border-box;
+        }
+        .input-wrap input:focus {
+            outline: none;
+            border-color: var(--orange);
+            background: rgba(255,107,0,0.04);
+            box-shadow: 0 0 0 3px rgba(255,107,0,0.1);
+        }
+        .input-wrap input::placeholder { color: rgba(136,136,136,0.65); }
+        .toggle-pw {
+            position: absolute;
+            right: 13px;
+            top: 50%;
+            transform: translateY(-50%);
+            background: none;
+            border: none;
+            cursor: pointer;
+            color: var(--gray);
+            display: flex;
+            align-items: center;
+            padding: 5px;
+            transition: var(--transition);
+            z-index: 1;
+        }
+        .toggle-pw:hover { color: var(--orange); }
+
+        .form-options {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            margin: 4px 0 22px;
+            font-size: 0.83rem;
+            gap: 8px;
+        }
+        .form-check {
+            display: flex;
+            align-items: center;
+            gap: 7px;
+            color: var(--gray);
+            cursor: pointer;
+            white-space: nowrap;
+        }
+        .form-check input[type="checkbox"] { accent-color: var(--orange); width: 14px; height: 14px; flex-shrink: 0; }
+        .form-forgot {
+            color: var(--orange);
+            font-weight: 600;
+            cursor: pointer;
+            background: none;
+            border: none;
+            font-family: inherit;
+            font-size: 0.83rem;
+            padding: 0;
+            white-space: nowrap;
+            flex-shrink: 0;
+        }
+        .form-forgot:hover { text-decoration: underline; }
+
+        .btn-auth {
+            width: 100%;
+            padding: 14px;
+            background: var(--orange);
+            color: white;
+            border: none;
+            border-radius: 12px;
+            font-family: inherit;
+            font-size: 1rem;
+            font-weight: 800;
+            cursor: pointer;
+            transition: var(--transition);
+            letter-spacing: 0.5px;
+        }
+        .btn-auth:hover { background: var(--orange-light); transform: translateY(-2px); box-shadow: 0 8px 25px rgba(255,107,0,0.4); }
+        .btn-auth:active { transform: translateY(0); }
+
+        .auth-divider {
+            display: flex;
+            align-items: center;
+            gap: 14px;
+            margin: 20px 0;
+            color: var(--gray);
+            font-size: 0.78rem;
+        }
+        .auth-divider::before, .auth-divider::after {
+            content: '';
+            flex: 1;
+            height: 1px;
+            background: var(--glass-border);
+        }
+
+        .auth-demo-box {
+            background: rgba(255,107,0,0.06);
+            border: 1px dashed rgba(255,107,0,0.3);
+            border-radius: 12px;
+            padding: 12px 16px;
+            font-size: 0.8rem;
+            color: var(--gray);
+            line-height: 1.6;
+        }
+        .auth-demo-box strong { color: var(--orange); }
+
+        .auth-switch {
+            text-align: center;
+            margin-top: 22px;
+            font-size: 0.88rem;
+            color: var(--gray);
+        }
+        .auth-switch a { color: var(--orange); font-weight: 700; }
+        .auth-switch a:hover { text-decoration: underline; }
+
+        #login-msg {
+            margin-top: 12px;
+            text-align: center;
+            font-size: 0.85rem;
+            font-weight: 600;
+            border-radius: 8px;
+            min-height: 0;
+            transition: var(--transition);
+        }
+        #login-msg.error { background: rgba(255,51,102,0.1); color: #ff3366; padding: 10px 14px; }
+        #login-msg.success { background: rgba(0,179,134,0.1); color: #00b386; padding: 10px 14px; }
+
+        /* =====================
+           FORGOT PASSWORD MODAL
+           ===================== */
+        .modal-backdrop {
+            position: fixed;
+            inset: 0;
+            background: rgba(0,0,0,0.75);
+            backdrop-filter: blur(6px);
+            z-index: 2000;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            opacity: 0;
+            pointer-events: none;
+            transition: opacity 0.25s ease;
+        }
+        .modal-backdrop.open { opacity: 1; pointer-events: all; }
+
+        .forgot-modal {
+            background: var(--black-light);
+            border: 1px solid var(--glass-border);
+            border-radius: 24px;
+            padding: 40px;
+            width: 100%;
+            max-width: 440px;
+            box-shadow: 0 30px 80px rgba(0,0,0,0.6);
+            transform: translateY(20px) scale(0.97);
+            transition: transform 0.25s ease, opacity 0.25s ease;
+            opacity: 0;
+            position: relative;
+        }
+        .modal-backdrop.open .forgot-modal {
+            transform: translateY(0) scale(1);
+            opacity: 1;
+        }
+        .forgot-modal-close {
+            position: absolute;
+            top: 18px; right: 20px;
+            background: none;
+            border: none;
+            color: var(--gray);
+            font-size: 1.4rem;
+            cursor: pointer;
+            line-height: 1;
+            transition: var(--transition);
+        }
+        .forgot-modal-close:hover { color: white; }
+        .forgot-modal-icon {
+            width: 52px; height: 52px;
+            background: var(--orange-dim);
+            border-radius: 16px;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            margin-bottom: 20px;
+        }
+        .forgot-modal h2 { font-size: 1.5rem; font-weight: 900; margin-bottom: 8px; }
+        .forgot-modal > p { color: var(--gray); font-size: 0.88rem; margin-bottom: 24px; line-height: 1.6; }
+
+        .forgot-step { display: none; }
+        .forgot-step.active { display: block; }
+
+        .forgot-success {
+            text-align: center;
+            padding: 10px 0;
+        }
+        .forgot-success-icon {
+            width: 64px; height: 64px;
+            background: rgba(0,179,134,0.15);
+            border-radius: 50%;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            margin: 0 auto 20px;
+            font-size: 1.8rem;
+        }
+        .forgot-success h3 { font-size: 1.2rem; font-weight: 800; margin-bottom: 10px; }
+        .forgot-success p { color: var(--gray); font-size: 0.88rem; line-height: 1.6; margin-bottom: 24px; }
+        .btn-reset-link {
+            display: inline-flex;
+            align-items: center;
+            gap: 10px;
+            padding: 13px 28px;
+            background: var(--orange);
+            color: white;
+            border-radius: 12px;
+            font-weight: 800;
+            font-size: 0.95rem;
+            transition: var(--transition);
+            text-decoration: none;
+        }
+        .btn-reset-link:hover { background: var(--orange-light); transform: translateY(-2px); }
+
+        #forgot-msg {
+            margin-top: 12px;
+            font-size: 0.83rem;
+            font-weight: 600;
+            border-radius: 8px;
+            text-align: center;
+            min-height: 0;
+        }
+        #forgot-msg.error { background: rgba(255,51,102,0.1); color: #ff3366; padding: 9px 12px; }
+
+        @media (max-width: 768px) {
+            html, body { overflow: auto; height: auto; }
+            .auth-page { grid-template-columns: 1fr; height: auto; overflow: visible; }
+            .auth-visual { display: none; }
+            .auth-form-panel { height: auto; min-height: 100vh; padding: 40px 24px; justify-content: flex-start; padding-top: 60px; }
+            .forgot-modal { margin: 20px; padding: 30px 24px; }
+        }
+    </style>
+</head>
+<body>
+
+<div class="auth-page">
+    <!-- Left Visual -->
+    <div class="auth-visual">
+        <div class="auth-visual-bg"></div>
+        <div class="auth-visual-overlay"></div>
+        <div class="auth-visual-content">
+            <a href="vitrine.html" class="auth-visual-logo">SLJ <span>OTAKU</span></a>
+            <div class="auth-visual-body">
+                <h2>Bienvenue dans l'univers Otaku</h2>
+                <p>Plus de 1 500 produits exclusifs — figurines, vêtements et accessoires directement importés du Japon.</p>
+                <div class="auth-visual-tags">
+                    <span class="auth-tag">🗿 Figurines collector</span>
+                    <span class="auth-tag">👕 Vêtements anime</span>
+                    <span class="auth-tag">🎒 Accessoires</span>
+                    <span class="auth-tag">🚚 Livraison 24h</span>
+                </div>
+            </div>
+            <div class="auth-visual-footer">&copy; 2026 SLJ Otaku Paradise</div>
+        </div>
+    </div>
+
+    <!-- Right Form -->
+    <div class="auth-form-panel">
+        <div class="auth-form-inner">
+            <div class="auth-form-header">
+                <span class="auth-step-label">Connexion</span>
+                <h1>Bon retour ! 👋</h1>
+                <p>Connectez-vous pour accéder à votre espace otaku.</p>
+            </div>
+
+            <form id="login-form" autocomplete="on">
+                <div class="form-field">
+                    <label>Nom d'utilisateur</label>
+                    <div class="input-wrap">
+                        <span class="input-icon">
+                            <svg width="17" height="17" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M20 21v-2a4 4 0 0 0-4-4H8a4 4 0 0 0-4 4v2"></path><circle cx="12" cy="7" r="4"></circle></svg>
+                        </span>
+                        <input type="text" id="login-username" autocomplete="username" required placeholder="ex: admin">
+                    </div>
+                </div>
+
+                <div class="form-field">
+                    <label>Mot de passe</label>
+                    <div class="input-wrap">
+                        <span class="input-icon">
+                            <svg width="17" height="17" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><rect x="3" y="11" width="18" height="11" rx="2" ry="2"></rect><path d="M7 11V7a5 5 0 0 1 10 0v4"></path></svg>
+                        </span>
+                        <input type="password" id="login-password" autocomplete="current-password" required placeholder="Votre mot de passe">
+                        <button type="button" class="toggle-pw" id="toggle-pw" tabindex="-1">
+                            <svg width="15" height="15" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M1 12s4-8 11-8 11 8 11 8-4 8-11 8-11-8-11-8z"></path><circle cx="12" cy="12" r="3"></circle></svg>
+                        </button>
+                    </div>
+                </div>
+
+                <div class="form-options">
+                    <label class="form-check">
+                        <input type="checkbox"> Se souvenir de moi
+                    </label>
+                    <button type="button" class="form-forgot" id="open-forgot">Mot de passe oublié ?</button>
+                </div>
+
+                <button type="submit" class="btn-auth">Se connecter</button>
+                <div id="login-msg"></div>
+            </form>
+
+            <div class="auth-divider">Compte de démonstration</div>
+            <div class="auth-demo-box">
+                Utilisateur : <strong>admin</strong> &nbsp;/&nbsp; Mot de passe : <strong>password123</strong>
+            </div>
+
+            <div class="auth-switch">
+                Pas encore de compte ? <a href="signup.html">Créer un compte gratuit</a>
+            </div>
+        </div>
+    </div>
+</div>
+
+<!-- ========================
+     FORGOT PASSWORD MODAL
+     ======================== -->
+<div class="modal-backdrop" id="forgot-backdrop">
+    <div class="forgot-modal">
+        <button class="forgot-modal-close" id="close-forgot">×</button>
+
+        <!-- Step 1 : identity verification -->
+        <div class="forgot-step active" id="forgot-step-1">
+            <div class="forgot-modal-icon">
+                <svg width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="var(--orange)" stroke-width="2"><rect x="3" y="11" width="18" height="11" rx="2" ry="2"></rect><path d="M7 11V7a5 5 0 0 1 10 0v4"></path></svg>
+            </div>
+            <h2>Mot de passe oublié ?</h2>
+            <p>Renseignez vos informations pour vérifier votre identité. Elles doivent correspondre à celles de votre compte.</p>
+
+            <form id="forgot-form" autocomplete="off">
+                <div class="form-field">
+                    <label>Nom d'utilisateur</label>
+                    <div class="input-wrap">
+                        <span class="input-icon">
+                            <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M20 21v-2a4 4 0 0 0-4-4H8a4 4 0 0 0-4 4v2"></path><circle cx="12" cy="7" r="4"></circle></svg>
+                        </span>
+                        <input type="text" id="forgot-username" required placeholder="Votre nom d'utilisateur">
+                    </div>
+                </div>
+                <div class="form-field">
+                    <label>Adresse e-mail</label>
+                    <div class="input-wrap">
+                        <span class="input-icon">
+                            <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M4 4h16c1.1 0 2 .9 2 2v12c0 1.1-.9 2-2 2H4c-1.1 0-2-.9-2-2V6c0-1.1.9-2 2-2z"></path><polyline points="22,6 12,13 2,6"></polyline></svg>
+                        </span>
+                        <input type="email" id="forgot-email" required placeholder="votre@email.com">
+                    </div>
+                </div>
+                <div class="form-field" style="margin-bottom: 22px;">
+                    <label>Numéro de téléphone</label>
+                    <div class="input-wrap">
+                        <span class="input-icon">
+                            <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M22 16.92v3a2 2 0 0 1-2.18 2 19.79 19.79 0 0 1-8.63-3.07A19.5 19.5 0 0 1 4.69 12 19.79 19.79 0 0 1 1.65 3.19 2 2 0 0 1 3.62 1h3a2 2 0 0 1 2 1.72c.127.96.361 1.903.7 2.81a2 2 0 0 1-.45 2.11L7.91 8.69a16 16 0 0 0 6.06 6.06l1-1a2 2 0 0 1 2.11-.45c.907.339 1.85.573 2.81.7A2 2 0 0 1 22 16.92z"></path></svg>
+                        </span>
+                        <input type="tel" id="forgot-phone" required placeholder="ex: +33 6 00 00 00 00">
+                    </div>
+                </div>
+                <button type="submit" class="btn-auth">Vérifier mon identité</button>
+                <div id="forgot-msg"></div>
+            </form>
+        </div>
+
+        <!-- Step 2 : success + link -->
+        <div class="forgot-step" id="forgot-step-2">
+            <div class="forgot-success">
+                <div class="forgot-success-icon">✓</div>
+                <h3>Identité vérifiée !</h3>
+                <p>Votre identité a été confirmée. Cliquez sur le bouton ci-dessous pour accéder à la page de réinitialisation de votre mot de passe.</p>
+                <a href="reset-password.html" class="btn-reset-link" id="reset-link">
+                    <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5"><path d="M12 22s8-4 8-10V5l-8-3-8 3v7c0 6 8 10 8 10z"></path></svg>
+                    Réinitialiser mon mot de passe
+                </a>
+            </div>
+        </div>
+    </div>
+</div>
+
+<script src="js/products.js"></script>
+<script src="js/db.js"></script>
+<script>
+    /* --- Toggle password visibility --- */
+    document.getElementById('toggle-pw').addEventListener('click', () => {
+        const pw = document.getElementById('login-password');
+        pw.type = pw.type === 'password' ? 'text' : 'password';
+    });
+
+    /* --- Login form --- */
+    document.getElementById('login-form').addEventListener('submit', (e) => {
+        e.preventDefault();
+        const user = db.authenticate(
+            document.getElementById('login-username').value.trim(),
+            document.getElementById('login-password').value
+        );
+        const msg = document.getElementById('login-msg');
+        if (user) {
+            msg.className = 'success';
+            msg.textContent = '✓ Connexion réussie ! Redirection en cours...';
+            setTimeout(() => {
+                window.location.href = user.role === 'admin' ? 'admin.html' : 'index.html';
+            }, 1200);
+        } else {
+            msg.className = 'error';
+            msg.textContent = '✕ Nom d\'utilisateur ou mot de passe incorrect.';
+        }
+    });
+
+    /* --- Forgot password modal --- */
+    const backdrop = document.getElementById('forgot-backdrop');
+
+    document.getElementById('open-forgot').addEventListener('click', () => {
+        backdrop.classList.add('open');
+        document.getElementById('forgot-step-1').classList.add('active');
+        document.getElementById('forgot-step-2').classList.remove('active');
+        document.getElementById('forgot-msg').textContent = '';
+        document.getElementById('forgot-msg').className = '';
+        document.getElementById('forgot-form').reset();
+    });
+
+    document.getElementById('close-forgot').addEventListener('click', () => {
+        backdrop.classList.remove('open');
+    });
+
+    backdrop.addEventListener('click', (e) => {
+        if (e.target === backdrop) backdrop.classList.remove('open');
+    });
+
+    document.getElementById('forgot-form').addEventListener('submit', (e) => {
+        e.preventDefault();
+        const username = document.getElementById('forgot-username').value.trim().toLowerCase();
+        const email    = document.getElementById('forgot-email').value.trim().toLowerCase();
+        const phone    = document.getElementById('forgot-phone').value.trim().replace(/\s/g, '');
+        const msg      = document.getElementById('forgot-msg');
+
+        const match = db.customers.find(c =>
+            c.username.toLowerCase() === username &&
+            c.email.toLowerCase() === email &&
+            c.phone.replace(/\s/g, '') === phone
+        );
+
+        if (!match) {
+            msg.className = 'error';
+            msg.textContent = '✕ Les informations ne correspondent à aucun compte.';
+            return;
+        }
+
+        /* Set a short-lived reset cookie (15 min) */
+        const expires = new Date(Date.now() + 15 * 60 * 1000).toUTCString();
+        document.cookie = `slj_reset_token=${match.id}; path=/; expires=${expires}`;
+
+        /* Show success step */
+        document.getElementById('forgot-step-1').classList.remove('active');
+        document.getElementById('forgot-step-2').classList.add('active');
+    });
+</script>
+</body>
+</html>

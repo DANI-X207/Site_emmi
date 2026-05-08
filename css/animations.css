@@ -1,0 +1,233 @@
+/* ===========================
+   SLJ Otaku Paradise — Animations
+   =========================== */
+
+/* --- Keyframes --- */
+@keyframes fadeInUp {
+  from { opacity: 0; transform: translateY(30px); }
+  to   { opacity: 1; transform: translateY(0); }
+}
+
+@keyframes fadeInDown {
+  from { opacity: 0; transform: translateY(-30px); }
+  to   { opacity: 1; transform: translateY(0); }
+}
+
+@keyframes fadeIn {
+  from { opacity: 0; }
+  to   { opacity: 1; }
+}
+
+@keyframes scaleIn {
+  from { opacity: 0; transform: scale(0.85); }
+  to   { opacity: 1; transform: scale(1); }
+}
+
+@keyframes slideInRight {
+  from { opacity: 0; transform: translateX(60px); }
+  to   { opacity: 1; transform: translateX(0); }
+}
+
+@keyframes slideInLeft {
+  from { opacity: 0; transform: translateX(-60px); }
+  to   { opacity: 1; transform: translateX(0); }
+}
+
+@keyframes pulse {
+  0%, 100% { transform: scale(1); }
+  50%       { transform: scale(1.06); }
+}
+
+@keyframes glow {
+  0%, 100% { box-shadow: 0 0 10px var(--orange), 0 0 20px var(--orange-dim); }
+  50%       { box-shadow: 0 0 25px var(--orange), 0 0 50px var(--orange-dim); }
+}
+
+@keyframes glowText {
+  0%, 100% { text-shadow: 0 0 8px var(--orange); }
+  50%       { text-shadow: 0 0 22px var(--orange), 0 0 40px var(--orange-dim); }
+}
+
+@keyframes float {
+  0%, 100% { transform: translateY(0); }
+  50%       { transform: translateY(-12px); }
+}
+
+@keyframes rotate {
+  from { transform: rotate(0deg); }
+  to   { transform: rotate(360deg); }
+}
+
+@keyframes shimmer {
+  0%   { background-position: -200% center; }
+  100% { background-position: 200% center; }
+}
+
+@keyframes borderPulse {
+  0%, 100% { border-color: var(--orange); }
+  50%       { border-color: var(--orange-light); }
+}
+
+@keyframes badgeBounce {
+  0%, 100% { transform: scale(1); }
+  30%       { transform: scale(1.25); }
+  60%       { transform: scale(0.9); }
+}
+
+@keyframes cartShake {
+  0%, 100% { transform: rotate(0deg); }
+  20%       { transform: rotate(-8deg); }
+  40%       { transform: rotate(8deg); }
+  60%       { transform: rotate(-4deg); }
+  80%       { transform: rotate(4deg); }
+}
+
+@keyframes ripple {
+  to { transform: scale(4); opacity: 0; }
+}
+
+@keyframes scanline {
+  0%   { transform: translateY(-100%); }
+  100% { transform: translateY(100vh); }
+}
+
+@keyframes heroFlicker {
+  0%, 100% { opacity: 1; }
+  92%       { opacity: 1; }
+  93%       { opacity: 0.4; }
+  94%       { opacity: 1; }
+  96%       { opacity: 0.6; }
+  97%       { opacity: 1; }
+}
+
+@keyframes notifSlide {
+  from { transform: translateX(120%); opacity: 0; }
+  to   { transform: translateX(0); opacity: 1; }
+}
+
+@keyframes spin {
+  to { transform: rotate(360deg); }
+}
+
+/* --- Utility Classes --- */
+.fade-up {
+  opacity: 0;
+  transform: translateY(30px);
+  transition: opacity 0.6s ease, transform 0.6s ease;
+}
+.fade-up.visible {
+  opacity: 1;
+  transform: translateY(0);
+}
+
+.fade-out {
+  opacity: 0 !important;
+  transform: translateY(10px) !important;
+  transition: opacity 0.3s ease, transform 0.3s ease;
+}
+.fade-in {
+  animation: fadeInUp 0.5s ease forwards;
+}
+
+/* Product card entrance */
+.product-card.animate-in {
+  animation: fadeInUp 0.5s ease both;
+}
+
+/* Glow on CTA */
+.btn-glow {
+  animation: glow 2.5s ease-in-out infinite;
+}
+
+/* Float effect */
+.float-anim {
+  animation: float 4s ease-in-out infinite;
+}
+
+/* Hero flicker */
+.hero-flicker {
+  animation: heroFlicker 8s linear infinite;
+}
+
+/* Cart shake when item added */
+.cart-shake {
+  animation: cartShake 0.4s ease;
+}
+
+/* Section title reveal */
+.section-title {
+  opacity: 0;
+  transform: translateY(20px);
+  transition: opacity 0.7s ease, transform 0.7s ease;
+}
+.section-title.visible {
+  opacity: 1;
+  transform: translateY(0);
+}
+
+/* Feature cards */
+.feature-card {
+  opacity: 0;
+  transform: translateY(20px);
+  transition: opacity 0.5s ease, transform 0.5s ease;
+}
+.feature-card:nth-child(2) { transition-delay: 0.1s; }
+.feature-card:nth-child(3) { transition-delay: 0.2s; }
+.feature-card:nth-child(4) { transition-delay: 0.3s; }
+.feature-card.visible {
+  opacity: 1;
+  transform: translateY(0);
+}
+
+/* Shimmer loading placeholder */
+.shimmer {
+  background: linear-gradient(90deg, #1a1a1a 25%, #2a2a2a 50%, #1a1a1a 75%);
+  background-size: 200% 100%;
+  animation: shimmer 1.5s infinite;
+}
+
+/* Ripple button effect */
+.btn-ripple {
+  position: relative;
+  overflow: hidden;
+}
+.btn-ripple .ripple-effect {
+  position: absolute;
+  border-radius: 50%;
+  background: rgba(255,255,255,0.3);
+  width: 10px; height: 10px;
+  transform: scale(0);
+  animation: ripple 0.6s linear;
+  pointer-events: none;
+}
+
+/* Badge bounce */
+.badge-bounce {
+  animation: badgeBounce 0.5s ease;
+}
+
+/* Cart notification */
+#cart-notif {
+  position: fixed;
+  bottom: 90px;
+  right: 24px;
+  background: linear-gradient(135deg, #ff6b00, #ff3d00);
+  color: #fff;
+  padding: 14px 22px;
+  border-radius: 12px;
+  font-size: 0.92rem;
+  font-weight: 600;
+  display: flex;
+  align-items: center;
+  gap: 10px;
+  z-index: 9999;
+  transform: translateX(120%);
+  opacity: 0;
+  transition: transform 0.35s cubic-bezier(0.34, 1.56, 0.64, 1), opacity 0.35s ease;
+  box-shadow: 0 8px 30px rgba(255,107,0,0.45);
+  max-width: 300px;
+}
+#cart-notif.show {
+  transform: translateX(0);
+  opacity: 1;
+}

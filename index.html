@@ -1,0 +1,264 @@
+<!DOCTYPE html>
+<html lang="fr">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>SLJ Otaku Paradise | Figurines & Articles Geek</title>
+    <meta name="description" content="Découvrez SLJ Otaku Paradise, votre boutique de référence pour les figurines, vêtements et articles dérivés de la culture otaku.">
+    
+    <!-- Google Fonts -->
+    <link rel="preconnect" href="https://fonts.googleapis.com">
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+    <link href="https://fonts.googleapis.com/css2?family=Outfit:wght@300;400;600;700;900&display=swap" rel="stylesheet">
+    
+    <!-- Stylesheets -->
+    <link rel="stylesheet" href="css/style.css">
+    <link rel="stylesheet" href="css/animations.css">
+</head>
+<body>
+    <script src="js/products.js"></script>
+    <script src="js/db.js"></script>
+    <script>
+        // Si l'utilisateur n'est pas connecté, rediriger vers la vitrine
+        if (!db.isLoggedIn()) {
+            window.location.href = 'vitrine.html';
+        }
+    </script>
+
+    <!-- --- Navigation --- -->
+    <nav id="navbar">
+        <div class="container">
+            <a href="index.html" class="logo">
+                SLJ <span>OTAKU</span>
+            </a>
+            <div class="nav-links" id="nav-links">
+                <a href="index.html" class="active">Accueil</a>
+                <a href="shop.html">Boutique</a>
+                <a href="admin.html" id="nav-admin" style="display:none;">Admin</a>
+            </div>
+            <div class="nav-actions">
+                <a href="admin.html" class="nav-icon" id="admin-icon" title="Administration">
+                    <svg width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" style="color: white;"><path d="M12 22s8-4 8-10V5l-8-3-8 3v7c0 6 8 10 8 10z"></path></svg>
+                </a>
+                <a href="profile.html" class="nav-icon" title="Mon Profil">
+                    <svg width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" style="color: white;"><path d="M20 21v-2a4 4 0 0 0-4-4H8a4 4 0 0 0-4 4v2"></path><circle cx="12" cy="7" r="4"></circle></svg>
+                </a>
+                <a href="commandes.html" class="nav-icon" title="Mes Commandes">
+                    <svg width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" style="color: white;"><path d="M16.5 9.4l-9-5.19M21 16V8a2 2 0 0 0-1-1.73l-7-4a2 2 0 0 0-2 0l-7 4A2 2 0 0 0 3 8v8a2 2 0 0 0 1 1.73l7 4a2 2 0 0 0 2 0l7-4A2 2 0 0 0 21 16z"></path><polyline points="3.27 6.96 12 12.01 20.73 6.96"></polyline><line x1="12" y1="22.08" x2="12" y2="12"></line></svg>
+                </a>
+                <button class="cart-btn" onclick="cart.openSidebar()" title="Panier">
+                    <svg width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" style="color: white;"><circle cx="9" cy="21" r="1"></circle><circle cx="20" cy="21" r="1"></circle><path d="M1 1h4l2.68 13.39a2 2 0 0 0 2 1.61h9.72a2 2 0 0 0 2-1.61L23 6H6"></path></svg>
+                    <span id="cart-count">0</span>
+                </button>
+                <button class="burger" id="burger-btn">☰</button>
+            </div>
+        </div>
+    </nav>
+
+    <!-- --- Hero Section --- -->
+    <section class="hero" id="home">
+        <div class="hero-bg"></div>
+        <canvas id="particles-canvas"></canvas>
+        <div class="container">
+            <div class="hero-content">
+                <span class="hero-badge" id="hero-badge">🔥 Nouveautés Printemps 2026</span>
+                <h1 class="hero-title" id="hero-title">
+                    L'Univers Otaku à <span class="highlight">Portée de Main</span>
+                </h1>
+                <p class="hero-subtitle" id="hero-subtitle">
+                    Figurines, Vêtements & Accessoires — Tout ce que le vrai otaku désire.
+                </p>
+                <div class="hero-btns">
+                    <a href="shop.html" class="btn-primary" id="hero-cta">Explorer la boutique</a>
+                </div>
+            </div>
+            <div class="hero-product-showcase" style="display: grid; grid-template-columns: 1fr 1fr; gap: 20px;">
+                <img src="https://i.ebayimg.com/images/g/FqAAAeSwE2Bpvqww/s-l400.webp" alt="Figurine Goku" style="border-radius: 20px; box-shadow: 0 10px 30px rgba(255,107,0,0.3); animation: float 6s ease-in-out infinite; width:100%; height:260px; object-fit:cover;">
+                <img src="https://gganimecollectibles.com/cdn/shop/files/gg-anime-collectibles-luffy-gear-5-figure_de55c824-1bfc-4e5f-b459-fee710675d88.jpg?v=1776036836&width=500" alt="Figurine Luffy Gear 5" style="border-radius: 20px; box-shadow: 0 10px 30px rgba(255,107,0,0.3); animation: float 6s ease-in-out infinite 1.5s; margin-top: 40px; width:100%; height:260px; object-fit:cover;">
+            </div>
+        </div>
+    </section>
+
+    <!-- --- Stats Section --- -->
+    <section class="stats section-padding">
+        <div class="container">
+            <div class="footer-grid" style="text-align: center;">
+                <div class="stat-card">
+                    <div class="stat-number" data-target="1500" data-suffix="+">0</div>
+                    <div class="stat-label">Produits</div>
+                </div>
+                <div class="stat-card">
+                    <div class="stat-number" data-target="5000" data-suffix="+">0</div>
+                    <div class="stat-label">Clients Satisfaits</div>
+                </div>
+                <div class="stat-card">
+                    <div class="stat-number" data-target="24" data-suffix="h">0</div>
+                    <div class="stat-label">Expédition</div>
+                </div>
+            </div>
+        </div>
+    </section>
+
+    <!-- --- Featured & Announcements Slider --- -->
+    <section class="trending-section section-padding">
+        <div class="container">
+            <div class="section-header" style="text-align: left; margin-bottom: 40px; display: flex; justify-content: space-between; align-items: flex-end;">
+                <div>
+                    <h2 class="section-title">À ne pas <span>Manquer</span></h2>
+                    <p>Découvrez nos nouveautés et offres exclusives en un coup d'œil.</p>
+                </div>
+                <div class="slider-controls">
+                    <button class="slider-btn prev" onclick="scrollTrending(-1)">‹</button>
+                    <button class="slider-btn next" onclick="scrollTrending(1)">›</button>
+                </div>
+            </div>
+            
+            <div class="trending-slider">
+                <div class="trending-track" id="featured-track">
+                    <!-- Products and Ads will be injected here via JS -->
+                </div>
+            </div>
+        </div>
+    </section>
+
+    <!-- --- Hourly Selection --- -->
+    <section class="section-padding" id="hourly-selection">
+        <div class="container">
+            <div class="section-header" style="text-align: left; display: flex; justify-content: space-between; align-items: flex-end;">
+                <div>
+                    <h2 class="section-title">Sélection de <span>l'Heure</span></h2>
+                    <p style="max-width: 600px;">Chaque heure, notre IA sélectionne pour vous des pièces rares et des incontournables de notre collection.</p>
+                </div>
+                <div id="hourly-timer" style="background: var(--orange-dim); color: var(--orange); padding: 10px 20px; border-radius: 50px; font-weight: 800; font-size: 0.9rem;">
+                    Nouvelle sélection dans : <span id="timer-val">00:00</span>
+                </div>
+            </div>
+            
+            <div id="hourly-products-grid" class="products-grid">
+                <!-- Injected via JS -->
+            </div>
+
+            <div class="glass-card" style="margin-top: 50px; padding: 40px; display: grid; grid-template-columns: 1fr 1fr; gap: 40px; align-items: center; background: var(--black-light); border-radius: 30px; border: 1px solid var(--glass-border);">
+                <div>
+                    <h3 style="font-size: 2rem; margin-bottom: 20px;">L'Excellence <span class="highlight" style="color: var(--orange)">Otaku</span></h3>
+                    <p style="color: var(--gray); font-size: 1.1rem; line-height: 1.7;">
+                        Chez SLJ Otaku Paradise, nous ne nous contentons pas de vendre des figurines. Nous sélectionnons des œuvres d'art qui capturent l'âme de vos animes préférés.
+                    </p>
+                </div>
+                <div style="background: url('https://images.unsplash.com/photo-1613376023733-f5c88c772074?w=800') center/cover; height: 300px; border-radius: 20px; border: 1px solid var(--glass-border); position: relative; overflow: hidden; box-shadow: 0 10px 30px rgba(255, 107, 0, 0.2);">
+                    <div style="position: absolute; inset: 0; background: linear-gradient(to top, rgba(10,10,10,0.9), transparent);"></div>
+                </div>
+            </div>
+        </div>
+    </section>
+
+    <!-- --- Collector Collection --- -->
+    <section class="collector-section section-padding">
+        <div class="container">
+            <div class="collector-layout">
+                <div class="collector-hero fade-up">
+                    <div class="collector-badge">ÉDITION LIMITÉE</div>
+                    <h2>L'Art du <span class="highlight" style="color: var(--orange)">Détail</span></h2>
+                    <p>Nos figurines collector sont sélectionnées pour leur fidélité exceptionnelle aux œuvres originales.</p>
+                    <a href="shop.html" class="btn-primary">Voir la collection</a>
+                </div>
+                <div class="collector-visual fade-up">
+                   <div class="collector-img-box">
+                       <img src="https://i.ebayimg.com/images/g/FrMAAeSwejdonHwp/s-l960.webp" alt="Figurine Itachi Collector" style="width:100%; height:100%; object-fit:cover;">
+                   </div>
+                   <div class="collector-mini-grid">
+                       <div class="mini-item"><img src="https://i.ebayimg.com/images/g/FqAAAeSwE2Bpvqww/s-l400.webp" alt="Figurine Goku" style="width:100%; height:100%; object-fit:cover;"></div>
+                       <div class="mini-item"><img src="https://i5.walmartimages.com/seo/Tanjiro-Kamado-Action-Figure-3-63-6-Inch-Demon-Slayer-Anime-Collectible-Figure_0367fc16-0382-41b0-bad8-2a329ffb3dd0.1e9c28a891c7754a20b35b9c688035bd.jpeg?odnHeight=300&odnWidth=300&odnBg=FFFFFF" alt="Figurine Tanjiro" style="width:100%; height:100%; object-fit:cover;"></div>
+                       <div class="mini-item"><img src="https://i.ebayimg.com/images/g/EhkAAeSw1JRoYf18/s-l400.webp" alt="Figurine Naruto" style="width:100%; height:100%; object-fit:cover;"></div>
+                       <div class="mini-item"><img src="https://i5.walmartimages.com/seo/Attack-Titan-Levi-Ackerman-Anime-Figure-Cloak-Levi-10-2-Scale-Action-Figure-Collectible-Model-Statue-Multicolor_accab38c-1dbd-4c23-bf53-881a6ea6a519.eed01fdd709d0c3ddcaa9f5f35302c3d.jpeg?odnHeight=300&odnWidth=300&odnBg=FFFFFF" alt="Figurine Levi" style="width:100%; height:100%; object-fit:cover;"></div>
+                   </div>
+                </div>
+            </div>
+        </div>
+    </section>
+
+    <!-- --- Testimonials --- -->
+    <section class="testimonials section-padding" id="testimonials">
+        <div class="container">
+            <div class="section-header">
+                <h2 class="section-title">Ce qu'en disent nos <span>Otakus</span></h2>
+            </div>
+            <div class="products-grid" id="testimonials-grid" style="grid-template-columns: repeat(auto-fit, minmax(300px, 1fr));">
+                <!-- Dynamic testimonials -->
+            </div>
+        </div>
+    </section>
+
+    <!-- --- Footer --- -->
+    <footer id="contact">
+        <div class="container">
+            <div class="footer-grid">
+                <div class="footer-info">
+                    <div class="logo">SLJ <span>OTAKU</span></div>
+                    <p>La destination n°1 pour tous les fans de culture japonaise, manga et anime.</p>
+                </div>
+                <div class="footer-links">
+                    <h4>Navigation</h4>
+                    <ul>
+                        <li><a href="#home">Accueil</a></li>
+                        <li><a href="#shop">Boutique</a></li>
+                        <li><a href="#">Conditions de vente</a></li>
+                    </ul>
+                </div>
+                <div class="footer-links">
+                    <h4>Catégories</h4>
+                    <ul>
+                        <li><a href="#">Figurines</a></li>
+                        <li><a href="#">Posters</a></li>
+                        <li><a href="#">Vêtements</a></li>
+                    </ul>
+                </div>
+                <div class="footer-links">
+                    <h4>Contact</h4>
+                    <ul>
+                        <li>📍 Paris, France</li>
+                        <li>📧 contact@otaku-paradise.com</li>
+                        <li>📞 +33 1 23 45 67 89</li>
+                    </ul>
+                </div>
+            </div>
+            <div class="footer-bottom">
+                <p>&copy; 2026 SLJ Otaku Paradise. Tous droits réservés.</p>
+            </div>
+        </div>
+    </footer>
+
+    <!-- --- Cart Sidebar --- -->
+    <div class="cart-overlay" id="cart-overlay"></div>
+    <div class="cart-sidebar" id="cart-sidebar">
+        <div class="cart-header">
+            <h3>Votre Panier</h3>
+            <button onclick="cart.closeSidebar()" style="font-size: 1.5rem; color: white;">×</button>
+        </div>
+        <div class="cart-body" id="cart-body">
+            <!-- Items injected via JS -->
+        </div>
+        <div class="cart-footer">
+            <div class="total-row">
+                <span>Total</span>
+                <span id="cart-total">0.00 €</span>
+            </div>
+            <button class="btn-primary" style="width: 100%;" onclick="cart.checkout()">Passer à la caisse</button>
+        </div>
+    </div>
+
+    <!-- --- Product Modal --- -->
+    <div class="modal-overlay" id="product-modal">
+        <div class="modal-container">
+            <button class="modal-close" onclick="closeModal('product-modal')" style="position: absolute; top: 20px; right: 20px; font-size: 2rem; color: white; background: none; border: none; cursor: pointer;">×</button>
+            <div id="modal-content">
+                <!-- Content injected via JS -->
+            </div>
+        </div>
+    </div>
+
+    <!-- --- Scripts --- -->
+    <script src="js/cart.js"></script>
+    <script src="js/main.js"></script>
+</body>
+</html>

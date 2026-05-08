@@ -1,0 +1,473 @@
+<!DOCTYPE html>
+<html lang="fr">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Mes Commandes | SLJ Otaku Paradise</title>
+    <link href="https://fonts.googleapis.com/css2?family=Outfit:wght@300;400;600;700;900&display=swap" rel="stylesheet">
+    <link rel="stylesheet" href="css/style.css">
+    <link rel="stylesheet" href="css/animations.css">
+    <style>
+        body { padding-top: 90px; min-height: 100vh; }
+
+        .page-header {
+            background: linear-gradient(135deg, var(--black-light) 0%, var(--black) 100%);
+            border-bottom: 1px solid var(--glass-border);
+            padding: 40px 0 30px;
+            margin-bottom: 50px;
+        }
+        .page-header h1 { font-size: 2.2rem; font-weight: 900; margin-bottom: 6px; }
+        .page-header p { color: var(--gray); }
+        .breadcrumb { display: flex; align-items: center; gap: 8px; font-size: 0.82rem; color: var(--gray); margin-bottom: 12px; }
+        .breadcrumb a { color: var(--orange); }
+        .breadcrumb span { opacity: 0.4; }
+
+        .orders-empty {
+            text-align: center;
+            padding: 80px 20px;
+        }
+        .orders-empty .icon { font-size: 4rem; margin-bottom: 20px; }
+        .orders-empty h3 { font-size: 1.6rem; font-weight: 900; margin-bottom: 10px; }
+        .orders-empty p { color: var(--gray); margin-bottom: 30px; }
+
+        /* Order Card */
+        .order-card {
+            background: var(--black-light);
+            border: 1px solid var(--glass-border);
+            border-radius: 24px;
+            margin-bottom: 24px;
+            overflow: hidden;
+            transition: var(--transition);
+        }
+        .order-card:hover { border-color: rgba(255,107,0,0.2); }
+        .order-card.cancel-requested { border-color: rgba(255,51,102,0.3); }
+        .order-card.annulee-eligible { border-color: rgba(255,51,102,0.5); }
+
+        .order-card-header {
+            display: grid;
+            grid-template-columns: 1fr auto;
+            align-items: start;
+            padding: 22px 28px;
+            border-bottom: 1px solid var(--glass-border);
+            gap: 16px;
+        }
+        .order-id { font-size: 1rem; font-weight: 900; margin-bottom: 4px; }
+        .order-meta { font-size: 0.8rem; color: var(--gray); display: flex; gap: 16px; flex-wrap: wrap; }
+        .order-meta span { display: flex; align-items: center; gap: 5px; }
+
+        .order-status-badge {
+            padding: 6px 14px;
+            border-radius: 50px;
+            font-size: 0.75rem;
+            font-weight: 800;
+            white-space: nowrap;
+            display: flex;
+            align-items: center;
+            gap: 6px;
+        }
+        .status-en_attente     { background: rgba(255,165,0,0.1); color: #ffa500; }
+        .status-confirmee      { background: rgba(0,191,255,0.1); color: #00bfff; }
+        .status-en_preparation { background: rgba(138,43,226,0.12); color: #b060ff; }
+        .status-expediee       { background: rgba(255,107,0,0.1); color: var(--orange); }
+        .status-livree         { background: rgba(0,179,134,0.1); color: #00b386; }
+        .status-annulee        { background: rgba(255,51,102,0.1); color: #ff3366; }
+
+        /* Progress Timeline */
+        .order-progress {
+            padding: 20px 28px;
+            border-bottom: 1px solid var(--glass-border);
+        }
+        .progress-steps {
+            display: flex;
+            align-items: center;
+            gap: 0;
+            position: relative;
+        }
+        .progress-step {
+            display: flex;
+            flex-direction: column;
+            align-items: center;
+            flex: 1;
+            position: relative;
+        }
+        .step-dot {
+            width: 28px; height: 28px;
+            border-radius: 50%;
+            background: var(--black-lighter);
+            border: 2px solid var(--glass-border);
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            font-size: 0.7rem;
+            font-weight: 800;
+            z-index: 2;
+            position: relative;
+            transition: var(--transition);
+        }
+        .step-dot.done { background: var(--orange); border-color: var(--orange); color: white; }
+        .step-dot.current { background: var(--black); border-color: var(--orange); color: var(--orange); box-shadow: 0 0 0 4px rgba(255,107,0,0.15); }
+        .step-label { font-size: 0.63rem; color: var(--gray); text-align: center; margin-top: 6px; font-weight: 600; max-width: 70px; line-height: 1.3; }
+        .step-label.done, .step-label.current { color: white; }
+        .progress-line {
+            flex: 1;
+            height: 2px;
+            background: var(--glass-border);
+            margin-bottom: 20px;
+        }
+        .progress-line.done { background: var(--orange); }
+
+        /* Items */
+        .order-items {
+            padding: 18px 28px;
+            border-bottom: 1px solid var(--glass-border);
+            display: flex;
+            gap: 12px;
+            flex-wrap: wrap;
+            align-items: center;
+        }
+        .order-item-chip {
+            display: flex;
+            align-items: center;
+            gap: 8px;
+            background: var(--black);
+            border: 1px solid var(--glass-border);
+            border-radius: 50px;
+            padding: 6px 12px 6px 6px;
+        }
+        .order-item-img {
+            width: 28px; height: 28px;
+            border-radius: 50%;
+            object-fit: cover;
+            background: var(--black-lighter);
+        }
+        .order-item-chip-name { font-size: 0.78rem; font-weight: 600; }
+        .order-item-chip-qty { font-size: 0.72rem; color: var(--orange); font-weight: 800; }
+
+        /* Footer */
+        .order-card-footer {
+            padding: 16px 28px;
+            display: flex;
+            align-items: center;
+            justify-content: space-between;
+            gap: 16px;
+            flex-wrap: wrap;
+        }
+        .order-total-text { font-size: 1rem; font-weight: 900; }
+        .order-total-text span { color: var(--orange); }
+
+        .order-actions { display: flex; gap: 10px; align-items: center; flex-wrap: wrap; }
+
+        .btn-cancel-req {
+            padding: 9px 18px;
+            background: rgba(255,51,102,0.08);
+            border: 1px solid rgba(255,51,102,0.25);
+            color: #ff3366;
+            border-radius: 10px;
+            font-family: inherit;
+            font-size: 0.82rem;
+            font-weight: 700;
+            cursor: pointer;
+            transition: var(--transition);
+        }
+        .btn-cancel-req:hover { background: rgba(255,51,102,0.15); }
+
+        .btn-undo-cancel {
+            padding: 9px 18px;
+            background: rgba(255,165,0,0.08);
+            border: 1px solid rgba(255,165,0,0.3);
+            color: #ffa500;
+            border-radius: 10px;
+            font-family: inherit;
+            font-size: 0.82rem;
+            font-weight: 700;
+            cursor: pointer;
+            transition: var(--transition);
+        }
+        .btn-undo-cancel:hover { background: rgba(255,165,0,0.15); }
+
+        .cancel-countdown {
+            font-size: 0.8rem;
+            color: #ff3366;
+            font-weight: 700;
+            display: flex;
+            align-items: center;
+            gap: 6px;
+        }
+        .cancel-countdown .dot { width: 6px; height: 6px; border-radius: 50%; background: #ff3366; animation: pulse 1s infinite; }
+
+        .cancel-expired-msg {
+            font-size: 0.8rem;
+            color: var(--gray);
+            font-style: italic;
+        }
+
+        @media (max-width: 600px) {
+            .order-card-header { grid-template-columns: 1fr; }
+            .order-card-footer { flex-direction: column; align-items: flex-start; }
+            .progress-step:nth-child(n+5) .step-label { display: none; }
+        }
+    </style>
+</head>
+<body>
+    <script src="js/products.js"></script>
+    <script src="js/db.js"></script>
+    <script>
+        if (!db.isLoggedIn()) window.location.href = 'vitrine.html';
+    </script>
+    <style>
+        .session-toast {
+            position: fixed; top: 20px; left: 50%; transform: translateX(-50%);
+            background: #1a1a1a; border: 1px solid rgba(255,51,102,0.4);
+            color: white; padding: 16px 28px; border-radius: 16px;
+            font-weight: 700; z-index: 9999; text-align: center;
+            box-shadow: 0 10px 40px rgba(0,0,0,0.6);
+            animation: slideDown 0.3s ease;
+        }
+        @keyframes slideDown { from { top: -60px; opacity:0; } to { top: 20px; opacity:1; } }
+    </style>
+
+    <!-- Nav -->
+    <nav id="navbar">
+        <div class="container">
+            <a href="index.html" class="logo">SLJ <span>OTAKU</span></a>
+            <div class="nav-links">
+                <a href="index.html">Accueil</a>
+                <a href="shop.html">Boutique</a>
+                <a href="admin.html" id="nav-admin" style="display:none;">Admin</a>
+            </div>
+            <div class="nav-actions">
+                <a href="admin.html" class="nav-icon" id="admin-icon" title="Administration" style="display:none;">
+                    <svg width="22" height="22" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M12 22s8-4 8-10V5l-8-3-8 3v7c0 6 8 10 8 10z"></path></svg>
+                </a>
+                <a href="profile.html" class="nav-icon" title="Mon Profil">
+                    <svg width="22" height="22" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M20 21v-2a4 4 0 0 0-4-4H8a4 4 0 0 0-4 4v2"></path><circle cx="12" cy="7" r="4"></circle></svg>
+                </a>
+                <a href="commandes.html" class="nav-icon" title="Mes Commandes" style="color:var(--orange);">
+                    <svg width="22" height="22" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M16.5 9.4l-9-5.19M21 16V8a2 2 0 0 0-1-1.73l-7-4a2 2 0 0 0-2 0l-7 4A2 2 0 0 0 3 8v8a2 2 0 0 0 1 1.73l7 4a2 2 0 0 0 2 0l7-4A2 2 0 0 0 21 16z"></path><polyline points="3.27 6.96 12 12.01 20.73 6.96"></polyline><line x1="12" y1="22.08" x2="12" y2="12"></line></svg>
+                </a>
+                <button class="cart-btn" onclick="cart.openSidebar()" title="Panier" style="position:relative;">
+                    <svg width="22" height="22" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><circle cx="9" cy="21" r="1"></circle><circle cx="20" cy="21" r="1"></circle><path d="M1 1h4l2.68 13.39a2 2 0 0 0 2 1.61h9.72a2 2 0 0 0 2-1.61L23 6H6"></path></svg>
+                    <span id="cart-count">0</span>
+                </button>
+            </div>
+        </div>
+    </nav>
+
+    <!-- Page Header -->
+    <div class="page-header">
+        <div class="container">
+            <div class="breadcrumb">
+                <a href="index.html">Accueil</a><span>›</span>
+                <span style="color:white">Mes Commandes</span>
+            </div>
+            <h1>Mes Commandes 📦</h1>
+            <p>Suivez l'avancement de vos commandes en temps réel.</p>
+        </div>
+    </div>
+
+    <div class="container" style="padding-bottom:80px;">
+        <div id="orders-container">
+            <!-- Injected by JS -->
+        </div>
+    </div>
+
+    <script src="js/cart.js"></script>
+    <script>
+        const user = db.getLoggedUser();
+        if (user && user.role === 'admin') {
+            document.getElementById('admin-icon').style.display = 'flex';
+            document.getElementById('nav-admin').style.display = 'block';
+        }
+
+        const STATUS_STEPS = ['en_attente','confirmee','en_preparation','expediee','livree'];
+        const STATUS_ICONS = { en_attente:'⏳', confirmee:'✅', en_preparation:'🔧', expediee:'🚚', livree:'🎉', annulee:'❌' };
+
+        const countdownTimers = {};
+
+        function renderOrders() {
+            const container = document.getElementById('orders-container');
+            const orders = db.getUserOrders(user.id);
+
+            if (orders.length === 0) {
+                container.innerHTML = `
+                    <div class="orders-empty">
+                        <div class="icon">📦</div>
+                        <h3>Aucune commande pour l'instant</h3>
+                        <p>Parcourez notre boutique et passez votre première commande !</p>
+                        <a href="shop.html" style="display:inline-block; padding:14px 28px; background:var(--orange); color:white; border-radius:14px; font-weight:800;">
+                            Explorer la boutique
+                        </a>
+                    </div>`;
+                return;
+            }
+
+            container.innerHTML = orders.map(o => buildOrderCard(o)).join('');
+            orders.forEach(o => { if (o.cancelRequested) startCountdown(o); });
+        }
+
+        function buildOrderCard(o) {
+            const status = o.status || 'en_attente';
+            const label  = ORDER_STATUS_LABELS[status] || status;
+            const isAnnulee = status === 'annulee';
+            const stepIdx = STATUS_STEPS.indexOf(status);
+            const elapsed = o.cancelRequested ? (Date.now() - o.cancelRequestedAt) : 0;
+            const canUndoCancel = o.cancelRequested && elapsed < 2 * 60 * 1000;
+            const cancelExpired = o.cancelRequested && elapsed >= 2 * 60 * 1000;
+
+            // Progress bar HTML (hide if annulee)
+            let progressHtml = '';
+            if (!isAnnulee) {
+                progressHtml = `<div class="order-progress">
+                    <div class="progress-steps">
+                    ${STATUS_STEPS.map((s, i) => {
+                        const isDone    = stepIdx > i;
+                        const isCurrent = stepIdx === i;
+                        const cls = isDone ? 'done' : isCurrent ? 'current' : '';
+                        const icon = isDone ? '✓' : i + 1;
+                        const lineClass = isDone && i < STATUS_STEPS.length - 1 ? 'done' : '';
+                        return `
+                            <div class="progress-step">
+                                <div class="step-dot ${cls}">${icon}</div>
+                                <div class="step-label ${cls}">${ORDER_STATUS_LABELS[s]}</div>
+                            </div>
+                            ${i < STATUS_STEPS.length - 1 ? `<div class="progress-line ${lineClass}"></div>` : ''}
+                        `;
+                    }).join('')}
+                    </div>
+                </div>`;
+            }
+
+            // Items chips
+            const itemsHtml = o.items.map(item => `
+                <div class="order-item-chip">
+                    <img src="${item.image || 'images/logo.png'}" alt="${item.name}" class="order-item-img" onerror="this.src='images/logo.png'">
+                    <span class="order-item-chip-name">${item.name}</span>
+                    <span class="order-item-chip-qty">×${item.qty}</span>
+                </div>`).join('');
+
+            // Actions
+            let actionsHtml = '';
+            if (status === 'en_attente' && !o.cancelRequested) {
+                actionsHtml = `<button class="btn-cancel-req" onclick="doRequestCancel('${o.id}')">
+                    <svg width="12" height="12" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5"><circle cx="12" cy="12" r="10"></circle><line x1="15" y1="9" x2="9" y2="15"></line><line x1="9" y1="9" x2="15" y2="15"></line></svg>
+                    Demander annulation
+                </button>`;
+            } else if (o.cancelRequested && !cancelExpired) {
+                actionsHtml = `
+                    <div class="cancel-countdown"><div class="dot"></div>Annulation dans <span id="cd-${o.id}">--:--</span></div>
+                    <button class="btn-undo-cancel" onclick="doUndoCancel('${o.id}')">↩ Annuler la demande</button>`;
+            } else if (cancelExpired) {
+                actionsHtml = `<div class="cancel-expired-msg">⏰ Annulation soumise — en attente de traitement admin</div>`;
+            }
+
+            return `
+            <div class="order-card ${o.cancelRequested ? (cancelExpired ? 'annulee-eligible' : 'cancel-requested') : ''}" id="card-${o.id}">
+                <div class="order-card-header">
+                    <div>
+                        <div class="order-id">Commande ${o.id}</div>
+                        <div class="order-meta">
+                            <span>📅 ${o.date}</span>
+                            <span>📍 ${o.city || '—'}</span>
+                            <span>📦 ${o.items.length} article${o.items.length > 1 ? 's' : ''}</span>
+                        </div>
+                    </div>
+                    <span class="order-status-badge status-${status}">
+                        ${STATUS_ICONS[status] || ''} ${label}
+                    </span>
+                </div>
+                ${progressHtml}
+                <div class="order-items">${itemsHtml}</div>
+                <div class="order-card-footer">
+                    <div class="order-total-text">Total : <span>${o.total?.toFixed(2)} €</span></div>
+                    <div class="order-actions">${actionsHtml}</div>
+                </div>
+            </div>`;
+        }
+
+        function doRequestCancel(orderId) {
+            const ok = db.requestCancelOrder(orderId);
+            if (ok) {
+                renderOrders();
+                const o = db.orders.find(x => x.id === orderId);
+                if (o) startCountdown(o);
+            }
+        }
+
+        function doUndoCancel(orderId) {
+            const ok = db.undoCancelOrder(orderId);
+            if (ok) {
+                clearInterval(countdownTimers[orderId]);
+                delete countdownTimers[orderId];
+                renderOrders();
+            } else {
+                alert("Le délai de 2 minutes est dépassé, l'annulation ne peut plus être annulée.");
+                renderOrders();
+            }
+        }
+
+        function startCountdown(order) {
+            if (countdownTimers[order.id]) clearInterval(countdownTimers[order.id]);
+            countdownTimers[order.id] = setInterval(() => {
+                const el = document.getElementById('cd-' + order.id);
+                if (!el) { clearInterval(countdownTimers[order.id]); return; }
+                const elapsed = Date.now() - order.cancelRequestedAt;
+                const remaining = Math.max(0, 2 * 60 * 1000 - elapsed);
+                if (remaining <= 0) {
+                    clearInterval(countdownTimers[order.id]);
+                    renderOrders();
+                    return;
+                }
+                const m = Math.floor(remaining / 60000);
+                const s = Math.floor((remaining % 60000) / 1000);
+                el.textContent = `${m}:${s.toString().padStart(2, '0')}`;
+            }, 500);
+        }
+
+        renderOrders();
+
+        // --- Session validation (detect if account was disabled/deleted by admin) ---
+        function handleInvalidSession(reason) {
+            const msg = reason === 'deleted'
+                ? '🚫 Votre compte a été supprimé par l\'administrateur.'
+                : '🔒 Votre compte a été désactivé par l\'administrateur.';
+            const toast = document.createElement('div');
+            toast.className = 'session-toast';
+            toast.textContent = msg;
+            document.body.appendChild(toast);
+            db.logout();
+            setTimeout(() => window.location.href = 'vitrine.html', 2500);
+        }
+
+        // Check on page load
+        const _sv = db.validateSession();
+        if (_sv !== true) handleInvalidSession(_sv);
+
+        // Check whenever admin changes localStorage (even from another tab)
+        window.addEventListener('storage', (e) => {
+            if (e.key === 'slj_customers') {
+                // Reload customers from updated storage
+                db.customers = JSON.parse(e.newValue || '[]');
+                const sv = db.validateSession();
+                if (sv !== true) handleInvalidSession(sv);
+            }
+        });
+    </script>
+
+    <!-- Cart Sidebar -->
+    <div class="cart-overlay" id="cart-overlay" onclick="cart.closeSidebar()"></div>
+    <div class="cart-sidebar" id="cart-sidebar">
+        <div class="cart-header">
+            <h3>Votre Panier</h3>
+            <button onclick="cart.closeSidebar()" style="font-size:1.5rem; color:white; background:none; border:none; cursor:pointer;">×</button>
+        </div>
+        <div class="cart-body" id="cart-body"></div>
+        <div class="cart-footer">
+            <div class="total-row">
+                <span>Total</span>
+                <span id="cart-total">0.00 €</span>
+            </div>
+            <button class="btn-primary" style="width:100%;" onclick="cart.checkout()">Passer à la caisse</button>
+        </div>
+    </div>
+</body>
+</html>

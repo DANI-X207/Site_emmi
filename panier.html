@@ -1,0 +1,528 @@
+<!DOCTYPE html>
+<html lang="fr">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Mon Panier | SLJ Otaku Paradise</title>
+    <link href="https://fonts.googleapis.com/css2?family=Outfit:wght@300;400;600;700;900&display=swap" rel="stylesheet">
+    <link rel="stylesheet" href="css/style.css">
+    <link rel="stylesheet" href="css/animations.css">
+    <style>
+        body { padding-top: 90px; min-height: 100vh; }
+
+        .page-header {
+            background: linear-gradient(135deg, var(--black-light) 0%, var(--black) 100%);
+            border-bottom: 1px solid var(--glass-border);
+            padding: 40px 0 30px;
+            margin-bottom: 50px;
+        }
+        .page-header h1 { font-size: 2.2rem; font-weight: 900; margin-bottom: 6px; }
+        .page-header p { color: var(--gray); font-size: 0.95rem; }
+        .breadcrumb { display: flex; align-items: center; gap: 8px; font-size: 0.82rem; color: var(--gray); margin-bottom: 12px; }
+        .breadcrumb a { color: var(--orange); }
+        .breadcrumb span { opacity: 0.4; }
+
+        /* Layout */
+        .cart-page-grid {
+            display: grid;
+            grid-template-columns: 1fr 400px;
+            gap: 30px;
+            align-items: start;
+            padding-bottom: 80px;
+        }
+
+        /* ---- Cart Items ---- */
+        .cart-items-panel {
+            background: var(--black-light);
+            border: 1px solid var(--glass-border);
+            border-radius: 24px;
+            overflow: hidden;
+        }
+        .panel-title {
+            padding: 24px 28px;
+            border-bottom: 1px solid var(--glass-border);
+            font-size: 1rem;
+            font-weight: 800;
+            display: flex;
+            align-items: center;
+            gap: 10px;
+        }
+        .panel-title-count {
+            background: var(--orange);
+            color: white;
+            font-size: 0.72rem;
+            padding: 3px 9px;
+            border-radius: 50px;
+            font-weight: 700;
+        }
+
+        .cart-item-row {
+            display: grid;
+            grid-template-columns: 90px 1fr auto;
+            gap: 18px;
+            padding: 20px 28px;
+            border-bottom: 1px solid var(--glass-border);
+            align-items: center;
+            transition: var(--transition);
+        }
+        .cart-item-row:hover { background: rgba(255,255,255,0.01); }
+        .cart-item-row:last-child { border-bottom: none; }
+
+        .cart-item-img-box {
+            width: 90px; height: 90px;
+            border-radius: 16px;
+            overflow: hidden;
+            background: var(--black-lighter);
+            border: 1px solid var(--glass-border);
+            flex-shrink: 0;
+        }
+        .cart-item-img-box img { width: 100%; height: 100%; object-fit: cover; }
+
+        .cart-item-details { min-width: 0; }
+        .cart-item-name { font-weight: 800; font-size: 0.95rem; margin-bottom: 4px; white-space: nowrap; overflow: hidden; text-overflow: ellipsis; }
+        .cart-item-anime { font-size: 0.78rem; color: var(--orange); font-weight: 600; margin-bottom: 10px; }
+        .cart-item-unit { font-size: 0.8rem; color: var(--gray); }
+
+        .cart-item-right { display: flex; flex-direction: column; align-items: flex-end; gap: 14px; }
+        .cart-item-price-total { font-size: 1.1rem; font-weight: 900; color: white; }
+        .qty-controls { display: flex; align-items: center; gap: 6px; background: var(--black); border: 1px solid var(--glass-border); border-radius: 50px; padding: 4px 8px; }
+        .qty-btn { width: 28px; height: 28px; border-radius: 50%; background: var(--black-lighter); border: none; color: white; font-size: 1rem; cursor: pointer; display: flex; align-items: center; justify-content: center; transition: var(--transition); }
+        .qty-btn:hover { background: var(--orange); }
+        .qty-val { font-weight: 800; font-size: 0.95rem; min-width: 22px; text-align: center; }
+        .remove-item-btn { background: none; border: none; color: var(--gray); cursor: pointer; font-size: 0.8rem; display: flex; align-items: center; gap: 4px; transition: var(--transition); padding: 0; }
+        .remove-item-btn:hover { color: #ff3366; }
+
+        .cart-empty-page {
+            padding: 60px 28px;
+            text-align: center;
+        }
+        .cart-empty-page .icon { font-size: 3.5rem; margin-bottom: 16px; }
+        .cart-empty-page h3 { font-size: 1.4rem; font-weight: 800; margin-bottom: 8px; }
+        .cart-empty-page p { color: var(--gray); margin-bottom: 28px; }
+
+        /* ---- Right Panel ---- */
+        .cart-right { display: flex; flex-direction: column; gap: 24px; position: sticky; top: 100px; }
+
+        .summary-panel, .delivery-panel {
+            background: var(--black-light);
+            border: 1px solid var(--glass-border);
+            border-radius: 24px;
+            overflow: hidden;
+        }
+
+        .summary-rows { padding: 20px 24px; }
+        .summary-row { display: flex; justify-content: space-between; align-items: center; padding: 8px 0; font-size: 0.9rem; color: var(--gray); }
+        .summary-row.total { border-top: 1px solid var(--glass-border); margin-top: 8px; padding-top: 16px; color: white; font-weight: 900; font-size: 1.2rem; }
+        .summary-row .val { font-weight: 700; color: white; }
+        .summary-row.total .val { color: var(--orange); font-size: 1.3rem; }
+
+        .shipping-badge { display: flex; align-items: center; gap: 8px; padding: 12px 16px; background: rgba(0,179,134,0.08); border-radius: 12px; border: 1px dashed rgba(0,179,134,0.25); font-size: 0.82rem; color: #00b386; font-weight: 600; margin-bottom: 14px; }
+
+        /* Delivery Form */
+        .form-grid-2 { display: grid; grid-template-columns: 1fr 1fr; gap: 14px; }
+        .form-group { margin-bottom: 0; }
+        .form-group.full { grid-column: 1 / -1; }
+        .form-group label { display: block; font-size: 0.78rem; font-weight: 700; margin-bottom: 6px; color: rgba(255,255,255,0.6); text-transform: uppercase; letter-spacing: 0.5px; }
+        .form-group input, .form-group select {
+            width: 100%;
+            padding: 11px 14px;
+            background: var(--black);
+            border: 1.5px solid var(--glass-border);
+            border-radius: 12px;
+            color: white;
+            font-family: inherit;
+            font-size: 0.88rem;
+            transition: var(--transition);
+            box-sizing: border-box;
+        }
+        .form-group input:focus, .form-group select:focus {
+            outline: none;
+            border-color: var(--orange);
+            box-shadow: 0 0 0 3px rgba(255,107,0,0.1);
+        }
+        .form-group input::placeholder { color: rgba(136,136,136,0.5); }
+        .form-section { padding: 20px 24px; }
+        .form-section + .form-section { border-top: 1px solid var(--glass-border); }
+
+        /* Confirm Button */
+        .btn-confirm {
+            width: 100%;
+            padding: 16px;
+            background: var(--orange);
+            color: white;
+            border: none;
+            border-radius: 16px;
+            font-family: inherit;
+            font-size: 1.05rem;
+            font-weight: 900;
+            cursor: pointer;
+            transition: var(--transition);
+            letter-spacing: 0.5px;
+        }
+        .btn-confirm:hover { background: var(--orange-light); transform: translateY(-2px); box-shadow: 0 10px 30px rgba(255,107,0,0.35); }
+        .btn-confirm:disabled { opacity: 0.5; cursor: not-allowed; transform: none; box-shadow: none; }
+
+        .secure-badge { display: flex; align-items: center; justify-content: center; gap: 6px; font-size: 0.78rem; color: var(--gray); margin-top: 10px; }
+
+        /* Success overlay */
+        .success-overlay {
+            display: none;
+            position: fixed;
+            inset: 0;
+            background: rgba(0,0,0,0.85);
+            backdrop-filter: blur(8px);
+            z-index: 3000;
+            align-items: center;
+            justify-content: center;
+        }
+        .success-overlay.show { display: flex; }
+        .success-card {
+            background: var(--black-light);
+            border: 1px solid var(--glass-border);
+            border-radius: 28px;
+            padding: 50px 40px;
+            text-align: center;
+            max-width: 420px;
+            width: 90%;
+            animation: zoomIn 0.4s cubic-bezier(0.4,0,0.2,1);
+        }
+        @keyframes zoomIn { from { transform: scale(0.8); opacity: 0; } to { transform: scale(1); opacity: 1; } }
+        .success-icon { width: 80px; height: 80px; background: rgba(0,179,134,0.12); border-radius: 50%; display: flex; align-items: center; justify-content: center; margin: 0 auto 24px; font-size: 2.2rem; }
+        .success-card h2 { font-size: 1.8rem; font-weight: 900; margin-bottom: 10px; }
+        .success-card p { color: var(--gray); line-height: 1.7; margin-bottom: 30px; }
+        .success-card .order-id { display: inline-block; background: var(--orange-dim); color: var(--orange); padding: 6px 16px; border-radius: 50px; font-weight: 800; font-size: 0.9rem; margin-bottom: 20px; }
+
+        @media (max-width: 900px) {
+            .cart-page-grid { grid-template-columns: 1fr; }
+            .cart-right { position: static; }
+        }
+        @media (max-width: 600px) {
+            .cart-item-row { grid-template-columns: 70px 1fr; }
+            .cart-item-right { flex-direction: row; align-items: center; }
+            .form-grid-2 { grid-template-columns: 1fr; }
+        }
+    </style>
+</head>
+<body>
+    <script src="js/products.js"></script>
+    <script src="js/db.js"></script>
+    <script>
+        if (!db.isLoggedIn()) window.location.href = 'vitrine.html';
+    </script>
+    <style>
+        .session-toast {
+            position: fixed; top: 20px; left: 50%; transform: translateX(-50%);
+            background: #1a1a1a; border: 1px solid rgba(255,51,102,0.4);
+            color: white; padding: 16px 28px; border-radius: 16px;
+            font-weight: 700; z-index: 9999; text-align: center;
+            box-shadow: 0 10px 40px rgba(0,0,0,0.6);
+            animation: slideDown 0.3s ease;
+        }
+        @keyframes slideDown { from { top: -60px; opacity:0; } to { top: 20px; opacity:1; } }
+    </style>
+
+    <!-- Nav -->
+    <nav id="navbar">
+        <div class="container">
+            <a href="index.html" class="logo">SLJ <span>OTAKU</span></a>
+            <div class="nav-links">
+                <a href="index.html">Accueil</a>
+                <a href="shop.html">Boutique</a>
+                <a href="admin.html" id="nav-admin" style="display:none;">Admin</a>
+            </div>
+            <div class="nav-actions">
+                <a href="admin.html" class="nav-icon" id="admin-icon" title="Administration" style="display:none;">
+                    <svg width="22" height="22" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M12 22s8-4 8-10V5l-8-3-8 3v7c0 6 8 10 8 10z"></path></svg>
+                </a>
+                <a href="profile.html" class="nav-icon" title="Mon Profil">
+                    <svg width="22" height="22" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M20 21v-2a4 4 0 0 0-4-4H8a4 4 0 0 0-4 4v2"></path><circle cx="12" cy="7" r="4"></circle></svg>
+                </a>
+                <a href="commandes.html" class="nav-icon" title="Mes Commandes">
+                    <svg width="22" height="22" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M16.5 9.4l-9-5.19M21 16V8a2 2 0 0 0-1-1.73l-7-4a2 2 0 0 0-2 0l-7 4A2 2 0 0 0 3 8v8a2 2 0 0 0 1 1.73l7 4a2 2 0 0 0 2 0l7-4A2 2 0 0 0 21 16z"></path><polyline points="3.27 6.96 12 12.01 20.73 6.96"></polyline><line x1="12" y1="22.08" x2="12" y2="12"></line></svg>
+                </a>
+                <button class="cart-btn" onclick="cart.openSidebar()" title="Panier" style="position:relative;">
+                    <svg width="22" height="22" viewBox="0 0 24 24" fill="none" stroke="var(--orange)" stroke-width="2"><circle cx="9" cy="21" r="1"></circle><circle cx="20" cy="21" r="1"></circle><path d="M1 1h4l2.68 13.39a2 2 0 0 0 2 1.61h9.72a2 2 0 0 0 2-1.61L23 6H6"></path></svg>
+                    <span id="cart-count">0</span>
+                </button>
+            </div>
+        </div>
+    </nav>
+
+    <!-- Page Header -->
+    <div class="page-header">
+        <div class="container">
+            <div class="breadcrumb">
+                <a href="index.html">Accueil</a><span>›</span>
+                <a href="shop.html">Boutique</a><span>›</span>
+                <span style="color:white">Mon Panier</span>
+            </div>
+            <h1>Mon Panier 🛒</h1>
+            <p>Vérifiez votre sélection et finalisez votre commande.</p>
+        </div>
+    </div>
+
+    <div class="container">
+        <div class="cart-page-grid" id="cart-page-grid">
+            <!-- Left: Cart Items -->
+            <div class="cart-items-panel">
+                <div class="panel-title">
+                    Articles
+                    <span class="panel-title-count" id="item-count">0</span>
+                </div>
+                <div id="cart-items-list">
+                    <!-- Injected by JS -->
+                </div>
+            </div>
+
+            <!-- Right: Summary + Delivery Form -->
+            <div class="cart-right">
+                <!-- Order Summary -->
+                <div class="summary-panel">
+                    <div class="panel-title">Récapitulatif</div>
+                    <div class="summary-rows">
+                        <div id="shipping-badge" class="shipping-badge" style="display:none;">
+                            <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><rect x="1" y="3" width="15" height="13"></rect><polygon points="16 8 20 8 23 11 23 16 16 16 16 8"></polygon><circle cx="5.5" cy="18.5" r="2.5"></circle><circle cx="18.5" cy="18.5" r="2.5"></circle></svg>
+                            Livraison OFFERTE
+                        </div>
+                        <div class="summary-row"><span>Sous-total</span><span class="val" id="subtotal-val">0.00 €</span></div>
+                        <div class="summary-row"><span>Livraison</span><span class="val" id="shipping-val">5.99 €</span></div>
+                        <div class="summary-row total"><span>Total</span><span class="val" id="total-val">0.00 €</span></div>
+                    </div>
+                </div>
+
+                <!-- Delivery Form -->
+                <div class="delivery-panel">
+                    <div class="panel-title">Informations de livraison</div>
+                    <form id="checkout-form">
+                        <div class="form-section">
+                            <div class="form-grid-2">
+                                <div class="form-group full">
+                                    <label>Adresse</label>
+                                    <input type="text" id="f-address" placeholder="12 Rue des Manga" required>
+                                </div>
+                                <div class="form-group">
+                                    <label>Code postal</label>
+                                    <input type="text" id="f-postal" placeholder="75001" required>
+                                </div>
+                                <div class="form-group">
+                                    <label>Ville</label>
+                                    <input type="text" id="f-city" placeholder="Paris" required>
+                                </div>
+                                <div class="form-group full">
+                                    <label>E-mail</label>
+                                    <input type="email" id="f-email" placeholder="vous@email.com" required>
+                                </div>
+                                <div class="form-group full">
+                                    <label>Téléphone</label>
+                                    <input type="tel" id="f-phone" placeholder="+33 6 00 00 00 00" required>
+                                </div>
+                            </div>
+                        </div>
+                        <div class="form-section">
+                            <button type="submit" class="btn-confirm" id="btn-confirm">
+                                Confirmer la commande
+                            </button>
+                            <div class="secure-badge">
+                                <svg width="12" height="12" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><rect x="3" y="11" width="18" height="11" rx="2" ry="2"></rect><path d="M7 11V7a5 5 0 0 1 10 0v4"></path></svg>
+                                Paiement sécurisé — Données chiffrées
+                            </div>
+                        </div>
+                    </form>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <!-- Success Overlay -->
+    <div class="success-overlay" id="success-overlay">
+        <div class="success-card">
+            <div class="success-icon">✅</div>
+            <h2>Commande confirmée !</h2>
+            <div class="order-id" id="success-order-id">ORD-XXXX</div>
+            <p>Votre commande a été enregistrée avec succès. Vous pouvez suivre son état dans vos commandes.</p>
+            <a href="commandes.html" style="display:block; padding:14px; background:var(--orange); color:white; border-radius:14px; font-weight:800; text-align:center; font-size:0.95rem;">
+                Voir mes commandes →
+            </a>
+        </div>
+    </div>
+
+    <script src="js/cart.js"></script>
+    <script>
+        const user = db.getLoggedUser();
+        if (user && user.role === 'admin') {
+            document.getElementById('admin-icon').style.display = 'flex';
+            document.getElementById('nav-admin').style.display = 'block';
+        }
+
+        // Pre-fill form
+        if (user) {
+            document.getElementById('f-email').value = user.email || '';
+            document.getElementById('f-phone').value = user.phone || '';
+            document.getElementById('f-city').value  = user.city  || '';
+        }
+
+        // Render cart items
+        function renderCartPage() {
+            const list = document.getElementById('cart-items-list');
+            const itemCount = cart.getCount();
+            document.getElementById('item-count').textContent = itemCount;
+
+            if (cart.items.length === 0) {
+                list.innerHTML = `
+                    <div class="cart-empty-page">
+                        <div class="icon">🛒</div>
+                        <h3>Votre panier est vide</h3>
+                        <p>Ajoutez des produits depuis la boutique pour commencer.</p>
+                        <a href="shop.html" style="display:inline-block; padding:13px 28px; background:var(--orange); color:white; border-radius:12px; font-weight:800;">
+                            Explorer la boutique
+                        </a>
+                    </div>`;
+                document.getElementById('btn-confirm').disabled = true;
+                return;
+            }
+
+            document.getElementById('btn-confirm').disabled = false;
+
+            list.innerHTML = cart.items.map(item => {
+                const p = products.find(pr => pr.id === item.id);
+                if (!p) return '';
+                const img = p.image || 'images/logo.png';
+                return `
+                <div class="cart-item-row">
+                    <div class="cart-item-img-box">
+                        <img src="${img}" alt="${p.name}" onerror="this.src='images/logo.png'">
+                    </div>
+                    <div class="cart-item-details">
+                        <div class="cart-item-name">${p.name}</div>
+                        <div class="cart-item-anime">${p.anime}</div>
+                        <div class="cart-item-unit">${p.price.toFixed(2)} € / unité</div>
+                    </div>
+                    <div class="cart-item-right">
+                        <div class="cart-item-price-total">${(p.price * item.qty).toFixed(2)} €</div>
+                        <div class="qty-controls">
+                            <button class="qty-btn" onclick="pageUpdateQty(${p.id}, -1)">−</button>
+                            <span class="qty-val">${item.qty}</span>
+                            <button class="qty-btn" onclick="pageUpdateQty(${p.id}, 1)">+</button>
+                        </div>
+                        <button class="remove-item-btn" onclick="pageRemove(${p.id})">
+                            <svg width="12" height="12" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><polyline points="3 6 5 6 21 6"></polyline><path d="M19 6l-1 14H6L5 6"></path></svg>
+                            Retirer
+                        </button>
+                    </div>
+                </div>`;
+            }).join('');
+
+            updateSummary();
+        }
+
+        function pageUpdateQty(id, delta) {
+            cart.updateQty(id, delta);
+            renderCartPage();
+        }
+        function pageRemove(id) {
+            cart.remove(id);
+            renderCartPage();
+        }
+
+        function updateSummary() {
+            const subtotal = cart.getTotal();
+            const shipping = subtotal >= 60 ? 0 : 5.99;
+            const total    = subtotal + shipping;
+
+            document.getElementById('subtotal-val').textContent = subtotal.toFixed(2) + ' €';
+            document.getElementById('shipping-val').textContent = shipping === 0 ? 'GRATUITE' : shipping.toFixed(2) + ' €';
+            document.getElementById('total-val').textContent    = total.toFixed(2) + ' €';
+
+            const badge = document.getElementById('shipping-badge');
+            badge.style.display = subtotal >= 60 ? 'flex' : 'none';
+        }
+
+        // Checkout
+        document.getElementById('checkout-form').addEventListener('submit', (e) => {
+            e.preventDefault();
+            if (cart.items.length === 0) return;
+
+            const address    = document.getElementById('f-address').value.trim();
+            const postalCode = document.getElementById('f-postal').value.trim();
+            const city       = document.getElementById('f-city').value.trim();
+            const email      = document.getElementById('f-email').value.trim();
+            const phone      = document.getElementById('f-phone').value.trim();
+
+            const subtotal = cart.getTotal();
+            const shipping = subtotal >= 60 ? 0 : 5.99;
+
+            const orderItems = cart.items.map(item => {
+                const p = products.find(pr => pr.id === item.id);
+                return {
+                    productId: p.id,
+                    name:  p.name,
+                    qty:   item.qty,
+                    price: p.price,
+                    image: p.image
+                };
+            });
+
+            const newOrder = db.addOrder({
+                customerId: user.id,
+                username:   user.username,
+                items:      orderItems,
+                total:      parseFloat((subtotal + shipping).toFixed(2)),
+                shipping,
+                address, postalCode, city, email, phone
+            });
+
+            // Update user city/phone/email in db
+            const dbUser = db.customers.find(c => c.id === user.id);
+            if (dbUser) { dbUser.city = city; dbUser.email = email; dbUser.phone = phone; db.save(); }
+
+            cart.clear();
+
+            document.getElementById('success-order-id').textContent = newOrder.id;
+            document.getElementById('success-overlay').classList.add('show');
+        });
+
+        renderCartPage();
+
+        // --- Session validation ---
+        function handleInvalidSession(reason) {
+            const msg = reason === 'deleted'
+                ? '🚫 Votre compte a été supprimé par l\'administrateur.'
+                : '🔒 Votre compte a été désactivé par l\'administrateur.';
+            const toast = document.createElement('div');
+            toast.className = 'session-toast';
+            toast.textContent = msg;
+            document.body.appendChild(toast);
+            db.logout();
+            setTimeout(() => window.location.href = 'vitrine.html', 2500);
+        }
+
+        const _sv = db.validateSession();
+        if (_sv !== true) handleInvalidSession(_sv);
+
+        window.addEventListener('storage', (e) => {
+            if (e.key === 'slj_customers') {
+                db.customers = JSON.parse(e.newValue || '[]');
+                const sv = db.validateSession();
+                if (sv !== true) handleInvalidSession(sv);
+            }
+        });
+    </script>
+
+    <!-- Cart Sidebar -->
+    <div class="cart-overlay" id="cart-overlay" onclick="cart.closeSidebar()"></div>
+    <div class="cart-sidebar" id="cart-sidebar">
+        <div class="cart-header">
+            <h3>Votre Panier</h3>
+            <button onclick="cart.closeSidebar()" style="font-size:1.5rem; color:white; background:none; border:none; cursor:pointer;">×</button>
+        </div>
+        <div class="cart-body" id="cart-body"></div>
+        <div class="cart-footer">
+            <div class="total-row">
+                <span>Total</span>
+                <span id="cart-total">0.00 €</span>
+            </div>
+            <button class="btn-primary" style="width:100%;" onclick="cart.closeSidebar(); document.getElementById('checkout-form')?.scrollIntoView({behavior:'smooth'})">Voir le récapitulatif ↓</button>
+        </div>
+    </div>
+</body>
+</html>
