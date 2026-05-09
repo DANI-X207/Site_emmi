@@ -227,9 +227,7 @@
             <a href="index.html" class="logo">SLJ <span>OTAKU</span></a>
             <div class="nav-links">
                 <a href="index.html">Accueil</a>
-                <a href="shop.html">Boutique</a>
-                <a href="admin.html" id="nav-admin" style="display:none;">Admin</a>
-            </div>
+                <a href="shop.html">Boutique</a></div>
             <div class="nav-actions">
                 <a href="admin.html" class="nav-icon" id="admin-icon" title="Administration" style="display:none;">
                     <svg width="22" height="22" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M12 22s8-4 8-10V5l-8-3-8 3v7c0 6 8 10 8 10z"></path></svg>
@@ -290,35 +288,20 @@
                     </div>
                 </div>
 
-                <!-- Delivery Form -->
+                <!-- Delivery Summary -->
                 <div class="delivery-panel">
-                    <div class="panel-title">Informations de livraison</div>
-                    <form id="checkout-form">
-                        <div class="form-section">
-                            <div class="form-grid-2">
-                                <div class="form-group full">
-                                    <label>Adresse</label>
-                                    <input type="text" id="f-address" placeholder="12 Rue des Manga" required>
-                                </div>
-                                <div class="form-group">
-                                    <label>Code postal</label>
-                                    <input type="text" id="f-postal" placeholder="75001" required>
-                                </div>
-                                <div class="form-group">
-                                    <label>Ville</label>
-                                    <input type="text" id="f-city" placeholder="Paris" required>
-                                </div>
-                                <div class="form-group full">
-                                    <label>E-mail</label>
-                                    <input type="email" id="f-email" placeholder="vous@email.com" required>
-                                </div>
-                                <div class="form-group full">
-                                    <label>Téléphone</label>
-                                    <input type="tel" id="f-phone" placeholder="+33 6 00 00 00 00" required>
-                                </div>
+                    <div class="panel-title">Validation de Commande</div>
+                    <div class="form-section" style="padding:25px 24px;">
+                        <div style="background:rgba(255,107,0,0.05); border:1px solid var(--orange-dim); border-radius:16px; padding:18px; margin-bottom:20px;">
+                            <div style="font-size:0.8rem; color:var(--gray); text-transform:uppercase; letter-spacing:1px; margin-bottom:8px;">Expédition à</div>
+                            <div style="font-weight:800; font-size:1.1rem; color:white; display:flex; align-items:center; gap:10px;">
+                                <span style="font-size:1.4rem;">📍</span>
+                                <span id="delivery-city-display">Chargement...</span>
                             </div>
+                            <div style="font-size:0.85rem; color:var(--text-dim); margin-top:6px;">Utilisation des coordonnées de votre profil</div>
                         </div>
-                        <div class="form-section">
+                        
+                        <form id="checkout-form">
                             <button type="submit" class="btn-confirm" id="btn-confirm">
                                 Confirmer la commande
                             </button>
@@ -326,8 +309,8 @@
                                 <svg width="12" height="12" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><rect x="3" y="11" width="18" height="11" rx="2" ry="2"></rect><path d="M7 11V7a5 5 0 0 1 10 0v4"></path></svg>
                                 Paiement sécurisé — Données chiffrées
                             </div>
-                        </div>
-                    </form>
+                        </form>
+                    </div>
                 </div>
             </div>
         </div>
@@ -351,14 +334,11 @@
         const user = db.getLoggedUser();
         if (user && user.role === 'admin') {
             document.getElementById('admin-icon').style.display = 'flex';
-            document.getElementById('nav-admin').style.display = 'block';
         }
 
-        // Pre-fill form
+        // Display user city
         if (user) {
-            document.getElementById('f-email').value = user.email || '';
-            document.getElementById('f-phone').value = user.phone || '';
-            document.getElementById('f-city').value  = user.city  || '';
+            document.getElementById('delivery-city-display').textContent = user.city || 'Ville non renseignée';
         }
 
         // Render cart items
@@ -383,8 +363,9 @@
 
             document.getElementById('btn-confirm').disabled = false;
 
+            const sourceProducts = cart.getProducts();
             list.innerHTML = cart.items.map(item => {
-                const p = products.find(pr => pr.id === item.id);
+                const p = sourceProducts.find(pr => pr.id === item.id);
                 if (!p) return '';
                 const img = p.image || 'images/logo.png';
                 return `
@@ -442,17 +423,12 @@
             e.preventDefault();
             if (cart.items.length === 0) return;
 
-            const address    = document.getElementById('f-address').value.trim();
-            const postalCode = document.getElementById('f-postal').value.trim();
-            const city       = document.getElementById('f-city').value.trim();
-            const email      = document.getElementById('f-email').value.trim();
-            const phone      = document.getElementById('f-phone').value.trim();
-
             const subtotal = cart.getTotal();
             const shipping = subtotal >= 60 ? 0 : 5.99;
+            const sourceProducts = cart.getProducts();
 
             const orderItems = cart.items.map(item => {
-                const p = products.find(pr => pr.id === item.id);
+                const p = sourceProducts.find(pr => pr.id === item.id);
                 return {
                     productId: p.id,
                     name:  p.name,
@@ -468,12 +444,10 @@
                 items:      orderItems,
                 total:      parseFloat((subtotal + shipping).toFixed(2)),
                 shipping,
-                address, postalCode, city, email, phone
+                email: user.email,
+                phone: user.phone,
+                city:  user.city
             });
-
-            // Update user city/phone/email in db
-            const dbUser = db.customers.find(c => c.id === user.id);
-            if (dbUser) { dbUser.city = city; dbUser.email = email; dbUser.phone = phone; db.save(); }
 
             cart.clear();
 

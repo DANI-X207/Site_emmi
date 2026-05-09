@@ -131,9 +131,7 @@
             <a href="index.html" class="logo">SLJ <span>OTAKU</span></a>
             <div class="nav-links">
                 <a href="index.html">Accueil</a>
-                <a href="shop.html">Boutique</a>
-                <a href="admin.html" id="nav-admin" style="display:none;">Admin</a>
-            </div>
+                <a href="shop.html">Boutique</a></div>
             <div class="nav-actions">
                 <a href="admin.html" class="nav-icon" id="admin-icon" title="Administration">
                     <svg width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M12 22s8-4 8-10V5l-8-3-8 3v7c0 6 8 10 8 10z"></path></svg>
@@ -150,9 +148,13 @@
 
     <!-- Profile Content -->
     <div class="profile-wrapper">
-        <div class="profile-card">
+        <!-- View Mode -->
+        <div class="profile-card" id="profile-view">
             <div class="profile-header">
-                <div class="profile-avatar" id="prof-avatar">?</div>
+                <div class="profile-avatar" id="prof-avatar">
+                    <img id="avatar-img" src="" style="width:100%; height:100%; object-fit:cover; border-radius:50%; display:none;">
+                    <span id="avatar-letter">?</span>
+                </div>
                 <div class="profile-name">
                     <h2 id="prof-username">Chargement...</h2>
                     <div class="profile-role" id="prof-role">Membre</div>
@@ -180,23 +182,66 @@
 
             <div class="profile-actions">
                 <button class="btn-logout" id="btn-logout">Déconnexion</button>
-                <button class="btn-secondary">Modifier le profil</button>
+                <button class="btn-secondary" onclick="toggleEditMode(true)">Modifier le profil</button>
+            </div>
+        </div>
+
+        <!-- Edit Mode -->
+        <div class="profile-card" id="profile-edit" style="display:none;">
+            <div class="profile-header">
+                <div class="profile-avatar" style="position:relative; cursor:pointer;" onclick="document.getElementById('avatar-input').click()">
+                    <img id="edit-avatar-preview" src="" style="width:100%; height:100%; object-fit:cover; border-radius:50%; display:none;">
+                    <span id="edit-avatar-letter">?</span>
+                    <div style="position:absolute; bottom:0; right:0; background:var(--orange); width:28px; height:28px; border-radius:50%; display:flex; align-items:center; justify-content:center; border:3px solid var(--black-light); font-size:0.8rem;">📷</div>
+                    <input type="file" id="avatar-input" style="display:none;" onchange="handleAvatarUpload(this)">
+                </div>
+                <div class="profile-name">
+                    <h2>Modifier Profil</h2>
+                    <p style="color:var(--gray); font-size:0.8rem;">Personnalisez vos informations</p>
+                </div>
+            </div>
+
+            <div class="profile-info-grid">
+                <div class="info-item">
+                    <label>Email</label>
+                    <input type="email" id="edit-email" class="form-input" style="width:100%; background:rgba(255,255,255,0.05); border:1px solid var(--glass-border); color:white; padding:12px; border-radius:10px;">
+                </div>
+                <div class="info-item">
+                    <label>Téléphone</label>
+                    <input type="text" id="edit-phone" class="form-input" style="width:100%; background:rgba(255,255,255,0.05); border:1px solid var(--glass-border); color:white; padding:12px; border-radius:10px;">
+                </div>
+                <div class="info-item">
+                    <label>Ville</label>
+                    <input type="text" id="edit-city" class="form-input" style="width:100%; background:rgba(255,255,255,0.05); border:1px solid var(--glass-border); color:white; padding:12px; border-radius:10px;">
+                </div>
+            </div>
+
+            <div class="profile-actions" style="margin-top:20px;">
+                <button class="btn-secondary" style="background:var(--orange); border:none;" onclick="saveProfileChanges()">Enregistrer</button>
+                <button class="btn-secondary" onclick="toggleEditMode(false)">Annuler</button>
             </div>
         </div>
     </div>
 
-    <!-- Profile Logic — no main.js needed -->
+    <!-- Profile Logic -->
     <script>
-        (function renderProfile() {
-            const u = db.getLoggedUser();
+        let currentAvatarData = null;
 
-            if (!u) {
-                window.location.href = 'login.html';
-                return;
+        function renderProfile() {
+            const u = db.getLoggedUser();
+            if (!u) { window.location.href = 'login.html'; return; }
+
+            // Render View Fields
+            if (u.avatar && u.avatar.startsWith('data:image')) {
+                document.getElementById('avatar-img').src = u.avatar;
+                document.getElementById('avatar-img').style.display = 'block';
+                document.getElementById('avatar-letter').style.display = 'none';
+            } else {
+                document.getElementById('avatar-letter').textContent = u.username.charAt(0).toUpperCase();
+                document.getElementById('avatar-img').style.display = 'none';
+                document.getElementById('avatar-letter').style.display = 'block';
             }
 
-            // Render fields
-            document.getElementById('prof-avatar').textContent  = u.username.charAt(0).toUpperCase();
             document.getElementById('prof-username').textContent = u.username;
             document.getElementById('prof-email').textContent    = u.email || '—';
             document.getElementById('prof-phone').textContent    = u.phone || 'Non renseigné';
@@ -205,18 +250,73 @@
 
             if (u.role === 'admin') {
                 document.getElementById('prof-role').textContent = 'Administrateur';
-                const adminLink = document.getElementById('nav-admin');
-                if (adminLink) adminLink.style.display = 'block';
             }
 
-            // Logout button
-            document.getElementById('btn-logout').addEventListener('click', function() {
-                db.logout();
-                window.location.href = 'vitrine.html';
-            });
-        })();
+            // Prep Edit Fields
+            document.getElementById('edit-email').value = u.email || '';
+            document.getElementById('edit-phone').value = u.phone || '';
+            document.getElementById('edit-city').value  = u.city  || '';
+            currentAvatarData = u.avatar || null;
+            
+            if (u.avatar && u.avatar.startsWith('data:image')) {
+                document.getElementById('edit-avatar-preview').src = u.avatar;
+                document.getElementById('edit-avatar-preview').style.display = 'block';
+                document.getElementById('edit-avatar-letter').style.display = 'none';
+            } else {
+                document.getElementById('edit-avatar-letter').textContent = u.username.charAt(0).toUpperCase();
+                document.getElementById('edit-avatar-preview').style.display = 'none';
+                document.getElementById('edit-avatar-letter').style.display = 'block';
+            }
+        }
 
-        // Navbar scroll effect (standalone, no main.js required)
+        function toggleEditMode(isEdit) {
+            document.getElementById('profile-view').style.display = isEdit ? 'none' : 'block';
+            document.getElementById('profile-edit').style.display = isEdit ? 'block' : 'none';
+            if (isEdit) renderProfile(); // Refresh fields
+        }
+
+        function handleAvatarUpload(input) {
+            const file = input.files[0];
+            if (!file) return;
+            const reader = new FileReader();
+            reader.onload = e => {
+                currentAvatarData = e.target.result;
+                document.getElementById('edit-avatar-preview').src = currentAvatarData;
+                document.getElementById('edit-avatar-preview').style.display = 'block';
+                document.getElementById('edit-avatar-letter').style.display = 'none';
+            };
+            reader.readAsDataURL(file);
+        }
+
+        function saveProfileChanges() {
+            const u = db.getLoggedUser();
+            const data = {
+                email: document.getElementById('edit-email').value,
+                phone: document.getElementById('edit-phone').value,
+                city: document.getElementById('edit-city').value,
+                avatar: currentAvatarData
+            };
+
+            const ok = db.updateUserProfile(u.id, data);
+            if (ok) {
+                alert("✅ Profil mis à jour avec succès !");
+                toggleEditMode(false);
+                renderProfile();
+            } else {
+                alert("❌ Erreur lors de la mise à jour.");
+            }
+        }
+
+        // Logout
+        document.getElementById('btn-logout').addEventListener('click', function() {
+            db.logout();
+            window.location.href = 'index.html';
+        });
+
+        // Init
+        renderProfile();
+
+        // Navbar scroll effect
         window.addEventListener('scroll', function() {
             const nav = document.getElementById('navbar');
             if (nav) nav.classList.toggle('scrolled', window.scrollY > 40);

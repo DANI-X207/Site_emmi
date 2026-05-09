@@ -1,0 +1,144 @@
+<!DOCTYPE html>
+<html lang="fr">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Param&egrave;tres | SLJ Otaku Paradise</title>
+    <link href="https://fonts.googleapis.com/css2?family=Outfit:wght@300;400;500;600;700;900&display=swap" rel="stylesheet">
+    <link rel="stylesheet" href="css/style.css">
+    <link rel="stylesheet" href="css/animations.css">
+    <style>
+        .settings-container { max-width: 800px; margin: 120px auto 60px; padding: 0 20px; }
+        .settings-card { background: var(--bg-card); border: 1px solid var(--glass-border); border-radius: 25px; padding: 40px; box-shadow: 0 20px 40px rgba(0,0,0,0.3); }
+        .settings-header { margin-bottom: 40px; border-bottom: 1px solid var(--glass-border); padding-bottom: 20px; }
+        .settings-header h1 { font-size: 2.5rem; font-weight: 900; margin: 0; background: linear-gradient(to right, var(--primary), var(--primary-light)); -webkit-background-clip: text; -webkit-text-fill-color: transparent; }
+        .setting-item { display: flex; justify-content: space-between; align-items: center; padding: 25px 0; border-bottom: 1px solid var(--glass-border); }
+        .setting-item:last-child { border-bottom: none; }
+        .setting-info h3 { margin: 0 0 5px; font-size: 1.2rem; }
+        .setting-info p { margin: 0; color: var(--text-dim); font-size: 0.9rem; }
+        .theme-toggle { display: flex; background: var(--bg-main); padding: 5px; border-radius: 15px; border: 1px solid var(--glass-border); }
+        .theme-btn { padding: 10px 20px; border-radius: 10px; cursor: pointer; font-weight: 700; transition: var(--transition); border: none; background: transparent; color: var(--text-dim); display: flex; align-items: center; gap: 10px; }
+        .theme-btn.active { background: var(--primary); color: white; }
+        .switch { position: relative; display: inline-block; width: 50px; height: 26px; }
+        .switch input { opacity: 0; width: 0; height: 0; }
+        .slider { position: absolute; cursor: pointer; top: 0; left: 0; right: 0; bottom: 0; background-color: #333; transition: .4s; border-radius: 34px; }
+        .slider:before { position: absolute; content: ""; height: 18px; width: 18px; left: 4px; bottom: 4px; background-color: white; transition: .4s; border-radius: 50%; }
+        input:checked + .slider { background-color: var(--primary); }
+        input:checked + .slider:before { transform: translateX(24px); }
+    </style>
+</head>
+<body>
+    <nav id="navbar">
+        <div class="container">
+            <a href="index.html" class="logo">SLJ <span>OTAKU</span></a>
+            <div class="nav-links">
+                <a href="index.html">Accueil</a>
+                <a href="shop.html">Boutique</a>
+                <a href="settings.html" class="active">Param&egrave;tres</a>
+            </div>
+            <div class="nav-actions">
+                <a href="admin.html" class="nav-icon" id="admin-icon" title="Administration">
+                    <svg width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" style="color: white;"><path d="M12 22s8-4 8-10V5l-8-3-8 3v7c0 6 8 10 8 10z"></path></svg>
+                </a>
+                <a href="profile.html" class="nav-icon" title="Mon Profil">
+                    <svg width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" style="color: white;"><path d="M20 21v-2a4 4 0 0 0-4-4H8a4 4 0 0 0-4 4v2"></path><circle cx="12" cy="7" r="4"></circle></svg>
+                </a>
+                <a href="commandes.html" class="nav-icon" title="Mes Commandes">
+                    <svg width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" style="color: white;"><path d="M16.5 9.4l-9-5.19M21 16V8a2 2 0 0 0-1-1.73l-7-4a2 2 0 0 0-2 0l-7 4A2 2 0 0 0 3 8v8a2 2 0 0 0 1 1.73l7 4a2 2 0 0 0 2 0l7-4A2 2 0 0 0 21 16z"></path><polyline points="3.27 6.96 12 12.01 20.73 6.96"></polyline><line x1="12" y1="22.08" x2="12" y2="12"></line></svg>
+                </a>
+                <button class="cart-btn" onclick="cart.openSidebar()" title="Panier">
+                    <svg width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" style="color: white;"><circle cx="9" cy="21" r="1"></circle><circle cx="20" cy="21" r="1"></circle><path d="M1 1h4l2.68 13.39a2 2 0 0 0 2 1.61h9.72a2 2 0 0 0 2-1.61L23 6H6"></path></svg>
+                    <span id="cart-count">0</span>
+                </button>
+            </div>
+        </div>
+    </nav>
+
+    <div class="settings-container">
+        <div class="settings-card">
+            <div class="settings-header">
+                <h1>Param&egrave;tres</h1>
+                <p>Personnalisez votre exp&eacute;rience Otaku Paradise</p>
+            </div>
+            
+            <div class="setting-item">
+                <div class="setting-info">
+                    <h3>Th&egrave;me du Site</h3>
+                    <p>Choisissez entre le mode sombre (Orange/Noir) ou clair (Bleu/Blanc)</p>
+                </div>
+                <div class="theme-toggle">
+                    <button class="theme-btn" id="btn-theme-dark" onclick="setTheme('dark')">🌙 Sombre</button>
+                    <button class="theme-btn" id="btn-theme-light" onclick="setTheme('light')">☀️ Clair</button>
+                </div>
+            </div>
+
+            <div class="setting-item">
+                <div class="setting-info">
+                    <h3>Animations Fluides</h3>
+                    <p>Activer ou d&eacute;sactiver les effets de mouvement sur le site</p>
+                </div>
+                <label class="switch">
+                    <input type="checkbox" id="setting-animations" checked onchange="toggleSetting('animations', this.checked)">
+                    <span class="slider"></span>
+                </label>
+            </div>
+
+            <div class="setting-item">
+                <div class="setting-info">
+                    <h3>Notifications Sonores</h3>
+                    <p>Jouer un petit son lors de l'ajout au panier</p>
+                </div>
+                <label class="switch">
+                    <input type="checkbox" id="setting-sounds" onchange="toggleSetting('sounds', this.checked)">
+                    <span class="slider"></span>
+                </label>
+            </div>
+
+            <div class="setting-item" style="margin-top: 20px; border-top: 1px solid var(--glass-border); padding-top: 40px;">
+                <button class="btn-primary" style="width: 100%;" onclick="saveSettings()">Enregistrer les Pr&eacute;f&eacute;rences</button>
+            </div>
+        </div>
+    </div>
+
+    <script src="js/db.js"></script>
+    <script src="js/main.js"></script>
+    <script>
+        document.addEventListener('DOMContentLoaded', () => {
+            const currentTheme = localStorage.getItem('slj_theme') || 'dark';
+            updateThemeButtons(currentTheme);
+            
+            const anims = localStorage.getItem('slj_settings_animations') !== 'false';
+            document.getElementById('setting-animations').checked = anims;
+            
+            const sounds = localStorage.getItem('slj_settings_sounds') === 'true';
+            document.getElementById('setting-sounds').checked = sounds;
+        });
+
+        function setTheme(theme) {
+            localStorage.setItem('slj_theme', theme);
+            document.documentElement.setAttribute('data-theme', theme);
+            updateThemeButtons(theme);
+        }
+
+        function updateThemeButtons(theme) {
+            document.querySelectorAll('.theme-btn').forEach(b => b.classList.remove('active'));
+            const activeBtn = document.getElementById('btn-theme-' + theme);
+            if (activeBtn) activeBtn.classList.add('active');
+        }
+
+        function toggleSetting(key, val) {
+            localStorage.setItem('slj_settings_' + key, val);
+            if(key === 'animations' && !val) {
+                document.body.classList.add('no-animations');
+            } else {
+                document.body.classList.remove('no-animations');
+            }
+        }
+
+        function saveSettings() {
+            alert('Param&egrave;tres enregistr&eacute;s avec succ&egrave;s !');
+            window.location.reload();
+        }
+    </script>
+</body>
+</html>

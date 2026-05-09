@@ -8,13 +8,18 @@ class Cart {
     this.renderCount();
   }
 
+  getProducts() {
+    return (typeof db !== 'undefined' && db.products) ? db.products : products;
+  }
+
   save() {
     localStorage.setItem('slj_cart', JSON.stringify(this.items));
     this.renderCount();
   }
 
   add(productId) {
-    const product = products.find(p => p.id === productId);
+    const sourceProducts = this.getProducts();
+    const product = sourceProducts.find(p => p.id === productId);
     if (!product || !product.inStock) return;
 
     const existing = this.items.find(i => i.id === productId);
@@ -49,8 +54,9 @@ class Cart {
   }
 
   getTotal() {
+    const sourceProducts = this.getProducts();
     return this.items.reduce((sum, item) => {
-      const p = products.find(pr => pr.id === item.id);
+      const p = sourceProducts.find(pr => pr.id === item.id);
       return sum + (p ? p.price * item.qty : 0);
     }, 0);
   }
@@ -97,8 +103,9 @@ class Cart {
       return;
     }
 
+    const sourceProducts = this.getProducts();
     body.innerHTML = this.items.map(item => {
-      const p = products.find(pr => pr.id === item.id);
+      const p = sourceProducts.find(pr => pr.id === item.id);
       if (!p) return '';
       return `
         <div class="cart-item" data-id="${p.id}">

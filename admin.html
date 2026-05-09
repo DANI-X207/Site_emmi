@@ -300,6 +300,94 @@
         </main>
     </div>
 
+    <!-- User Profile Modal -->
+    <div class="modal-overlay" id="user-modal-overlay" onclick="closeUserModal()">
+        <div class="user-profile-card" onclick="event.stopPropagation()">
+            <button class="modal-close" onclick="closeUserModal()">×</button>
+            <div class="user-card-header">
+                <div class="user-card-avatar" id="m-user-avatar">?</div>
+                <h2 id="m-user-name">Nom Utilisateur</h2>
+                <div class="user-card-role" id="m-user-role">Client</div>
+            </div>
+            <div class="user-card-body">
+                <div class="info-item">
+                    <span class="label">ID</span>
+                    <span class="value" id="m-user-id">#000</span>
+                </div>
+                <div class="info-item">
+                    <span class="label">E-mail</span>
+                    <span class="value" id="m-user-email">email@example.com</span>
+                </div>
+                <div class="info-item">
+                    <span class="label">Ville</span>
+                    <span class="value" id="m-user-city">Brazzaville</span>
+                </div>
+                <div class="info-item">
+                    <span class="label">Téléphone</span>
+                    <span class="value" id="m-user-phone">+242 00 000 0000</span>
+                </div>
+                <div class="info-item">
+                    <span class="label">Membre depuis</span>
+                    <span class="value" id="m-user-date">2026-05-09</span>
+                </div>
+            </div>
+            <div class="user-card-footer">
+                <div class="stat-item">
+                    <div class="stat-val" id="m-user-orders">0</div>
+                    <div class="stat-label">Commandes</div>
+                </div>
+                <div class="stat-item">
+                    <div class="stat-val" id="m-user-spent">0.00 €</div>
+                    <div class="stat-label">Dépensé</div>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <style>
+        .modal-overlay {
+            position: fixed; inset: 0; background: rgba(0,0,0,0.8); backdrop-filter: blur(8px);
+            display: none; align-items: center; justify-content: center; z-index: 9999;
+        }
+        .modal-overlay.show { display: flex; animation: fadeIn 0.3s ease; }
+        @keyframes fadeIn { from { opacity: 0; } to { opacity: 1; } }
+
+        .user-profile-card {
+            background: #1a1a1a; border: 1px solid var(--glass-border); border-radius: 28px;
+            width: 90%; max-width: 400px; padding: 40px 30px; position: relative;
+            animation: slideUp 0.4s cubic-bezier(0.4,0,0.2,1);
+        }
+        @keyframes slideUp { from { transform: translateY(30px); opacity: 0; } to { transform: translateY(0); opacity: 1; } }
+
+        .modal-close {
+            position: absolute; top: 20px; right: 20px; background: none; border: none; color: var(--gray);
+            font-size: 1.8rem; cursor: pointer; transition: 0.2s;
+        }
+        .modal-close:hover { color: white; transform: rotate(90deg); }
+
+        .user-card-header { text-align: center; margin-bottom: 30px; }
+        .user-card-avatar {
+            width: 90px; height: 90px; background: var(--orange-dim); border: 2px solid var(--orange);
+            border-radius: 50%; display: flex; align-items: center; justify-content: center;
+            margin: 0 auto 15px; font-size: 2.5rem; font-weight: 900; color: var(--orange);
+            overflow: hidden;
+        }
+        .user-card-avatar img { width: 100%; height: 100%; object-fit: cover; }
+        .user-card-header h2 { font-size: 1.5rem; font-weight: 900; margin-bottom: 5px; }
+        .user-card-role { font-size: 0.75rem; color: var(--orange); font-weight: 800; text-transform: uppercase; letter-spacing: 1px; }
+
+        .user-card-body { background: rgba(255,255,255,0.03); border-radius: 20px; padding: 20px; margin-bottom: 30px; }
+        .info-item { display: flex; justify-content: space-between; padding: 12px 0; border-bottom: 1px solid rgba(255,255,255,0.05); }
+        .info-item:last-child { border-bottom: none; }
+        .info-item .label { font-size: 0.8rem; color: var(--gray); }
+        .info-item .value { font-size: 0.9rem; font-weight: 700; color: white; }
+
+        .user-card-footer { display: grid; grid-template-columns: 1fr 1fr; gap: 20px; border-top: 1px solid rgba(255,255,255,0.05); pt: 20px; }
+        .stat-item { text-align: center; }
+        .stat-val { font-size: 1.2rem; font-weight: 900; color: var(--orange); }
+        .stat-label { font-size: 0.72rem; color: var(--gray); font-weight: 600; text-transform: uppercase; }
+    </style>
+
     <script src="js/products.js"></script>
     <script src="js/db.js"></script>
     <script>
@@ -327,7 +415,44 @@
             if (name === 'ads') renderAds(view);
         }
 
-        // --- RENDERERS ---
+        function openUserModal(userId) {
+            const user = db.customers.find(c => String(c.id) === String(userId));
+            if (!user) return;
+
+            // Stats
+            const userOrders = db.orders.filter(o => String(o.customerId) === String(userId) && o.status !== 'annulee');
+            const totalSpent = userOrders.reduce((sum, o) => sum + (o.total || 0), 0);
+
+            // Populate
+            document.getElementById('m-user-name').textContent  = user.username;
+            document.getElementById('m-user-role').textContent  = user.role === 'admin' ? 'Administrateur' : 'Client';
+            document.getElementById('m-user-id').textContent    = '#' + String(user.id).slice(-6);
+            document.getElementById('m-user-email').textContent = user.email || '-';
+            document.getElementById('m-user-city').textContent  = user.city || '-';
+            document.getElementById('m-user-phone').textContent = user.phone || '-';
+            document.getElementById('m-user-date').textContent  = user.createdAt || 'Date inconnue';
+            document.getElementById('m-user-orders').textContent = userOrders.length;
+            document.getElementById('m-user-spent').textContent  = totalSpent.toFixed(2) + ' €';
+
+            const avatarEl = document.getElementById('m-user-avatar');
+            if (user.avatar) {
+                avatarEl.innerHTML = `<img src="${user.avatar}" alt="${user.username}">`;
+            } else {
+                avatarEl.textContent = user.username.charAt(0).toUpperCase();
+            }
+
+            const modal = document.getElementById('user-modal-overlay');
+            modal.style.display = 'flex';
+            setTimeout(() => modal.classList.add('show'), 10);
+        }
+
+        function closeUserModal() {
+            const modal = document.getElementById('user-modal-overlay');
+            modal.classList.remove('show');
+            setTimeout(() => modal.style.display = 'none', 300);
+        }
+
+        // --- Global Sync ---
 
         function renderDashboard(view) {
             const stats = db.getStats();
@@ -342,12 +467,26 @@
                     <div class="stat-card" onclick="showSection('products')"><h4>Produits</h4><div class="value">${stats.totalProducts}</div></div>
                 </div>
                 <div class="table-container">
-                    <div style="padding: 25px; border-bottom: 1px solid var(--glass-border); font-weight:800;">Activité Récente</div>
+                    <div style="padding: 25px; border-bottom: 1px solid var(--glass-border); font-weight:800; display:flex; justify-content:space-between; align-items:center;">
+                        Activité Récente
+                        <button class="action-btn" style="font-size:0.7rem;" onclick="db.adminNotifications=[]; db.save(); renderDashboard(document.getElementById('section-view'))">Effacer tout</button>
+                    </div>
                     <table class="data-table">
                         <thead><tr><th>Action</th><th>Détails</th><th>Date</th></tr></thead>
                         <tbody>
-                            <tr><td>🛒 Commande</td><td>ORD-1002 passée par Dani_x</td><td>Aujourd'hui</td></tr>
-                            <tr><td>👤 Inscription</td><td>Nouvel utilisateur enregistré</td><td>Aujourd'hui</td></tr>
+                            ${db.adminNotifications.length === 0 ? '<tr><td colspan="3" style="text-align:center; color:var(--text-dim);">Aucune notification récente</td></tr>' : 
+                              db.adminNotifications.slice(0, 10).map(n => `
+                                <tr>
+                                    <td>
+                                        ${n.type === 'user_update' ? '👤 Profil Maj' : ''}
+                                        ${n.type === 'user_signup' ? '✨ Inscription' : ''}
+                                        ${n.type === 'order_placed' ? '🛒 Commande' : ''}
+                                        ${n.type !== 'user_update' && n.type !== 'user_signup' && n.type !== 'order_placed' ? '🔔 Info' : ''}
+                                    </td>
+                                    <td>${n.message}</td>
+                                    <td style="font-size:0.8rem; color:var(--text-dim)">${n.date}</td>
+                                </tr>
+                            `).join('')}
                         </tbody>
                     </table>
                 </div>
@@ -372,7 +511,11 @@
                         <tbody>
                             ${filtered.map(u => `
                                 <tr>
-                                    <td style="font-weight:700">${u.username}</td>
+                                    <td style="font-weight:700">
+                                        <span style="cursor:pointer; color:var(--orange); text-decoration:underline; text-underline-offset:3px;" onclick="openUserModal(${u.id})">
+                                            ${u.username}
+                                        </span>
+                                    </td>
                                     <td>${u.email}</td>
                                     <td>${u.city || '-'}</td>
                                     <td><span class="badge ${u.active !== false ? 'badge-success' : 'badge-danger'}">${u.active !== false ? 'Actif' : 'Désactivé'}</span></td>
@@ -396,10 +539,16 @@
         const ADMIN_STATUS_LABELS = { en_attente:'En attente', confirmee:'Confirmée', en_preparation:'En préparation', expediee:'Expédiée', livree:'Livrée', annulee:'Annulée' };
         const ADMIN_STATUS_NEXT  = { en_attente:'Confirmer', confirmee:'Mettre en préparation', en_preparation:'Marquer expédiée', expediee:'Marquer livrée' };
 
-        function renderOrders(view, search = '') {
+        function renderOrders(view, search = '', filter = 'all') {
             const filtered = db.orders.filter(o => {
                 const q = search.toLowerCase();
-                return (o.username || '').toLowerCase().includes(q) || o.id.toString().includes(q) || (o.email||'').toLowerCase().includes(q);
+                const matchSearch = (o.username || '').toLowerCase().includes(q) || o.id.toString().includes(q) || (o.email||'').toLowerCase().includes(q);
+                let matchFilter = true;
+                if (filter === 'pending')   matchFilter = o.status === 'en_attente';
+                if (filter === 'validated') matchFilter = ['confirmee', 'en_preparation', 'expediee'].includes(o.status);
+                if (filter === 'delivered') matchFilter = o.status === 'livree';
+                if (filter === 'canceled')  matchFilter = o.status === 'annulee';
+                return matchSearch && matchFilter;
             }).sort((a,b) => (b.createdAt||0) - (a.createdAt||0));
 
             const cancelPendingOrders = db.orders.filter(o => o.cancelRequested && (Date.now() - o.cancelRequestedAt) >= 2 * 60 * 1000);
@@ -408,6 +557,15 @@
                 <div class="section-header">
                     <div><h1>Commandes</h1><p>Suivi des ventes et livraisons</p></div>
                 </div>
+
+                <div style="display:flex; gap:10px; margin-bottom:25px;">
+                    <button class="action-btn ${filter==='all'?'active':''}" onclick="renderOrders(document.getElementById('section-view'), '', 'all')">Toutes</button>
+                    <button class="action-btn ${filter==='pending'?'active':''}" onclick="renderOrders(document.getElementById('section-view'), '', 'pending')">En attente</button>
+                    <button class="action-btn ${filter==='validated'?'active':''}" onclick="renderOrders(document.getElementById('section-view'), '', 'validated')">En cours</button>
+                    <button class="action-btn ${filter==='delivered'?'active':''}" onclick="renderOrders(document.getElementById('section-view'), '', 'delivered')">Livrées</button>
+                    <button class="action-btn ${filter==='canceled'?'active':''}" onclick="renderOrders(document.getElementById('section-view'), '', 'canceled')">Annulées</button>
+                </div>
+
                 ${cancelPendingOrders.length > 0 ? `
                 <div style="background:rgba(255,51,102,0.08); border:1px solid rgba(255,51,102,0.25); border-radius:16px; padding:16px 22px; margin-bottom:24px; display:flex; align-items:center; gap:12px;">
                     <span style="color:#ff3366; font-size:1.3rem;">⚠️</span>
@@ -416,10 +574,11 @@
                         <div style="color:var(--text-dim); font-size:0.82rem; margin-top:2px;">Le délai de rétraction de 2 min est écoulé. Suppression autorisée.</div>
                     </div>
                 </div>` : ''}
+
                 <div class="actions-bar">
                     <div class="search-container">
                         <span class="search-icon">🔍</span>
-                        <input type="text" class="search-bar" placeholder="Client, ID, email..." value="${search}" oninput="renderOrders(document.getElementById('section-view'), this.value)">
+                        <input type="text" class="search-bar" placeholder="Client, ID, email..." value="${search}" oninput="renderOrders(document.getElementById('section-view'), this.value, '${filter}')">
                     </div>
                 </div>
                 <div class="table-container">
@@ -431,7 +590,7 @@
                                 <th>Articles</th>
                                 <th>Total</th>
                                 <th>Statut</th>
-                                <th>Action</th>
+                                <th>Actions</th>
                             </tr>
                         </thead>
                         <tbody>
@@ -467,10 +626,14 @@
                                         <span class="badge ${getStatusBadge(o.status)}">${statusLabel}</span>
                                     </td>
                                     <td>
-                                         ${canAdvance ? `<button class="action-btn" title="${nextLabel}" onclick="advanceStatus('${o.id}')" style="background:rgba(255,107,0,0.08); color:var(--admin-accent); border-color:rgba(255,107,0,0.2); font-size:0.78rem; padding:8px 12px; white-space:nowrap;">→ ${nextLabel}</button>` : ''}
-                                         ${o.status !== 'annulee' && o.status !== 'livree' ? `<button class="action-btn danger" onclick="adminCancelOrder('${o.id}')" title="Annuler la commande" style="font-size:0.78rem; padding:8px 12px; margin-left:5px;">🚫 Annuler</button>` : ''}
-                                         ${o.status === 'annulee' ? `<button class="action-btn danger" onclick="confirmDeleteOrder('${o.id}')" style="font-size:0.78rem; padding:8px 12px;">🗑️ Supprimer</button>` : ''}
-                                         ${o.status === 'livree' ? `<span style="font-size:0.78rem; color:#00b386;">✓ Terminé</span>` : ''}
+                                         <div style="display:flex; gap:8px;">
+                                             ${canAdvance ? `<button class="action-btn" onclick="advanceStatus('${o.id}')">✅ ${nextLabel}</button>` : ''}
+                                             ${o.status !== 'livree' && o.status !== 'annulee' ? `<button class="action-btn danger" onclick="adminCancelOrder('${o.id}')">✖ Annuler</button>` : ''}
+                                             ${canDelete ? `<button class="action-btn danger" onclick="confirmDeleteOrder('${o.id}')">🗑️ Supprimer</button>` : ''}
+                                             ${!canAdvance && !canDelete && !o.cancelRequested && o.status !== 'annulee' ? '<span style="color:var(--text-dim);font-size:0.75rem;">✓ Terminé</span>' : ''}
+                                             ${o.status === 'annulee' ? '<span style="color:#ff3366;font-size:0.75rem;font-weight:700;">ANNULÉE</span>' : ''}
+                                         </div>
+                                         ${cancelInfo}
                                     </td>
                                 </tr>`;
                             }).join('')}
@@ -481,11 +644,10 @@
         }
 
         function advanceStatus(orderId) {
-            const order = db.orders.find(o => o.id === orderId);
-            if (!order) return;
-            const labels = { confirmee:'commande confirmée', en_preparation:'mise en préparation', expediee:'expédiée', livree:'livrée' };
+            const labels = { confirmee:'Commande confirmée !', en_preparation:'En préparation...', expediee:'Commande expédiée !', livree:'Commande livrée ✅' };
             const newStatus = db.advanceOrderStatus(orderId);
             if (newStatus) {
+                showAdminToast(labels[newStatus] || 'Statut mis à jour', 'success');
                 renderOrders(document.getElementById('section-view'));
             }
         }
@@ -628,22 +790,73 @@
                 document.getElementById('image-preview-container').style.display = 'block';
             }
         }
+
         function renderAds(view) {
             view.innerHTML = `
                 <div class="section-header">
-                    <h1>Publicités</h1>
+                    <div><h1>Publicités & Bannières</h1><p>Gérez les visuels marketing de la boutique</p></div>
+                    <div style="display:flex; gap:10px;">
+                        <button class="btn-primary" onclick="openAdModal('hero')">+ Banner (Hero)</button>
+                        <button class="btn-primary" onclick="openAdModal('promo')">+ Pub (Trending)</button>
+                    </div>
                 </div>
+
+                <div id="ad-form-container" class="form-panel" style="display:none; animation: slideDown 0.4s ease; margin-bottom: 30px;">
+                    <h3 id="ad-form-title">Nouvelle Publicité</h3>
+                    <input type="hidden" id="edit-ad-id">
+                    <input type="hidden" id="edit-ad-type">
+                    <div class="form-grid">
+                        <div class="form-group"><label>Badge / Titre Petit</label><input type="text" id="ad-title"></div>
+                        <div id="hero-fields" style="display:none; grid-column:span 2; display:grid; grid-template-columns:1fr 1fr; gap:15px;">
+                             <div class="form-group"><label>Titre Principal (Partie 1)</label><input type="text" id="ad-hero-t1" placeholder="Jusqu'à"></div>
+                             <div class="form-group"><label>Texte Mis en avant (Orange)</label><input type="text" id="ad-hero-hl" placeholder="-30%"></div>
+                             <div class="form-group" style="grid-column:span 2;"><label>Titre Principal (Partie 2)</label><input type="text" id="ad-hero-t2" placeholder="sur les Figurines"></div>
+                        </div>
+                        <div class="form-group"><label>Sous-titre / Contenu</label><input type="text" id="ad-subtitle"></div>
+                        <div class="form-group"><label>Image (URL)</label><input type="text" id="ad-image"></div>
+                        <div class="form-group"><label>Lien (Bouton)</label><input type="text" id="ad-link" placeholder="shop.html"></div>
+                    </div>
+                    <div style="margin-top:20px;">
+                        <button class="btn-primary" onclick="saveAd()">Enregistrer</button>
+                        <button class="action-btn" onclick="document.getElementById('ad-form-container').style.display='none'">Annuler</button>
+                    </div>
+                </div>
+
                 <div class="table-container">
+                    <h3 style="padding:20px 25px; border-bottom:1px solid var(--glass-border);">Bannières Principales (Hero Slider)</h3>
                     <table class="data-table">
-                        <thead><tr><th>Titre</th><th>Type</th><th>Statut</th><th class="col-actions">Actions</th></tr></thead>
+                        <thead><tr><th>Badge</th><th>Titre</th><th>Image</th><th>Statut</th><th>Actions</th></tr></thead>
                         <tbody>
-                            ${db.announcements.map(a => `
+                            ${db.heroSlides.map(s => `
+                                <tr>
+                                    <td>${s.badge}</td>
+                                    <td style="font-weight:700">${s.title.replace(/<[^>]*>?/gm, '')}</td>
+                                    <td><img src="${s.image}" style="width:50px; height:30px; object-fit:cover; border-radius:4px;"></td>
+                                    <td><span class="badge ${s.active?'badge-success':'badge-danger'}">${s.active?'Actif':'Inactif'}</span></td>
+                                    <td>
+                                        <button class="action-btn" onclick="db.toggleHeroSlide(${s.id}); renderAds(document.getElementById('section-view'))">👁️</button>
+                                        <button class="action-btn danger" onclick="if(confirm('Supprimer?')){db.deleteHeroSlide(${s.id}); renderAds(document.getElementById('section-view'))}">🗑️</button>
+                                    </td>
+                                </tr>
+                            `).join('')}
+                        </tbody>
+                    </table>
+                </div>
+
+                <div class="table-container" style="margin-top:30px;">
+                    <h3 style="padding:20px 25px; border-bottom:1px solid var(--glass-border);">Petites Pubs (Trending Slider)</h3>
+                    <table class="data-table">
+                        <thead><tr><th>Titre</th><th>Sous-titre</th><th>Image</th><th>Statut</th><th>Actions</th></tr></thead>
+                        <tbody>
+                            ${db.ads.map(a => `
                                 <tr>
                                     <td style="font-weight:700">${a.title}</td>
-                                    <td>${a.type}</td>
-                                    <td><span class="badge ${a.active?'badge-success':'badge-danger'}">${a.active?'Visible':'Masqué'}</span></td>
+                                    <td>${a.subtitle}</td>
+                                    <td><img src="${a.bg}" style="width:50px; height:30px; object-fit:cover; border-radius:4px;"></td>
+                                    <td><span class="badge ${a.active?'badge-success':'badge-danger'}">${a.active?'Actif':'Inactif'}</span></td>
                                     <td>
-                                        <button class="action-btn" onclick="db.toggleAnnouncement(${a.id}); renderAds(document.getElementById('section-view'))">Toggle</button>
+                                        <button class="action-btn" onclick="db.toggleAd(${a.id}); renderAds(document.getElementById('section-view'))">👁️</button>
+                                        <button class="action-btn danger" onclick="if(confirm('Supprimer?')){db.deleteAd(${a.id}); renderAds(document.getElementById('section-view'))}">🗑️</button>
                                     </td>
                                 </tr>
                             `).join('')}
@@ -651,6 +864,43 @@
                     </table>
                 </div>
             `;
+        }
+
+        function openAdModal(type) {
+            document.getElementById('ad-form-container').style.display = 'block';
+            document.getElementById('ad-form-title').textContent = type === 'hero' ? 'Nouvelle Bannière Hero' : 'Nouvelle Petite Pub';
+            document.getElementById('edit-ad-type').value = type;
+            document.getElementById('edit-ad-id').value = '';
+            document.getElementById('ad-title').value = '';
+            document.getElementById('ad-subtitle').value = '';
+            document.getElementById('ad-image').value = '';
+            document.getElementById('ad-link').value = 'shop.html';
+            
+            document.getElementById('hero-fields').style.display = type === 'hero' ? 'grid' : 'none';
+        }
+
+        function saveAd() {
+            const type = document.getElementById('edit-ad-type').value;
+            const title = document.getElementById('ad-title').value;
+            const subtitle = document.getElementById('ad-subtitle').value;
+            const image = document.getElementById('ad-image').value;
+            const link = document.getElementById('ad-link').value;
+
+            if (!title || !image) return alert("Titre et Image requis");
+
+            if (type === 'hero') {
+                const t1 = document.getElementById('ad-hero-t1').value;
+                const hl = document.getElementById('ad-hero-hl').value;
+                const t2 = document.getElementById('ad-hero-t2').value;
+                const fullTitle = `${t1} <span class="highlight">${hl}</span> ${t2}`;
+                db.addHeroSlide({ badge: title, title: fullTitle, subtitle, image, cta: 'Voir plus', ctaLink: link });
+            } else {
+                db.addAd({ title, subtitle, bg: image, color: '#ff6b00' });
+            }
+
+            document.getElementById('ad-form-container').style.display = 'none';
+            renderAds(document.getElementById('section-view'));
+            showAdminToast('✅ Publicité ajoutée !', 'success');
         }
 
         // --- Helpers & Logic ---
@@ -670,12 +920,15 @@
             // Show immediate local preview while uploading
             const reader = new FileReader();
             reader.onload = e => {
-                document.getElementById('image-preview').src = e.target.result;
+                const b64 = e.target.result;
+                document.getElementById('image-preview').src = b64;
                 document.getElementById('image-preview-container').style.display = 'block';
+                // Fallback: save base64 if upload fails or isn't needed
+                document.getElementById('prod-image-data').value = b64;
             };
             reader.readAsDataURL(file);
 
-            // Upload to server
+            // Upload to server (Attempt)
             const btnSave = document.querySelector('#product-form-container .btn-primary');
             if (btnSave) { btnSave.disabled = true; btnSave.textContent = '⏳ Upload en cours…'; }
 
@@ -683,16 +936,17 @@
                 const formData = new FormData();
                 formData.append('image', file);
                 const res  = await fetch('/api/upload-image', { method: 'POST', body: formData });
-                const data = await res.json();
-                if (data.url) {
-                    document.getElementById('prod-image-data').value = data.url;
-                    document.getElementById('image-preview').src     = data.url;
-                    showAdminToast('✅ Image uploadée avec succès !', 'success');
-                } else {
-                    showAdminToast('❌ Erreur : ' + (data.error || 'Upload échoué'), 'error');
+                if (res.ok) {
+                    const data = await res.json();
+                    if (data.url) {
+                        document.getElementById('prod-image-data').value = data.url;
+                        document.getElementById('image-preview').src     = data.url;
+                        showAdminToast('✅ Image uploadée avec succès !', 'success');
+                    }
                 }
             } catch (err) {
-                showAdminToast('❌ Erreur réseau lors de l\'upload', 'error');
+                // Ignore error, we already have base64 as fallback
+                console.log("Upload failed, using base64 fallback");
             } finally {
                 if (btnSave) { btnSave.disabled = false; btnSave.textContent = 'Enregistrer'; }
             }

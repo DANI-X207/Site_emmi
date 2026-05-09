@@ -89,7 +89,7 @@ document.addEventListener('DOMContentLoaded', () => {
 });
 
 /* ---- Hero Slider ---- */
-const heroSlides = [
+const heroSlides = (typeof db !== 'undefined' && db.heroSlides) ? db.heroSlides.filter(s => s.active) : [
   {
     badge: "🔥 Nouveautés Printemps 2026",
     title: "L'Univers Otaku à <span class='highlight'>Portée de Main</span>",
@@ -97,22 +97,6 @@ const heroSlides = [
     cta: "Explorer la boutique",
     ctaLink: "shop.html",
     image: "https://images.unsplash.com/photo-1612036782180-6f0b6cd846fe?q=80&w=800&auto=format&fit=crop"
-  },
-  {
-    badge: "⚡ Offres Exclusives",
-    title: "Jusqu'à <span class='highlight'>-30%</span> sur les Figurines",
-    subtitle: "Profitez de nos promotions limitées sur les meilleures figurines anime du moment",
-    cta: "Voir les promos",
-    ctaLink: "shop.html",
-    image: "https://images.unsplash.com/photo-1601814933824-fd0b5c98d4ec?q=80&w=800&auto=format&fit=crop"
-  },
-  {
-    badge: "📦 Livraison Gratuite",
-    title: "Commandes <span class='highlight'>+50€</span> Offertes",
-    subtitle: "Livraison express disponible partout en France et en Belgique",
-    cta: "Commander maintenant",
-    ctaLink: "shop.html",
-    image: "https://images.unsplash.com/photo-1541562232579-512a21360020?q=80&w=800&auto=format&fit=crop"
   }
 ];
 
@@ -137,22 +121,31 @@ function showSlide(index) {
   const title = document.getElementById('hero-title');
   const subtitle = document.getElementById('hero-subtitle');
   const cta = document.getElementById('hero-cta');
-  const heroImg = document.querySelector('.hero-img img');
+  const heroImg1 = document.getElementById('hero-showcase-1');
+  const heroImg2 = document.getElementById('hero-showcase-2');
 
-  [badge, title, subtitle, cta, heroImg].forEach(el => el?.classList.add('fade-out'));
+  const elements = [badge, title, subtitle, cta, heroImg1, heroImg2].filter(el => el);
+  elements.forEach(el => el.classList.add('fade-out'));
 
   setTimeout(() => {
     if (badge) badge.textContent = s.badge;
     if (title) title.innerHTML = s.title;
     if (subtitle) subtitle.textContent = s.subtitle;
     if (cta) { cta.textContent = s.cta; cta.href = s.ctaLink; }
-    if (heroImg) heroImg.src = s.image;
+
+    // Pick 2 random product images
+    const allProducts = (typeof db !== 'undefined' && db.products) ? db.products : [];
+    if (allProducts.length >= 2) {
+      const shuffled = [...allProducts].sort(() => 0.5 - Math.random());
+      if (heroImg1) heroImg1.src = getProductImage(shuffled[0]);
+      if (heroImg2) heroImg2.src = getProductImage(shuffled[1]);
+    }
     
-    [badge, title, subtitle, cta, heroImg].forEach(el => {
-      el?.classList.remove('fade-out');
-      el?.classList.add('fade-in');
+    elements.forEach(el => {
+      el.classList.remove('fade-out');
+      el.classList.add('fade-in');
     });
-    setTimeout(() => [badge, title, subtitle, cta, heroImg].forEach(el => el?.classList.remove('fade-in')), 600);
+    setTimeout(() => elements.forEach(el => el.classList.remove('fade-in')), 600);
     document.querySelectorAll('.hero-dot').forEach((d, i) => d.classList.toggle('active', i === index));
   }, 400);
   currentSlide = index;
@@ -232,7 +225,8 @@ function setSort(val) {
 
 /* ---- Filter + Render Products ---- */
 function getFilteredProducts() {
-  let filtered = [...products];
+  const sourceProducts = (typeof db !== 'undefined' && db.products) ? db.products : products;
+  let filtered = [...sourceProducts];
 
   if (currentCategory !== 'all') {
     filtered = filtered.filter(p => p.category === currentCategory);
@@ -301,9 +295,9 @@ function renderProducts() {
 }
 
 function getProductImage(p) {
-  if (!p.image || p.image.includes('placeholder.png')) {
+  if (!p || !p.image || p.image.trim() === '' || p.image.includes('placeholder.png')) {
     // Dynamic placeholder based on category and name for a premium look
-    return `https://images.unsplash.com/photo-1612036782180-6f0b6cd846fe?q=80&w=400&auto=format&fit=crop`; // Example generic anime fig
+    return `https://images.unsplash.com/photo-1612036782180-6f0b6cd846fe?q=80&w=400&auto=format&fit=crop`; 
   }
   return p.image;
 }
@@ -403,7 +397,8 @@ function toggleWishlist(id, btn) {
 
 /* ---- Product Modal ---- */
 function openProductModal(id) {
-  const p = products.find(pr => pr.id === id);
+  const sourceProducts = (typeof db !== 'undefined' && db.products) ? db.products : products;
+  const p = sourceProducts.find(pr => pr.id === id);
   if (!p) return;
   const modal = document.getElementById('product-modal');
   const content = document.getElementById('modal-content');
@@ -455,6 +450,24 @@ function openProductModal(id) {
         <div class="modal-tags-list">
           ${(p.tags || []).map(t => `<span class="modal-tag">#${t}</span>`).join('')}
         </div>
+
+        <div class="modal-comments-section">
+          <h3>Commentaires (${(p.comments || []).length}/3)</h3>
+          <div class="modal-comments-list" id="modal-comments-list">
+            ${(p.comments || []).length > 0 
+              ? p.comments.map(c => `
+                <div class="modal-comment-item">
+                  <div class="comment-user">${c.user} <span class="comment-date">${c.date}</span></div>
+                  <div class="comment-text">${c.text}</div>
+                </div>`).join('')
+              : '<p class="no-comments">Soyez le premier à commenter !</p>'
+            }
+          </div>
+          <div class="modal-comment-form">
+            <input type="text" id="new-comment-input" placeholder="Ajouter un commentaire..." maxlength="100">
+            <button onclick="submitProductComment(${p.id})">Poster</button>
+          </div>
+        </div>
       </div>
     </div>`;
 
@@ -488,7 +501,11 @@ function closeModal(id) {
 function buildTestimonials() {
   const container = document.getElementById('testimonials-grid');
   if (!container) return;
-  container.innerHTML = testimonials.map(t => `
+  
+  // Show up to 6 testimonials for a better grid rendering
+  const evenTestimonials = db.testimonials.slice(0, 6);
+  
+  container.innerHTML = evenTestimonials.map(t => `
     <div class="testimonial-card">
       <div class="testimonial-header">
         <div class="testimonial-avatar">${t.avatar}</div>
@@ -678,21 +695,21 @@ function initHourlySelection() {
   if (!container) return;
 
   const now = new Date();
-  const hourSeed = now.getFullYear() + now.getMonth() + now.getDate() + now.getHours();
+  const sourceProducts = (typeof db !== 'undefined' && db.products) ? db.products : products;
   
-  // Deterministic shuffle using seed
-  const shuffled = [...products].sort((a, b) => {
-    const scoreA = (a.id * hourSeed) % 100;
-    const scoreB = (b.id * hourSeed) % 100;
+  const hourSeed = now.getFullYear() * 10000 + (now.getMonth() + 1) * 100 + now.getDate() + now.getHours();
+  
+  const shuffled = [...sourceProducts].sort((a, b) => {
+    const scoreA = Math.sin(a.id * hourSeed) * 10000;
+    const scoreB = Math.sin(b.id * hourSeed) * 10000;
     return scoreA - scoreB;
   });
 
-  const selection = shuffled.slice(0, 3);
+  const selection = shuffled.slice(0, 4); // Show 4 products (even)
   container.innerHTML = selection.map(p => productCard(p)).join('');
 
-  // Start Timer
   updateTimer();
-  setInterval(updateTimer, 60000); // Update every minute
+  setInterval(updateTimer, 1000); 
 }
 
 function updateTimer() {
@@ -704,10 +721,16 @@ function updateTimer() {
   nextHour.setHours(now.getHours() + 1, 0, 0, 0);
   
   const diff = nextHour - now;
+  
+  if (diff <= 0) {
+    window.location.reload(); 
+    return;
+  }
+
   const mins = Math.floor(diff / 60000);
   const secs = Math.floor((diff % 60000) / 1000);
   
-  timerEl.textContent = `${mins}m ${secs < 10 ? '0' : ''}${secs}s`;
+  timerEl.textContent = `${mins}:${secs < 10 ? '0' : ''}${secs}`;
 }
 
 function scrollTrending(dir) {
@@ -721,17 +744,17 @@ function initFeaturedSlider() {
   const track = document.getElementById('featured-track');
   if (!track) return;
 
-  const ads = [
-    { type: 'ad', title: 'Livraison Gratuite', subtitle: 'Dès 50€ d\'achat', color: 'var(--orange)', bg: 'https://images.unsplash.com/photo-1549465220-1d8c9d9c4701?q=80&w=600' },
+  const sourceProducts = (typeof db !== 'undefined' && db.products) ? db.products : products;
+  
+  const ads = (typeof db !== 'undefined' && db.ads) ? db.ads.filter(a => a.active) : [
     { type: 'ad', title: 'Nouveautés', subtitle: 'Collection Printemps', color: '#00d2ff', bg: 'https://images.unsplash.com/photo-1541562232579-512a21360020?q=80&w=600' }
   ];
 
-  const featuredProducts = products.slice(0, 6);
+  const featuredProducts = sourceProducts.slice(0, 6);
   
   let html = '';
   
   // Mix Ads and Products
-  html += renderAdCard(ads[0]);
   featuredProducts.forEach((p, i) => {
     html += `
       <div class="trending-card" style="--bg: url('${getProductImage(p)}')" onclick="openProductModal(${p.id})">
@@ -740,7 +763,7 @@ function initFeaturedSlider() {
         </div>
       </div>
     `;
-    if (i === 2) html += renderAdCard(ads[1]);
+    if (i === 1) html += renderAdCard(ads[0]); // Position 3
   });
 
   track.innerHTML = html;
@@ -756,4 +779,13 @@ function renderAdCard(ad) {
       </div>
     </div>
   `;
+}
+
+function submitProductComment(productId) {
+  const input = document.getElementById('new-comment-input');
+  if (!input || !input.value.trim()) return;
+
+  if (db.addProductComment(productId, input.value.trim())) {
+    openProductModal(productId); // Refresh modal
+  }
 }
