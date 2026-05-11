@@ -28,3 +28,11 @@
 [2026-05-11 19:15:00] | File: index.html, shop.html | Section: Admin Visibility | Previous Content: Admin icon visible to all | Action: Hidden admin icon by default. Relying on main.js to show it for admins.
 [2026-05-11 19:15:00] | File: profile.html | Section: Admin Visibility | Previous Content: Admin icon visible to all | Action: Hidden admin icon and added JS logic to show it only for admin users.
 [2026-05-11 19:18:00] | File: All Pages | Section: Admin Visibility | Previous Content: Admin icon hidden by default | Action: ROLLBACK. Restored admin icon visibility across all pages as requested.
+[2026-05-11 19:30:00] | File: All HTML Pages | Section: Navigation | Previous Content: Accueil, Boutique | Action: Added "Paramètres" link to all navigation bars (including Admin sidebar).
+[2026-05-11 19:30:00] | File: parametres.html | Section: New Page | Previous Content: N/A | Action: Created a new settings page with Profile, Preferences, Notifications, and Security sections.
+[2026-05-11 19:30:00] | File: panier.html | Section: Checkout | Previous Content: Visual success only | Action: Added an audio success sound (new Audio) upon order validation.
+[2026-05-11 19:40:00] | File: All HTML Pages | Section: Theme System | Previous Content: Hardcoded Orange/Black | Action: Integrated js/theme.js on all pages and added Blue/White theme overrides in style.css.
+[2026-05-11 19:40:00] | File: parametres.html | Section: Theme Switcher | Previous Content: N/A | Action: Added a theme selector in the preferences section to switch between Noir/Orange and Bleu/Blanc.
+[2026-05-11 19:45:00] | File: css/style.css | Section: Scrollbars | Previous Content: Default browser scrollbars | Action: Added custom scrollbar styling that adapts to dark/light themes for better visibility.
+[2026-05-11 19:45:00] | File: parametres.html | Section: Theme UI | Previous Content: Select dropdown | Action: Improved theme switcher with modern buttons (Sombre vs Claire) and visual previews.
+[2026-05-11 19:50:00] | File: parametres.html | Section: Cleanup | Previous Content: Account section present | Action: Removed "Mon Compte" section from parameters as requested.
