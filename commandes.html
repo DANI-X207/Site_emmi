@@ -234,7 +234,7 @@
                 <a href="index.html">Accueil</a>
                 <a href="shop.html">Boutique</a></div>
             <div class="nav-actions">
-                <a href="admin.html" class="nav-icon" id="admin-icon" title="Administration" style="display:none;">
+                <a href="admin.html" class="nav-icon" id="admin-icon" title="Administration">
                     <svg width="22" height="22" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M12 22s8-4 8-10V5l-8-3-8 3v7c0 6 8 10 8 10z"></path></svg>
                 </a>
                 <a href="profile.html" class="nav-icon" title="Mon Profil">
@@ -274,7 +274,6 @@
         const user = db.getLoggedUser();
         if (user && user.role === 'admin') {
             document.getElementById('admin-icon').style.display = 'flex';
-            document.getElementById('nav-admin').style.display = 'block';
         }
 
         const STATUS_STEPS = ['en_attente','confirmee','en_preparation','expediee','livree'];
@@ -284,6 +283,7 @@
 
         function renderOrders() {
             const container = document.getElementById('orders-container');
+            if (!user) return;
             const orders = db.getUserOrders(user.id);
 
             if (orders.length === 0) {
@@ -351,6 +351,10 @@
                     <svg width="12" height="12" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5"><circle cx="12" cy="12" r="10"></circle><line x1="15" y1="9" x2="9" y2="15"></line><line x1="9" y1="9" x2="15" y2="15"></line></svg>
                     Annuler la commande
                 </button>`;
+            } else if (o.cancelRequested && !cancelExpired) {
+                actionsHtml = `
+                    <div class="cancel-countdown"><div class="dot"></div>Annulation effective dans <span id="cd-${o.id}">--:--</span></div>
+                    <button class="btn-undo-cancel" onclick="doUndoCancel('${o.id}')">↩ Ne pas annuler</button>`;
             } else if (status === 'livree' && !o.userConfirmedReceipt) {
                 actionsHtml = `
                 <button class="btn-undo-cancel" style="border-color:#00b386; color:#00b386; background:rgba(0,179,134,0.08);" onclick="doConfirmReceipt('${o.id}')">

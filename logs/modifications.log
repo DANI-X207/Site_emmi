@@ -2,17 +2,29 @@
 # Format: [Date Time] | File: [Filename] | Section: [Section] | Previous Content: [Content]
 
 [2026-05-11 17:48:00] | File: N/A | Section: Initialization | Previous Content: N/A | Action: Created log file as requested.
-[2026-05-11 17:52:00] | File: vitrine.html | Section: Hero Showcase Images | Previous Content: <img src="images/luffy.jpg"...> <img src="images/zoro.jpg"...> | Action: Added IDs hero-showcase-1 and hero-showcase-2 to enable dynamic image rotation.
-[2026-05-11 18:02:00] | File: js/main.js | Section: Currency formatting | Previous Content: ${p.price.toFixed(2)}€ | Action: Changed € to FCFA.
-[2026-05-11 18:02:00] | File: js/cart.js | Section: Cart totals | Previous Content: '0.00 €', toFixed(2) + ' €' | Action: Changed € to FCFA.
-[2026-05-11 18:02:00] | File: js/db.js | Section: Announcements | Previous Content: dès 60€ d'achat | Action: Changed € to FCFA.
-[2026-05-11 18:02:00] | File: panier.html | Section: Summary & Items | Previous Content: 0.00 €, 5.99 € | Action: Changed € to FCFA.
-[2026-05-11 18:02:00] | File: admin.html | Section: Dashboard & Forms | Previous Content: Revenu: ${stats.totalRevenue}€, Prix (€) | Action: Changed € to FCFA.
-[2026-05-11 18:02:00] | File: commandes.html | Section: Order List | Previous Content: Total : <span>${o.total?.toFixed(2)} €</span> | Action: Changed € to FCFA.
-[2026-05-11 18:02:00] | File: vitrine.html | Section: Features Strip | Previous Content: offerte dès 60€ | Action: Changed € to FCFA.
-[2026-05-11 18:02:00] | File: index.html, shop.html | Section: Cart totals | Previous Content: 0.00 € | Action: Changed € to FCFA.
-[2026-05-11 18:09:00] | File: admin.html | Section: Navigation & Sections | Previous Content: No Promotions section | Action: Implemented Promotions section (search, set promo price, remove promo).
-[2026-05-11 18:20:00] | File: multiple files | Section: Price display | Previous Content: .toFixed(2) | Action: Removed decimals from all price displays (integers only). Updated products.js source.
-[2026-05-11 18:32:00] | File: js/db.js, js/main.js, css/style.css | Section: Ratings & Comments | Previous Content: Static ratings, simple comment text | Action: Implemented dynamic star rating calculation, interactive rating picker in modal, and styled comments list with individual ratings.
-[2026-05-11 18:38:00] | File: js/main.js, css/style.css | Section: Comment Form Layout | Previous Content: Stars and input on the same line | Action: Reorganized comment form to have stars on top and input/button below. Set all stars to be yellow (active) by default.
-[2026-05-11 18:55:00] | File: multiple files | Section: Stock Management | Previous Content: Boolean inStock | Action: Implemented numerical stock management. Added 'Confirm Receipt' for users. Stock decrements only when both Admin and User validate delivery.
+[2026-05-11 17:52:00] | File: vitrine.html | Section: Hero Showcase Images | Previous Content: <img src="images/luffy.jpg"...> | Action: Added IDs hero-showcase-1 and hero-showcase-2 to enable dynamic image rotation.
+[2026-05-11 18:02:00] | File: js/main.js | Section: Currency formatting | Previous Content: .toFixed(2)€ | Action: Changed € to FCFA and rounded decimals.
+[2026-05-11 18:02:00] | File: js/cart.js | Section: Cart totals | Previous Content: toFixed(2) + ' €' | Action: Changed € to FCFA and rounded decimals.
+[2026-05-11 18:02:00] | File: js/db.js | Section: Announcements | Previous Content: dès 60€ | Action: Changed € to FCFA.
+[2026-05-11 18:02:00] | File: panier.html | Section: Summary | Previous Content: 0.00 € | Action: Changed € to FCFA.
+[2026-05-11 18:02:00] | File: admin.html | Section: Stats | Previous Content: Revenu: ${stats.totalRevenue}€ | Action: Changed € to FCFA.
+[2026-05-11 18:02:00] | File: commandes.html | Section: Order List | Previous Content: toFixed(2) € | Action: Changed € to FCFA.
+[2026-05-11 18:02:00] | File: index.html, shop.html | Section: Cart | Previous Content: 0.00 € | Action: Changed € to FCFA.
+[2026-05-11 18:09:00] | File: admin.html | Section: Navigation | Previous Content: No Promotions section | Action: Implemented Promotions section.
+[2026-05-11 18:20:00] | File: js/products.js | Section: Prices | Previous Content: Float prices | Action: Converted all prices to integers.
+[2026-05-11 18:32:00] | File: js/db.js | Section: Ratings | Previous Content: Simple comments | Action: Added getProductRatingInfo and updated addProductComment to include ratings.
+[2026-05-11 18:32:00] | File: js/main.js | Section: Modal | Previous Content: Static rating display | Action: Implemented interactive stars and dynamic average calculation.
+[2026-05-11 18:32:00] | File: css/style.css | Section: Comments | Previous Content: No specific styles | Action: Styled comments list and rating picker.
+[2026-05-11 18:38:00] | File: js/main.js | Section: Form Layout | Previous Content: Inline stars | Action: Reorganized comment form to vertical layout.
+[2026-05-11 18:38:00] | File: css/style.css | Section: Form Layout | Previous Content: Inline flex | Action: Changed comment form to flex-direction column.
+[2026-05-11 18:55:00] | File: js/products.js | Section: Stock | Previous Content: inStock boolean | Action: Replaced inStock with numerical stock field.
+[2026-05-11 18:55:00] | File: js/db.js | Section: Orders | Previous Content: status updates | Action: Added userConfirmedReceipt flag and stock decrement logic on double validation.
+[2026-05-11 18:55:00] | File: admin.html | Section: Product Form | Previous Content: No stock field | Action: Added Stock input field and table column.
+[2026-05-11 18:55:00] | File: commandes.html | Section: Actions | Previous Content: Cancel only | Action: Added "Confirmer la réception" button for delivered orders.
+[2026-05-11 18:55:00] | File: js/main.js | Section: UI Stock | Previous Content: inStock check | Action: Updated cards and modal to display stock quantity and validate availability.
+[2026-05-11 18:55:00] | File: js/cart.js | Section: Cart Stock | Previous Content: inStock check | Action: Added stock validation when adding or updating quantities in cart.
+[2026-05-11 19:08:00] | File: js/db.js | Section: Cleanup | Previous Content: Duplicate updateOrderStatus | Action: Removed duplicate method.
+[2026-05-11 19:08:00] | File: commandes.html | Section: JS Bug Fix | Previous Content: Crash on nav-admin access | Action: Removed invalid DOM access that crashed the script. Restored missing cancellation UI.
+[2026-05-11 19:15:00] | File: index.html, shop.html | Section: Admin Visibility | Previous Content: Admin icon visible to all | Action: Hidden admin icon by default. Relying on main.js to show it for admins.
+[2026-05-11 19:15:00] | File: profile.html | Section: Admin Visibility | Previous Content: Admin icon visible to all | Action: Hidden admin icon and added JS logic to show it only for admin users.
+[2026-05-11 19:18:00] | File: All Pages | Section: Admin Visibility | Previous Content: Admin icon hidden by default | Action: ROLLBACK. Restored admin icon visibility across all pages as requested.
