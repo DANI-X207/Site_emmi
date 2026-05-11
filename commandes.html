@@ -379,7 +379,7 @@
                 ${progressHtml}
                 <div class="order-items">${itemsHtml}</div>
                 <div class="order-card-footer">
-                    <div class="order-total-text">Total : <span>${o.total?.toFixed(2)} FCFA</span></div>
+                    <div class="order-total-text">Total : <span>${Math.round(o.total || 0)} FCFA</span></div>
                     <div class="order-actions">${actionsHtml}</div>
                 </div>
             </div>`;

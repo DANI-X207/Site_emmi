@@ -11,3 +11,5 @@
 [2026-05-11 18:02:00] | File: commandes.html | Section: Order List | Previous Content: Total : <span>${o.total?.toFixed(2)} €</span> | Action: Changed € to FCFA.
 [2026-05-11 18:02:00] | File: vitrine.html | Section: Features Strip | Previous Content: offerte dès 60€ | Action: Changed € to FCFA.
 [2026-05-11 18:02:00] | File: index.html, shop.html | Section: Cart totals | Previous Content: 0.00 € | Action: Changed € to FCFA.
+[2026-05-11 18:09:00] | File: admin.html | Section: Navigation & Sections | Previous Content: No Promotions section | Action: Implemented Promotions section (search, set promo price, remove promo).
+[2026-05-11 18:20:00] | File: multiple files | Section: Price display | Previous Content: .toFixed(2) | Action: Removed decimals from all price displays (integers only). Updated products.js source.

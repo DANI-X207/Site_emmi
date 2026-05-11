@@ -376,10 +376,10 @@
                     <div class="cart-item-details">
                         <div class="cart-item-name">${p.name}</div>
                         <div class="cart-item-anime">${p.anime}</div>
-                        <div class="cart-item-unit">${p.price.toFixed(2)} FCFA / unité</div>
+                        <div class="cart-item-unit">${Math.round(p.price)} FCFA / unité</div>
                     </div>
                     <div class="cart-item-right">
-                        <div class="cart-item-price-total">${(p.price * item.qty).toFixed(2)} FCFA</div>
+                        <div class="cart-item-price-total">${Math.round(p.price * item.qty)} FCFA</div>
                         <div class="qty-controls">
                             <button class="qty-btn" onclick="pageUpdateQty(${p.id}, -1)">−</button>
                             <span class="qty-val">${item.qty}</span>
@@ -410,9 +410,9 @@
             const shipping = subtotal >= 60 ? 0 : 5.99;
             const total    = subtotal + shipping;
 
-            document.getElementById('subtotal-val').textContent = subtotal.toFixed(2) + ' FCFA';
-            document.getElementById('shipping-val').textContent = shipping === 0 ? 'GRATUITE' : shipping.toFixed(2) + ' FCFA';
-            document.getElementById('total-val').textContent    = total.toFixed(2) + ' FCFA';
+            document.getElementById('subtotal-val').textContent = Math.round(subtotal) + ' FCFA';
+            document.getElementById('shipping-val').textContent = shipping === 0 ? 'GRATUITE' : Math.round(shipping) + ' FCFA';
+            document.getElementById('total-val').textContent    = Math.round(total) + ' FCFA';
 
             const badge = document.getElementById('shipping-badge');
             badge.style.display = subtotal >= 60 ? 'flex' : 'none';
@@ -442,7 +442,7 @@
                 customerId: user.id,
                 username:   user.username,
                 items:      orderItems,
-                total:      parseFloat((subtotal + shipping).toFixed(2)),
+                total:      Math.round(subtotal + shipping),
                 shipping,
                 email: user.email,
                 phone: user.phone,

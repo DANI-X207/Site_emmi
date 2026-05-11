@@ -388,7 +388,7 @@ const db = {
     const delivered     = this.orders.filter(o => o.status === 'livree').length;
     const cancelPending = this.orders.filter(o => o.cancelRequested && (Date.now() - o.cancelRequestedAt) >= 2 * 60 * 1000).length;
     return {
-      totalRevenue: totalRevenue.toFixed(2),
+      totalRevenue: Math.round(totalRevenue),
       totalOrders: this.orders.length,
       totalCustomers: this.customers.filter(c => c.role !== 'admin').length,
       totalProducts: this.products.length,

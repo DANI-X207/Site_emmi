@@ -328,8 +328,8 @@ function productCard(p) {
         <h3 class="product-name">${p.name}</h3>
         <div class="product-footer">
           <div class="price-box">
-            <span class="product-price">${p.price.toFixed(2)} FCFA</span>
-            ${p.oldPrice ? `<span class="product-old-price">${p.oldPrice.toFixed(2)} FCFA</span>` : ''}
+            <span class="product-price">${Math.round(p.price)} FCFA</span>
+            ${p.oldPrice ? `<span class="product-old-price">${Math.round(p.oldPrice)} FCFA</span>` : ''}
           </div>
           <div class="rating-box">
              ${stars}
@@ -424,8 +424,8 @@ function openProductModal(id) {
         </div>
         
         <div class="modal-price-section">
-          <span class="modal-current-price">${p.price.toFixed(2)} FCFA</span>
-          ${p.oldPrice ? `<span class="modal-old-price">${p.oldPrice.toFixed(2)} FCFA</span>` : ''}
+          <span class="modal-current-price">${Math.round(p.price)} FCFA</span>
+          ${p.oldPrice ? `<span class="modal-old-price">${Math.round(p.oldPrice)} FCFA</span>` : ''}
         </div>
 
         <p class="modal-description">${p.description || 'Un article incontournable pour tout collectionneur otaku. Qualité premium garantie.'}</p>

@@ -288,6 +288,7 @@
                 <div class="admin-nav-item" id="nav-users" onclick="showSection('users')">Utilisateurs</div>
                 <div class="admin-nav-item" id="nav-orders" onclick="showSection('orders')">Commandes</div>
                 <div class="admin-nav-item" id="nav-products" onclick="showSection('products')">Produits</div>
+                <div class="admin-nav-item" id="nav-promos" onclick="showSection('promos')">Promotions</div>
                 <div class="admin-nav-item" id="nav-ads" onclick="showSection('ads')">Publicités</div>
             </div>
             <div class="admin-nav-item" onclick="location.href='index.html'" style="color: #ff3232; margin-top: 20px; background: rgba(255,50,50,0.05);">Quitter</div>
@@ -412,6 +413,7 @@
             if (name === 'users') renderUsers(view);
             if (name === 'orders') renderOrders(view);
             if (name === 'products') renderProducts(view);
+            if (name === 'promos') renderPromos(view);
             if (name === 'ads') renderAds(view);
         }
 
@@ -432,7 +434,7 @@
             document.getElementById('m-user-phone').textContent = user.phone || '-';
             document.getElementById('m-user-date').textContent  = user.createdAt || 'Date inconnue';
             document.getElementById('m-user-orders').textContent = userOrders.length;
-            document.getElementById('m-user-spent').textContent  = totalSpent.toFixed(2) + ' FCFA';
+            document.getElementById('m-user-spent').textContent  = Math.round(totalSpent) + ' FCFA';
 
             const avatarEl = document.getElementById('m-user-avatar');
             if (user.avatar) {
@@ -621,7 +623,7 @@
                                         <div style="font-size:0.72rem; color:var(--text-dim);">${o.city || ''} ${o.postalCode || ''}</div>
                                     </td>
                                     <td style="max-width:200px">${itemsSummary}</td>
-                                    <td style="color:var(--admin-accent); font-weight:800">${parseFloat(o.total||0).toFixed(2)} FCFA</td>
+                                    <td style="color:var(--admin-accent); font-weight:800">${Math.round(o.total||0)} FCFA</td>
                                     <td>
                                         <span class="badge ${getStatusBadge(o.status)}">${statusLabel}</span>
                                     </td>
@@ -731,6 +733,94 @@
                     </table>
                 </div>
             `;
+        }
+
+        function renderPromos(view, search = '') {
+            const productsOnPromo = db.products.filter(p => p.oldPrice);
+            const allProducts = db.products.filter(p => !p.oldPrice && p.name.toLowerCase().includes(search.toLowerCase()));
+
+            view.innerHTML = `
+                <div class="section-header">
+                    <div><h1>Promotions</h1><p>Gérez les réductions de prix temporaires</p></div>
+                </div>
+
+                <div class="form-panel" style="margin-bottom: 30px;">
+                    <h3>Nouvelle Promotion</h3>
+                    <p style="color:var(--text-dim); font-size:0.85rem; margin-bottom:20px;">Recherchez un produit pour lui appliquer une réduction.</p>
+                    <div class="actions-bar" style="margin-bottom:15px;">
+                        <div class="search-container">
+                            <span class="search-icon">🔍</span>
+                            <input type="text" class="search-bar" placeholder="Rechercher un produit..." value="${search}" oninput="renderPromos(document.getElementById('section-view'), this.value)">
+                        </div>
+                    </div>
+                    
+                    <div class="table-container" style="max-height: 300px; overflow-y: auto; margin-bottom: 20px; ${search ? 'display:block' : 'display:none'}">
+                        <table class="data-table">
+                            <thead><tr><th>Produit</th><th>Prix Actuel</th><th>Nouveau Prix Promo</th><th>Action</th></tr></thead>
+                            <tbody>
+                                ${allProducts.map(p => `
+                                    <tr>
+                                        <td><strong>${p.name}</strong><br><small>${p.anime}</small></td>
+                                        <td>${p.price} FCFA</td>
+                                        <td><input type="number" id="promo-price-${p.id}" placeholder="Ex: ${Math.round(p.price*0.8)}" style="width:120px; padding:8px;"></td>
+                                        <td><button class="btn-primary" style="padding:8px 15px; font-size:0.8rem;" onclick="applyPromo(${p.id})">Appliquer</button></td>
+                                    </tr>
+                                `).join('')}
+                                ${search && allProducts.length === 0 ? '<tr><td colspan="4" style="text-align:center; padding:20px;">Aucun produit trouvé</td></tr>' : ''}
+                            </tbody>
+                        </table>
+                    </div>
+                </div>
+
+                <div class="table-container">
+                    <h3 style="padding:20px 25px; border-bottom:1px solid var(--glass-border);">Produits en Promotion</h3>
+                    <table class="data-table">
+                        <thead><tr><th>Image</th><th>Produit</th><th>Ancien Prix</th><th>Prix Promo</th><th>Réduction</th><th>Actions</th></tr></thead>
+                        <tbody>
+                            ${productsOnPromo.length === 0 ? '<tr><td colspan="6" style="text-align:center; padding:30px; color:var(--text-dim);">Aucune promotion active</td></tr>' : 
+                                productsOnPromo.map(p => {
+                                    const discount = Math.round((1 - p.price / p.oldPrice) * 100);
+                                    return `
+                                    <tr>
+                                        <td><img src="${p.image}" class="prod-img"></td>
+                                        <td><strong>${p.name}</strong></td>
+                                        <td style="text-decoration: line-through; color:var(--text-dim);">${p.oldPrice} FCFA</td>
+                                        <td style="color:var(--admin-accent); font-weight:800;">${p.price} FCFA</td>
+                                        <td><span class="badge badge-danger">-${discount}%</span></td>
+                                        <td>
+                                            <button class="action-btn danger" onclick="removePromo(${p.id})">🗑️ Supprimer la promo</button>
+                                        </td>
+                                    </tr>`;
+                                }).join('')
+                            }
+                        </tbody>
+                    </table>
+                </div>
+            `;
+        }
+
+        function applyPromo(id) {
+            const newPrice = parseFloat(document.getElementById(`promo-price-${id}`).value);
+            if (!newPrice || isNaN(newPrice)) return alert("Veuillez entrer un prix valide");
+            
+            const p = db.products.find(x => x.id === id);
+            if (p) {
+                if (newPrice >= p.price) {
+                    if (!confirm("Le prix promo est supérieur ou égal au prix actuel. Continuer ?")) return;
+                }
+                db.updateProduct(id, { oldPrice: p.price, price: newPrice });
+                showAdminToast(`🔥 Promo appliquée sur "${p.name}"`, 'success');
+                renderPromos(document.getElementById('section-view'));
+            }
+        }
+
+        function removePromo(id) {
+            const p = db.products.find(x => x.id === id);
+            if (p && p.oldPrice) {
+                db.updateProduct(id, { price: p.oldPrice, oldPrice: null });
+                showAdminToast(`✅ Promo retirée pour "${p.name}"`, 'info');
+                renderPromos(document.getElementById('section-view'));
+            }
         }
 
         function toggleNewAnimeInput(val) {
