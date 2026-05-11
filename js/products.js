@@ -16,7 +16,7 @@ const products = [
     badgeColor: "#ff6b00",
     rating: 4.9,
     reviews: 312,
-    inStock: true,
+    stock: 15,
     description: "Figurine haute qualité de Goku en mode Ultra Instinct. 28cm de hauteur, PVC premium.",
     tags: ["goku", "dragon ball", "figure", "ultra instinct"]
   },
@@ -32,7 +32,7 @@ const products = [
     badgeColor: "#00b386",
     rating: 4.8,
     reviews: 187,
-    inStock: true,
+    stock: 15,
     description: "Figurine Tanjiro avec son katana nichirin. Position de combat dynamique.",
     tags: ["tanjiro", "kimetsu no yaiba", "demon slayer", "figure"]
   },
@@ -48,7 +48,7 @@ const products = [
     badgeColor: "#ff3366",
     rating: 4.7,
     reviews: 256,
-    inStock: true,
+    stock: 15,
     description: "Luffy en mode Gear 5 - Nika. Édition limitée collectors.",
     tags: ["luffy", "one piece", "gear 5", "figure"]
   },
@@ -64,7 +64,7 @@ const products = [
     badgeColor: null,
     rating: 4.6,
     reviews: 421,
-    inStock: true,
+    stock: 15,
     description: "Naruto en mode Sage de la Nature. Détails exceptionnels et socle inclu.",
     tags: ["naruto", "sage mode", "naruto shippuden", "figure"]
   },
@@ -80,7 +80,7 @@ const products = [
     badgeColor: "#ff6b00",
     rating: 4.9,
     reviews: 389,
-    inStock: false,
+    stock: 0,
     description: "Itachi Uchiha avec Susanoo partiel. Édition exclusive.",
     tags: ["itachi", "uchiha", "naruto", "figure"]
   },
@@ -96,7 +96,7 @@ const products = [
     badgeColor: "#00b386",
     rating: 4.8,
     reviews: 203,
-    inStock: true,
+    stock: 15,
     description: "Capitaine Levi avec équipement 3D manœuvre. Pose iconique.",
     tags: ["levi", "attack on titan", "shingeki", "figure"]
   },
@@ -114,7 +114,7 @@ const products = [
     badgeColor: "#ff3366",
     rating: 4.7,
     reviews: 456,
-    inStock: true,
+    stock: 15,
     description: "Sweat à capuche Dragon Ball Z, unisexe, tissu premium.",
     tags: ["hoodie", "dragon ball", "goku", "vêtement"]
   },
@@ -130,7 +130,7 @@ const products = [
     badgeColor: "#ff6b00",
     rating: 4.6,
     reviews: 823,
-    inStock: true,
+    stock: 15,
     description: "T-shirt Akatsuki print haute qualité, coton 100%.",
     tags: ["tshirt", "naruto", "akatsuki", "vêtement"]
   },
@@ -146,7 +146,7 @@ const products = [
     badgeColor: "#00b386",
     rating: 4.8,
     reviews: 145,
-    inStock: true,
+    stock: 15,
     description: "Veste style universitaire One Piece avec broderies.",
     tags: ["veste", "one piece", "luffy", "vêtement"]
   },
@@ -164,7 +164,7 @@ const products = [
     badgeColor: null,
     rating: 4.5,
     reviews: 234,
-    inStock: true,
+    stock: 15,
     description: "Sac à dos résistant design One Piece, 30L.",
     tags: ["sac", "one piece", "accessoire"]
   },
@@ -180,7 +180,7 @@ const products = [
     badgeColor: "#ff3366",
     rating: 4.4,
     reviews: 567,
-    inStock: true,
+    stock: 15,
     description: "Casquette brodée symbole Konoha.",
     tags: ["casquette", "naruto", "konoha", "accessoire"]
   },
@@ -196,7 +196,7 @@ const products = [
     badgeColor: "#ff6b00",
     rating: 4.3,
     reviews: 912,
-    inStock: true,
+    stock: 15,
     description: "Set de 12 porte-clés de différents anime populaires.",
     tags: ["porte-clés", "accessoire", "anime", "set"]
   },
@@ -214,7 +214,7 @@ const products = [
     badgeColor: "#00b386",
     rating: 4.7,
     reviews: 345,
-    inStock: true,
+    stock: 15,
     description: "Poster A2 qualité impression photo, papier 200g.",
     tags: ["poster", "aot", "shingeki", "décoration"]
   },
@@ -230,7 +230,7 @@ const products = [
     badgeColor: "#ff3366",
     rating: 4.8,
     reviews: 189,
-    inStock: true,
+    stock: 15,
     description: "Tableau canvas premium 60x40cm Jujutsu Kaisen.",
     tags: ["canvas", "jujutsu kaisen", "gojo", "décoration"]
   },
@@ -246,7 +246,7 @@ const products = [
     badgeColor: "#ff6b00",
     rating: 4.6,
     reviews: 412,
-    inStock: true,
+    stock: 15,
     description: "6 posters A3 personnages Dragon Ball en set collector.",
     tags: ["poster", "dragon ball", "set", "décoration"]
   }

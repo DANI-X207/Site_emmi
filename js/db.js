@@ -188,6 +188,8 @@ const db = {
     order.status          = "en_attente";
     order.cancelRequested = false;
     order.cancelRequestedAt = null;
+    order.userConfirmedReceipt = false;
+    order.stockDecremented = false;
 
     this.orders.push(order);
 
@@ -253,15 +255,45 @@ const db = {
     return true;
   },
 
-  // Cancel order (status -> annulee)
-  cancelOrder(orderId) {
+  confirmOrderReceipt(orderId) {
     const order = this.orders.find(o => o.id === orderId);
-    if (!order) return false;
-    order.status = 'annulee';
-    order.cancelRequested = false;
-    order.cancelRequestedAt = null;
+    if (!order || order.status !== 'livree' || order.userConfirmedReceipt) return false;
+    
+    order.userConfirmedReceipt = true;
+    
+    // Check if we should decrement stock
+    if (order.status === 'livree' && order.userConfirmedReceipt && !order.stockDecremented) {
+        this.decrementStockForOrder(order);
+    }
+    
     this.save();
     return true;
+  },
+
+  decrementStockForOrder(order) {
+    if (order.stockDecremented) return;
+    
+    order.items.forEach(item => {
+        const product = this.products.find(p => p.id === item.productId);
+        if (product) {
+            product.stock = Math.max(0, (product.stock || 0) - item.qty);
+        }
+    });
+    order.stockDecremented = true;
+  },
+
+  // Override updateOrderStatus to check for stock decrement too
+  updateOrderStatus(orderId, newStatus) {
+    const order = this.orders.find(o => o.id === orderId);
+    if (order) { 
+        order.status = newStatus; 
+        if (order.status === 'livree' && order.userConfirmedReceipt && !order.stockDecremented) {
+            this.decrementStockForOrder(order);
+        }
+        this.save(); 
+        return true; 
+    }
+    return false;
   },
 
   getUserOrders(userId) {
@@ -351,7 +383,7 @@ const db = {
     const idx = this.products.findIndex(p => p.id === id);
     if (idx > -1) { this.products.splice(idx, 1); this.save(); return true; } return false;
   },
-  addProductComment(productId, text) {
+  addProductComment(productId, text, rating) {
     const p = this.products.find(x => x.id === productId);
     if (!p) return false;
     if (!p.comments) p.comments = [];
@@ -359,11 +391,32 @@ const db = {
       id: Date.now(),
       user: this.getLoggedUser()?.username || 'Anonyme',
       text: text,
+      rating: parseInt(rating) || 5,
       date: new Date().toLocaleDateString('fr-FR')
     });
     if (p.comments.length > 3) p.comments.shift();
     this.save();
     return true;
+  },
+
+  getProductRatingInfo(productId) {
+    const p = this.products.find(x => x.id === productId);
+    if (!p) return { average: 0, count: 0 };
+    
+    // Use hardcoded base ratings + dynamic comments
+    const baseRating = p.rating || 5;
+    const baseReviews = p.reviews || 0;
+    
+    const comments = p.comments || [];
+    if (comments.length === 0) return { average: baseRating, count: baseReviews };
+    
+    const sum = (baseRating * baseReviews) + comments.reduce((s, c) => s + c.rating, 0);
+    const totalCount = baseReviews + comments.length;
+    
+    return {
+      average: parseFloat((sum / totalCount).toFixed(1)),
+      count: totalCount
+    };
   },
 
   // ========================

@@ -13,3 +13,5 @@
 [2026-05-11 18:02:00] | File: index.html, shop.html | Section: Cart totals | Previous Content: 0.00 € | Action: Changed € to FCFA.
 [2026-05-11 18:09:00] | File: admin.html | Section: Navigation & Sections | Previous Content: No Promotions section | Action: Implemented Promotions section (search, set promo price, remove promo).
 [2026-05-11 18:20:00] | File: multiple files | Section: Price display | Previous Content: .toFixed(2) | Action: Removed decimals from all price displays (integers only). Updated products.js source.
+[2026-05-11 18:32:00] | File: js/db.js, js/main.js, css/style.css | Section: Ratings & Comments | Previous Content: Static ratings, simple comment text | Action: Implemented dynamic star rating calculation, interactive rating picker in modal, and styled comments list with individual ratings.
+[2026-05-11 18:38:00] | File: js/main.js, css/style.css | Section: Comment Form Layout | Previous Content: Stars and input on the same line | Action: Reorganized comment form to have stars on top and input/button below. Set all stars to be yellow (active) by default.

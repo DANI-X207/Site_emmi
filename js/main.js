@@ -304,7 +304,8 @@ function getProductImage(p) {
 
 function productCard(p) {
   const discount = p.oldPrice ? Math.round((1 - p.price / p.oldPrice) * 100) : null;
-  const stars = renderStars(p.rating);
+  const ratingInfo = db.getProductRatingInfo(p.id);
+  const stars = renderStars(ratingInfo.average);
   const img = getProductImage(p);
 
   return `
@@ -405,6 +406,7 @@ function openProductModal(id) {
   if (!modal || !content) return;
 
   const img = getProductImage(p);
+  const ratingInfo = db.getProductRatingInfo(p.id);
 
   content.innerHTML = `
     <div class="modal-product-layout">
@@ -419,8 +421,8 @@ function openProductModal(id) {
         </div>
         <h2 class="modal-title">${p.name}</h2>
         <div class="modal-rating-row">
-          <div class="stars">${renderStars(p.rating)}</div>
-          <span class="modal-reviews-text">${p.rating}/5 — ${p.reviews} avis clients</span>
+          <div class="stars">${renderStars(ratingInfo.average)}</div>
+          <span class="modal-reviews-text">${ratingInfo.average}/5 — ${ratingInfo.count} avis clients</span>
         </div>
         
         <div class="modal-price-section">
@@ -452,20 +454,33 @@ function openProductModal(id) {
         </div>
 
         <div class="modal-comments-section">
-          <h3>Commentaires (${(p.comments || []).length}/3)</h3>
+          <h3>COMMENTAIRES (${(p.comments || []).length}/3)</h3>
           <div class="modal-comments-list" id="modal-comments-list">
             ${(p.comments || []).length > 0 
               ? p.comments.map(c => `
                 <div class="modal-comment-item">
-                  <div class="comment-user">${c.user} <span class="comment-date">${c.date}</span></div>
+                  <div class="comment-header">
+                    <div class="comment-user">${c.user}</div>
+                    <div class="comment-stars">${renderStars(c.rating)}</div>
+                    <div class="comment-date">${c.date}</div>
+                  </div>
                   <div class="comment-text">${c.text}</div>
                 </div>`).join('')
-              : '<p class="no-comments">Soyez le premier à commenter !</p>'
+              : '<p class="no-comments" style="text-align:center; padding:20px; color:var(--gray); font-style:italic;">Soyez le premier à commenter !</p>'
             }
           </div>
           <div class="modal-comment-form">
-            <input type="text" id="new-comment-input" placeholder="Ajouter un commentaire..." maxlength="100">
-            <button onclick="submitProductComment(${p.id})">Poster</button>
+            <div class="rating-picker" id="comment-rating-picker">
+              <span onclick="setCommentRating(1)" class="active">★</span>
+              <span onclick="setCommentRating(2)" class="active">★</span>
+              <span onclick="setCommentRating(3)" class="active">★</span>
+              <span onclick="setCommentRating(4)" class="active">★</span>
+              <span onclick="setCommentRating(5)" class="active">★</span>
+            </div>
+            <div class="comment-input-row">
+              <input type="text" id="new-comment-input" placeholder="Ajouter un commentaire..." maxlength="100">
+              <button onclick="submitProductComment(${p.id})">Poster</button>
+            </div>
           </div>
         </div>
       </div>
@@ -781,11 +796,23 @@ function renderAdCard(ad) {
   `;
 }
 
+let currentCommentRating = 5;
+
+function setCommentRating(rating) {
+  currentCommentRating = rating;
+  const stars = document.querySelectorAll('#comment-rating-picker span');
+  stars.forEach((s, idx) => {
+    if (idx < rating) s.classList.add('active');
+    else s.classList.remove('active');
+  });
+}
+
 function submitProductComment(productId) {
   const input = document.getElementById('new-comment-input');
   if (!input || !input.value.trim()) return;
 
-  if (db.addProductComment(productId, input.value.trim())) {
+  if (db.addProductComment(productId, input.value.trim(), currentCommentRating)) {
     openProductModal(productId); // Refresh modal
+    currentCommentRating = 5; // Reset
   }
 }

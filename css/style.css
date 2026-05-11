@@ -595,6 +595,102 @@ nav .container {
 .star.full { color: #ffcc00; }
 .star.empty { color: #333; }
 
+/* Comment Rating Picker */
+.rating-picker {
+    display: flex;
+    gap: 5px;
+    margin-bottom: 10px;
+}
+.rating-picker span {
+    font-size: 1.5rem;
+    cursor: pointer;
+    color: #333;
+    transition: var(--transition);
+}
+.rating-picker span.active, .rating-picker span:hover {
+    color: #ffcc00;
+}
+
+.modal-comments-section {
+    margin-top: 30px;
+    border-top: 1px solid var(--glass-border);
+    padding-top: 25px;
+}
+.modal-comments-section h3 {
+    font-size: 0.9rem;
+    font-weight: 900;
+    margin-bottom: 15px;
+    color: white;
+}
+.modal-comments-list {
+    max-height: 250px;
+    overflow-y: auto;
+    margin-bottom: 20px;
+    display: flex;
+    flex-direction: column;
+    gap: 15px;
+    padding-right: 10px;
+}
+.modal-comment-item {
+    background: rgba(255,255,255,0.03);
+    border-radius: 12px;
+    padding: 15px;
+    border: 1px solid var(--glass-border);
+}
+.comment-header {
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    margin-bottom: 8px;
+}
+.comment-user {
+    font-weight: 800;
+    font-size: 0.85rem;
+}
+.comment-stars .star {
+    font-size: 0.75rem;
+}
+.comment-date {
+    font-size: 0.7rem;
+    color: var(--text-dim);
+}
+.comment-text {
+    font-size: 0.85rem;
+    line-height: 1.5;
+    color: var(--gray);
+}
+.modal-comment-form {
+    display: flex;
+    flex-direction: column;
+    gap: 12px;
+}
+.comment-input-row {
+    display: flex;
+    gap: 10px;
+}
+.modal-comment-form input {
+    flex: 1;
+    background: var(--black);
+    border: 1px solid var(--glass-border);
+    border-radius: 10px;
+    padding: 10px 15px;
+    color: white;
+    font-size: 0.85rem;
+}
+.modal-comment-form button {
+    background: var(--orange);
+    color: white;
+    border: none;
+    border-radius: 10px;
+    padding: 10px 20px;
+    font-weight: 800;
+    cursor: pointer;
+    transition: var(--transition);
+}
+.modal-comment-form button:hover {
+    background: var(--orange-light);
+}
+
 /* --- Cart Sidebar --- */
 .cart-overlay {
   position: fixed;
