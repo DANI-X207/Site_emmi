@@ -1,4 +1,4 @@
-﻿<!DOCTYPE html>
+<!DOCTYPE html>
 <html lang="fr">
 <head>
     <meta charset="UTF-8">
@@ -379,7 +379,7 @@
                 ${progressHtml}
                 <div class="order-items">${itemsHtml}</div>
                 <div class="order-card-footer">
-                    <div class="order-total-text">Total : <span>${o.total?.toFixed(2)} €</span></div>
+                    <div class="order-total-text">Total : <span>${o.total?.toFixed(2)} FCFA</span></div>
                     <div class="order-actions">${actionsHtml}</div>
                 </div>
             </div>`;
@@ -467,7 +467,7 @@
         <div class="cart-footer">
             <div class="total-row">
                 <span>Total</span>
-                <span id="cart-total">0.00 €</span>
+                <span id="cart-total">0.00 FCFA</span>
             </div>
             <button class="btn-primary" style="width:100%;" onclick="cart.checkout()">Passer à la caisse</button>
         </div>

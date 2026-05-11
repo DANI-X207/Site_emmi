@@ -99,7 +99,7 @@ class Cart {
           <p>Votre panier est vide</p>
           <small>Découvrez nos produits otaku !</small>
         </div>`;
-      if (totalEl) totalEl.textContent = '0.00 €';
+      if (totalEl) totalEl.textContent = '0.00 FCFA';
       return;
     }
 
@@ -115,7 +115,7 @@ class Cart {
           <div class="cart-item-info">
             <div class="cart-item-name">${p.name}</div>
             <div class="cart-item-anime">${p.anime}</div>
-            <div class="cart-item-price">${(p.price * item.qty).toFixed(2)} €</div>
+            <div class="cart-item-price">${(p.price * item.qty).toFixed(2)} FCFA</div>
             <div class="cart-item-controls">
               <button onclick="cart.updateQty(${p.id}, -1)" class="qty-btn">−</button>
               <span class="qty-val">${item.qty}</span>
@@ -126,7 +126,7 @@ class Cart {
         </div>`;
     }).join('');
 
-    if (totalEl) totalEl.textContent = this.getTotal().toFixed(2) + ' €';
+    if (totalEl) totalEl.textContent = this.getTotal().toFixed(2) + ' FCFA';
   }
 
   openSidebar() {

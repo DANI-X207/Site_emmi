@@ -2,4 +2,12 @@
 # Format: [Date Time] | File: [Filename] | Section: [Section] | Previous Content: [Content]
 
 [2026-05-11 17:48:00] | File: N/A | Section: Initialization | Previous Content: N/A | Action: Created log file as requested.
-[2026-05-11 17:52:00] | File: vitrine.html | Section: Hero Showcase Images | Previous Content: <img src=" images/luffy.jpg\ ...> <img src=\images/zoro.jpg\ ...> | Action: Added IDs hero-showcase-1 and hero-showcase-2 to enable dynamic image rotation.
+[2026-05-11 17:52:00] | File: vitrine.html | Section: Hero Showcase Images | Previous Content: <img src="images/luffy.jpg"...> <img src="images/zoro.jpg"...> | Action: Added IDs hero-showcase-1 and hero-showcase-2 to enable dynamic image rotation.
+[2026-05-11 18:02:00] | File: js/main.js | Section: Currency formatting | Previous Content: ${p.price.toFixed(2)}€ | Action: Changed € to FCFA.
+[2026-05-11 18:02:00] | File: js/cart.js | Section: Cart totals | Previous Content: '0.00 €', toFixed(2) + ' €' | Action: Changed € to FCFA.
+[2026-05-11 18:02:00] | File: js/db.js | Section: Announcements | Previous Content: dès 60€ d'achat | Action: Changed € to FCFA.
+[2026-05-11 18:02:00] | File: panier.html | Section: Summary & Items | Previous Content: 0.00 €, 5.99 € | Action: Changed € to FCFA.
+[2026-05-11 18:02:00] | File: admin.html | Section: Dashboard & Forms | Previous Content: Revenu: ${stats.totalRevenue}€, Prix (€) | Action: Changed € to FCFA.
+[2026-05-11 18:02:00] | File: commandes.html | Section: Order List | Previous Content: Total : <span>${o.total?.toFixed(2)} €</span> | Action: Changed € to FCFA.
+[2026-05-11 18:02:00] | File: vitrine.html | Section: Features Strip | Previous Content: offerte dès 60€ | Action: Changed € to FCFA.
+[2026-05-11 18:02:00] | File: index.html, shop.html | Section: Cart totals | Previous Content: 0.00 € | Action: Changed € to FCFA.

@@ -337,7 +337,7 @@
                     <div class="stat-label">Commandes</div>
                 </div>
                 <div class="stat-item">
-                    <div class="stat-val" id="m-user-spent">0.00 €</div>
+                    <div class="stat-val" id="m-user-spent">0.00 FCFA</div>
                     <div class="stat-label">Dépensé</div>
                 </div>
             </div>
@@ -432,7 +432,7 @@
             document.getElementById('m-user-phone').textContent = user.phone || '-';
             document.getElementById('m-user-date').textContent  = user.createdAt || 'Date inconnue';
             document.getElementById('m-user-orders').textContent = userOrders.length;
-            document.getElementById('m-user-spent').textContent  = totalSpent.toFixed(2) + ' €';
+            document.getElementById('m-user-spent').textContent  = totalSpent.toFixed(2) + ' FCFA';
 
             const avatarEl = document.getElementById('m-user-avatar');
             if (user.avatar) {
@@ -461,7 +461,7 @@
                     <div><h1>Dashboard</h1><p>Aperçu des performances de la boutique</p></div>
                 </div>
                 <div class="stats-grid">
-                    <div class="stat-card" onclick="showSection('orders')"><h4>Revenu</h4><div class="value">${stats.totalRevenue}€</div></div>
+                    <div class="stat-card" onclick="showSection('orders')"><h4>Revenu</h4><div class="value">${stats.totalRevenue} FCFA</div></div>
                     <div class="stat-card" onclick="showSection('orders')"><h4>Commandes</h4><div class="value">${stats.totalOrders}</div></div>
                     <div class="stat-card" onclick="showSection('users')"><h4>Clients</h4><div class="value">${stats.totalCustomers}</div></div>
                     <div class="stat-card" onclick="showSection('products')"><h4>Produits</h4><div class="value">${stats.totalProducts}</div></div>
@@ -621,7 +621,7 @@
                                         <div style="font-size:0.72rem; color:var(--text-dim);">${o.city || ''} ${o.postalCode || ''}</div>
                                     </td>
                                     <td style="max-width:200px">${itemsSummary}</td>
-                                    <td style="color:var(--admin-accent); font-weight:800">${parseFloat(o.total||0).toFixed(2)} €</td>
+                                    <td style="color:var(--admin-accent); font-weight:800">${parseFloat(o.total||0).toFixed(2)} FCFA</td>
                                     <td>
                                         <span class="badge ${getStatusBadge(o.status)}">${statusLabel}</span>
                                     </td>
@@ -702,7 +702,7 @@
                             </select>
                             <input type="text" id="prod-anime-new" placeholder="Nom de la nouvelle série" style="display:none; margin-top:10px;">
                         </div>
-                        <div class="form-group"><label>Prix (€)</label><input type="number" id="prod-price" step="0.01"></div>
+                        <div class="form-group"><label>Prix (FCFA)</label><input type="number" id="prod-price" step="0.01"></div>
                         <div class="form-group"><label>Image</label><input type="file" onchange="previewImage(this)"><input type="hidden" id="prod-image-data"></div>
                     </div>
                     <div id="image-preview-container" style="margin-bottom:20px; display:none;"><img id="image-preview" class="prod-img" style="width:100px; height:100px;"></div>
@@ -720,7 +720,7 @@
                                     <td style="white-space:normal; font-weight:700">${p.name}</td>
                                     <td><span class="badge" style="background:rgba(255,255,255,0.05); color:#ccc;">${p.anime || '-'}</span></td>
                                     <td><span class="badge badge-info">${p.category}</span></td>
-                                    <td style="color:var(--admin-accent); font-weight:800">${p.price}€</td>
+                                    <td style="color:var(--admin-accent); font-weight:800">${p.price} FCFA</td>
                                     <td>
                                         <button class="action-btn" onclick="editProduct(${p.id})">✏️</button>
                                         <button class="action-btn danger" onclick="if(confirm('Supprimer?')){db.deleteProduct(${p.id}); renderProducts(document.getElementById('section-view'))}">🗑️</button>

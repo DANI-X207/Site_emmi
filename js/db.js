@@ -19,7 +19,7 @@ const db = {
   // --- Announcements / Ads ---
   announcements: JSON.parse(localStorage.getItem('slj_announcements')) || [
     { id: 1, type: "banner", title: "🔥 Soldes Printemps 2026", content: "Jusqu'à -40% sur les figurines sélectionnées !", active: true, color: "#ff6b00", createdAt: "2026-05-01" },
-    { id: 2, type: "promo",  title: "Livraison Gratuite",       content: "Livraison offerte dès 60€ d'achat.",                 active: true, color: "#ff6b00", createdAt: "2026-05-02" }
+    { id: 2, type: "promo",  title: "Livraison Gratuite",       content: "Livraison offerte dès 60 FCFA d'achat.",                 active: true, color: "#ff6b00", createdAt: "2026-05-02" }
   ],
 
   // --- Hero Slides (Banners) ---
@@ -195,7 +195,7 @@ const db = {
     this.adminNotifications.unshift({
       id: Date.now(),
       type: 'order_placed',
-      message: `Nouvelle commande ${order.id} de ${order.username} (${order.total}€).`,
+      message: `Nouvelle commande ${order.id} de ${order.username} (${order.total} FCFA).`,
       date: new Date().toLocaleString(),
       read: false
     });
