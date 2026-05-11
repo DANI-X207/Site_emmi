@@ -20,7 +20,7 @@ class Cart {
   add(productId) {
     const sourceProducts = this.getProducts();
     const product = sourceProducts.find(p => p.id === productId);
-    if (!product || !product.inStock) return;
+    if (!product || product.stock <= 0) return;
 
     const existing = this.items.find(i => i.id === productId);
     if (existing) {
@@ -42,6 +42,11 @@ class Cart {
   updateQty(productId, delta) {
     const item = this.items.find(i => i.id === productId);
     if (!item) return;
+    const p = this.getProducts().find(x => x.id === productId);
+    if (delta > 0 && p && item.qty >= p.stock) {
+        alert("Stock insuffisant pour cet article.");
+        return;
+    }
     item.qty = Math.max(1, item.qty + delta);
     this.save();
     this.renderSidebar();

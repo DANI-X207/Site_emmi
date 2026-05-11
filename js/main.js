@@ -313,7 +313,7 @@ function productCard(p) {
       <div class="product-img-wrap">
         <div class="product-img-overlay"></div>
         <img src="${img}" alt="${p.name}" loading="lazy" class="main-img">
-        ${!p.inStock ? '<div class="out-of-stock-overlay"><span>Épuisé</span></div>' : ''}
+        ${p.stock <= 0 ? '<div class="out-of-stock-overlay"><span>Stock Épuisé</span></div>' : ''}
         
         <div class="card-quick-actions">
            <button class="quick-action-btn" onclick="event.stopPropagation(); cart.add(${p.id})" title="Ajouter au panier">
@@ -412,7 +412,7 @@ function openProductModal(id) {
     <div class="modal-product-layout">
       <div class="modal-product-gallery">
         <img src="${img}" alt="${p.name}" class="modal-main-img">
-        ${!p.inStock ? '<div class="out-of-stock-overlay"><span>Épuisé</span></div>' : ''}
+        ${p.stock <= 0 ? '<div class="out-of-stock-overlay"><span>Stock Épuisé</span></div>' : ''}
       </div>
       <div class="modal-product-info">
         <div class="modal-meta-row">
@@ -432,8 +432,8 @@ function openProductModal(id) {
 
         <p class="modal-description">${p.description || 'Un article incontournable pour tout collectionneur otaku. Qualité premium garantie.'}</p>
         
-        <div class="modal-stock-status ${p.inStock ? 'in' : 'out'}">
-          ${p.inStock ? '<span>●</span> En stock' : '<span>●</span> Rupture de stock'}
+        <div class="modal-stock-status ${p.stock > 0 ? 'in' : 'out'}">
+          ${p.stock > 0 ? `<span>●</span> En stock (${p.stock} unités)` : '<span>●</span> Stock Épuisé'}
         </div>
 
         <div class="modal-purchase-controls">
@@ -442,10 +442,10 @@ function openProductModal(id) {
             <span id="modal-qty" class="qty-val">1</span>
             <button class="qty-ctrl" id="modal-qty-plus">+</button>
           </div>
-          <button class="btn-add-to-cart ${!p.inStock ? 'disabled' : ''}" 
-            onclick="${p.inStock ? `addModalToCart(${p.id})` : ''}" 
-            ${!p.inStock ? 'disabled' : ''}>
-            ${p.inStock ? 'AJOUTER AU PANIER' : 'INDISPONIBLE'}
+          <button class="btn-add-to-cart ${p.stock <= 0 ? 'disabled' : ''}" 
+            onclick="${p.stock > 0 ? `addModalToCart(${p.id})` : ''}" 
+            ${p.stock <= 0 ? 'disabled' : ''}>
+            ${p.stock > 0 ? 'AJOUTER AU PANIER' : 'INDISPONIBLE'}
           </button>
         </div>
 
@@ -492,6 +492,10 @@ function openProductModal(id) {
     document.getElementById('modal-qty').textContent = qty;
   });
   document.getElementById('modal-qty-plus')?.addEventListener('click', () => {
+    if (qty >= p.stock) {
+        alert("Stock maximum atteint.");
+        return;
+    }
     qty++;
     document.getElementById('modal-qty').textContent = qty;
   });
@@ -502,7 +506,27 @@ function openProductModal(id) {
 
 function addModalToCart(id) {
   const qty = parseInt(document.getElementById('modal-qty')?.textContent || '1');
-  for (let i = 0; i < qty; i++) cart.add(id);
+  const sourceProducts = (typeof db !== 'undefined' && db.products) ? db.products : products;
+  const p = sourceProducts.find(x => x.id === id);
+  
+  if (p && qty > p.stock) {
+      alert("Stock insuffisant.");
+      return;
+  }
+  
+  // Add to cart items
+  const existing = cart.items.find(i => i.id === id);
+  if (existing) {
+      if (existing.qty + qty > p.stock) {
+          alert("Vous avez déjà atteint la limite de stock dans votre panier.");
+          return;
+      }
+      existing.qty += qty;
+  } else {
+      cart.items.push({ id: id, qty: qty });
+  }
+  
+  cart.save();
   closeModal('product-modal');
   cart.openSidebar();
 }

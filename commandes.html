@@ -351,10 +351,13 @@
                     <svg width="12" height="12" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5"><circle cx="12" cy="12" r="10"></circle><line x1="15" y1="9" x2="9" y2="15"></line><line x1="9" y1="9" x2="15" y2="15"></line></svg>
                     Annuler la commande
                 </button>`;
-            } else if (o.cancelRequested && !cancelExpired) {
+            } else if (status === 'livree' && !o.userConfirmedReceipt) {
                 actionsHtml = `
-                    <div class="cancel-countdown"><div class="dot"></div>Annulation effective dans <span id="cd-${o.id}">--:--</span></div>
-                    <button class="btn-undo-cancel" onclick="doUndoCancel('${o.id}')">↩ Ne pas annuler</button>`;
+                <button class="btn-undo-cancel" style="border-color:#00b386; color:#00b386; background:rgba(0,179,134,0.08);" onclick="doConfirmReceipt('${o.id}')">
+                    ✅ Confirmer la réception
+                </button>`;
+            } else if (status === 'livree' && o.userConfirmedReceipt) {
+                actionsHtml = `<div class="cancel-expired-msg" style="color:#00b386; font-weight:800;">Réception confirmée ✓</div>`;
             } else if (cancelExpired || isAnnulee) {
                 actionsHtml = isAnnulee 
                     ? `<div class="cancel-expired-msg" style="color:#ff3366;">Commande annulée</div>`
@@ -391,6 +394,13 @@
                 renderOrders();
                 const o = db.orders.find(x => x.id === orderId);
                 if (o) startCountdown(o);
+            }
+        }
+
+        function doConfirmReceipt(orderId) {
+            if (confirm("Confirmez-vous avoir reçu cette commande ? Cela finalisera la transaction.")) {
+                const ok = db.confirmOrderReceipt(orderId);
+                if (ok) renderOrders();
             }
         }
 

@@ -704,7 +704,8 @@
                             </select>
                             <input type="text" id="prod-anime-new" placeholder="Nom de la nouvelle série" style="display:none; margin-top:10px;">
                         </div>
-                        <div class="form-group"><label>Prix (FCFA)</label><input type="number" id="prod-price" step="0.01"></div>
+                        <div class="form-group"><label>Prix (FCFA)</label><input type="number" id="prod-price" step="1"></div>
+                        <div class="form-group"><label>Stock (unités)</label><input type="number" id="prod-stock" step="1" value="0"></div>
                         <div class="form-group"><label>Image</label><input type="file" onchange="previewImage(this)"><input type="hidden" id="prod-image-data"></div>
                     </div>
                     <div id="image-preview-container" style="margin-bottom:20px; display:none;"><img id="image-preview" class="prod-img" style="width:100px; height:100px;"></div>
@@ -714,7 +715,7 @@
 
                 <div class="table-container">
                     <table class="data-table">
-                        <thead><tr><th class="col-image">Image</th><th>Nom</th><th>Série</th><th>Catégorie</th><th>Prix</th><th class="col-actions">Actions</th></tr></thead>
+                        <thead><tr><th class="col-image">Image</th><th>Nom</th><th>Série</th><th>Catégorie</th><th>Prix</th><th>Stock</th><th class="col-actions">Actions</th></tr></thead>
                         <tbody>
                             ${db.products.map(p => `
                                 <tr>
@@ -722,7 +723,8 @@
                                     <td style="white-space:normal; font-weight:700">${p.name}</td>
                                     <td><span class="badge" style="background:rgba(255,255,255,0.05); color:#ccc;">${p.anime || '-'}</span></td>
                                     <td><span class="badge badge-info">${p.category}</span></td>
-                                    <td style="color:var(--admin-accent); font-weight:800">${p.price} FCFA</td>
+                                    <td style="color:var(--admin-accent); font-weight:800">${Math.round(p.price)} FCFA</td>
+                                    <td><span class="badge ${p.stock > 0 ? 'badge-success' : 'badge-danger'}">${p.stock || 0}</span></td>
                                     <td>
                                         <button class="action-btn" onclick="editProduct(${p.id})">✏️</button>
                                         <button class="action-btn danger" onclick="if(confirm('Supprimer?')){db.deleteProduct(${p.id}); renderProducts(document.getElementById('section-view'))}">🗑️</button>
@@ -830,22 +832,24 @@
 
         function saveProduct() {
             const id = document.getElementById('edit-prod-id').value;
-            let anime = document.getElementById('prod-anime-select').value;
+            const animeSelect = document.getElementById('prod-anime-select');
+            let anime = animeSelect.value;
             if (anime === 'NEW') {
                 anime = document.getElementById('prod-anime-new').value;
             }
 
             const name = document.getElementById('prod-name').value;
             const price = parseFloat(document.getElementById('prod-price').value);
+            const stock = parseInt(document.getElementById('prod-stock').value) || 0;
             const category = document.getElementById('prod-category').value;
             const image = document.getElementById('prod-image-data').value;
 
-            if (!name || !price || !anime) {
+            if (!name || isNaN(price) || !anime) {
                 alert("Veuillez remplir le nom, le prix et la série.");
                 return;
             }
 
-            const data = { name, price, category, anime, image: image || (id ? db.products.find(x=>x.id==id).image : '') };
+            const data = { name, price, stock, category, anime, image: image || (id ? db.products.find(x=>x.id==id).image : '') };
             
             if(id) db.updateProduct(parseInt(id), data);
             else db.addProduct(data);
@@ -861,6 +865,7 @@
                 document.getElementById('edit-prod-id').value = p.id;
                 document.getElementById('prod-name').value = p.name;
                 document.getElementById('prod-price').value = p.price;
+                document.getElementById('prod-stock').value = p.stock || 0;
                 document.getElementById('prod-category').value = p.category;
                 
                 const animeSelect = document.getElementById('prod-anime-select');
