@@ -290,7 +290,6 @@
                 <div class="admin-nav-item" id="nav-products" onclick="showSection('products')">Produits</div>
                 <div class="admin-nav-item" id="nav-promos" onclick="showSection('promos')">Promotions</div>
                 <div class="admin-nav-item" id="nav-ads" onclick="showSection('ads')">Publicités</div>
-                <div class="admin-nav-item" onclick="location.href='parametres.html'">Paramètres</div>
             </div>
             <div class="admin-nav-item" onclick="location.href='index.html'" style="color: #ff3232; margin-top: 20px; background: rgba(255,50,50,0.05);">Quitter</div>
         </aside>
@@ -346,6 +345,68 @@
         </div>
     </div>
 
+    <!-- Order Details Modal -->
+    <div class="modal-overlay" id="order-modal-overlay" onclick="closeOrderModal()">
+        <div class="user-profile-card" onclick="event.stopPropagation()" style="max-width: 500px;">
+            <button class="modal-close" onclick="closeOrderModal()">×</button>
+            <div class="user-card-header">
+                <h2 id="m-order-id">#ORD-000</h2>
+                <div class="user-card-role" id="m-order-status">STATUT</div>
+            </div>
+            <div class="user-card-body" style="max-height: 400px; overflow-y: auto;">
+                <div style="margin-bottom: 20px;">
+                    <h4 style="font-size: 0.8rem; color: var(--orange); margin-bottom: 10px; text-transform: uppercase;">Client</h4>
+                    <div id="m-order-client-info" style="font-size: 0.9rem; line-height: 1.4;"></div>
+                </div>
+                <div style="margin-bottom: 20px;">
+                    <h4 style="font-size: 0.8rem; color: var(--orange); margin-bottom: 10px; text-transform: uppercase;">Articles</h4>
+                    <div id="m-order-items" style="display: flex; flex-direction: column; gap: 8px;"></div>
+                </div>
+                <div class="info-item">
+                    <span class="label">Total</span>
+                    <span class="value" id="m-order-total">0 FCFA</span>
+                </div>
+                <div class="info-item">
+                    <span class="label">Date</span>
+                    <span class="value" id="m-order-date">-</span>
+                </div>
+                <div id="m-order-conf-receipt" style="display:none; margin-top:15px; padding:10px; background:rgba(0,255,0,0.05); border-radius:10px; font-size:0.8rem; color:#00ff00; text-align:center; border:1px solid rgba(0,255,0,0.2);">
+                    ✅ Réception confirmée par le client
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <!-- Ad/Banner Info Modal -->
+    <div class="modal-overlay" id="ad-info-modal-overlay" onclick="closeAdInfoModal()">
+        <div class="user-profile-card" onclick="event.stopPropagation()">
+            <button class="modal-close" onclick="closeAdInfoModal()">×</button>
+            <div class="user-card-header">
+                <h2 id="m-ad-title">Titre Pub</h2>
+                <div class="user-card-role" id="m-ad-type">TYPE</div>
+            </div>
+            <div class="user-card-body">
+                <div id="m-ad-preview" style="width:100%; height:180px; border-radius:15px; overflow:hidden; margin-bottom:20px; border:1px solid var(--glass-border);">
+                    <img src="" style="width:100%; height:100%; object-fit:cover;" id="m-ad-img">
+                </div>
+                <div class="info-item">
+                    <span class="label">Badge</span>
+                    <span class="value" id="m-ad-badge">-</span>
+                </div>
+                <div class="info-item">
+                    <span class="label">Sous-titre</span>
+                    <span class="value" id="m-ad-subtitle">-</span>
+                </div>
+                <div class="info-item">
+                    <span class="label">Lien</span>
+                    <span class="value" id="m-ad-link">-</span>
+                </div>
+            </div>
+            <button class="btn-primary" style="width:100%;" id="m-ad-edit-btn">Modifier</button>
+        </div>
+    </div>
+
+
     <style>
         .modal-overlay {
             position: fixed; inset: 0; background: rgba(0,0,0,0.8); backdrop-filter: blur(8px);
@@ -388,6 +449,12 @@
         .stat-item { text-align: center; }
         .stat-val { font-size: 1.2rem; font-weight: 900; color: var(--orange); }
         .stat-label { font-size: 0.72rem; color: var(--gray); font-weight: 600; text-transform: uppercase; }
+
+        /* Clickable Rows */
+        .clickable-row { cursor: pointer; transition: background 0.2s; }
+        .clickable-row:hover { background: rgba(255,107,0,0.03) !important; }
+        .clickable-row td:first-child { border-left: 2px solid transparent; transition: 0.2s; }
+        .clickable-row:hover td:first-child { border-left-color: var(--orange); }
     </style>
 
     <script src="js/theme.js"></script>
@@ -456,6 +523,73 @@
             setTimeout(() => modal.style.display = 'none', 300);
         }
 
+        function openOrderModal(id) {
+            const o = db.orders.find(x => x.id === id);
+            if(!o) return;
+            document.getElementById('m-order-id').textContent = '#' + o.id;
+            document.getElementById('m-order-status').textContent = ADMIN_STATUS_LABELS[o.status] || o.status;
+            document.getElementById('m-order-total').textContent = Math.round(o.total) + ' FCFA';
+            document.getElementById('m-order-date').textContent = o.date;
+            
+            document.getElementById('m-order-client-info').innerHTML = `
+                <strong>${o.username || 'Client'}</strong><br>
+                ${o.email || ''}<br>
+                ${o.city || ''} ${o.postalCode || ''}
+            `;
+
+            document.getElementById('m-order-items').innerHTML = (o.items || []).map(i => `
+                <div style="display:flex; justify-content:space-between; align-items:center; background:rgba(255,255,255,0.02); padding:8px 12px; border-radius:10px;">
+                    <div style="font-size:0.85rem;"><strong>${i.qty}x</strong> ${i.name}</div>
+                    <div style="font-weight:700; color:var(--orange);">${Math.round(i.price * i.qty)} FCFA</div>
+                </div>
+            `).join('');
+
+            document.getElementById('m-order-conf-receipt').style.display = o.userConfirmedReceipt ? 'block' : 'none';
+            
+            const modal = document.getElementById('order-modal-overlay');
+            modal.style.display = 'flex';
+            setTimeout(() => modal.classList.add('show'), 10);
+        }
+
+        function closeOrderModal() {
+            const modal = document.getElementById('order-modal-overlay');
+            modal.classList.remove('show');
+            setTimeout(() => modal.style.display = 'none', 300);
+        }
+
+        function openAdInfoModal(type, id) {
+            let ad;
+            if(type === 'hero') ad = db.heroSlides.find(x => x.id === id);
+            else ad = db.ads.find(x => x.id === id);
+            if(!ad) return;
+            
+            document.getElementById('m-ad-title').textContent = (ad.title || '').replace(/<[^>]*>?/gm, '');
+            document.getElementById('m-ad-type').textContent = type === 'hero' ? 'Bannière Hero' : 'Publicité Trending';
+            document.getElementById('m-ad-badge').textContent = ad.badge || '-';
+            document.getElementById('m-ad-subtitle').textContent = ad.subtitle || ad.content || '-';
+            document.getElementById('m-ad-link').textContent = ad.link || '-';
+            document.getElementById('m-ad-img').src = ad.image || ad.bg;
+            
+            // Set edit button action
+            const editBtn = document.getElementById('m-ad-edit-btn');
+            editBtn.onclick = () => {
+                closeAdInfoModal();
+                editAd(type, id);
+            };
+
+            const modal = document.getElementById('ad-info-modal-overlay');
+
+            modal.style.display = 'flex';
+            setTimeout(() => modal.classList.add('show'), 10);
+        }
+
+        function closeAdInfoModal() {
+            const modal = document.getElementById('ad-info-modal-overlay');
+            modal.classList.remove('show');
+            setTimeout(() => modal.style.display = 'none', 300);
+        }
+
+
         // --- Global Sync ---
 
         function renderDashboard(view) {
@@ -514,9 +648,9 @@
                         <thead><tr><th>Nom</th><th>Email</th><th>Ville</th><th class="col-status">Statut</th><th class="col-actions">Actions</th></tr></thead>
                         <tbody>
                             ${filtered.map(u => `
-                                <tr>
+                                <tr class="clickable-row" onclick="openUserModal(${u.id})">
                                     <td style="font-weight:700">
-                                        <span style="cursor:pointer; color:var(--orange); text-decoration:underline; text-underline-offset:3px;" onclick="openUserModal(${u.id})">
+                                        <span style="color:var(--orange); text-decoration:underline; text-underline-offset:3px;">
                                             ${u.username}
                                         </span>
                                     </td>
@@ -540,17 +674,35 @@
         }
 
         const ADMIN_STATUS_ORDER = ['en_attente','confirmee','en_preparation','expediee','livree'];
-        const ADMIN_STATUS_LABELS = { en_attente:'En attente', confirmee:'Confirmée', en_preparation:'En préparation', expediee:'Expédiée', livree:'Livrée', annulee:'Annulée' };
-        const ADMIN_STATUS_NEXT  = { en_attente:'Confirmer', confirmee:'Mettre en préparation', en_preparation:'Marquer expédiée', expediee:'Marquer livrée' };
+        const ADMIN_STATUS_LABELS = {
+            'en_attente': 'Nouvelle',
+            'confirmee': 'Confirmée',
+            'en_preparation': 'En Préparation',
+            'expediee': 'En Transit',
+            'livree': 'Livrée',
+            'annulee': 'Annulée'
+        };
+        const ADMIN_STATUS_NEXT = {
+            'en_attente': 'Confirmer',
+            'confirmee': 'Préparer',
+            'en_preparation': 'Expédier',
+            'expediee': 'Livrer'
+        };
 
         function renderOrders(view, search = '', filter = 'all') {
             const filtered = db.orders.filter(o => {
-                const q = search.toLowerCase();
-                const matchSearch = (o.username || '').toLowerCase().includes(q) || o.id.toString().includes(q) || (o.email||'').toLowerCase().includes(q);
+                const s = search.toLowerCase();
+                const matchSearch = !search || 
+                    o.id.toString().toLowerCase().includes(s) || 
+                    (o.username || '').toLowerCase().includes(s) || 
+                    (o.email || '').toLowerCase().includes(s);
+
                 let matchFilter = true;
                 if (filter === 'pending')   matchFilter = o.status === 'en_attente';
-                if (filter === 'validated') matchFilter = ['confirmee', 'en_preparation', 'expediee'].includes(o.status);
-                if (filter === 'delivered') matchFilter = o.status === 'livree';
+                if (filter === 'prep')      matchFilter = ['confirmee', 'en_preparation'].includes(o.status);
+                if (filter === 'shipping')  matchFilter = o.status === 'expediee';
+                if (filter === 'finalized') matchFilter = o.status === 'livree' && o.userConfirmedReceipt === true;
+                if (filter === 'delivered') matchFilter = o.status === 'livree' && !o.userConfirmedReceipt;
                 if (filter === 'canceled')  matchFilter = o.status === 'annulee';
                 return matchSearch && matchFilter;
             }).sort((a,b) => (b.createdAt||0) - (a.createdAt||0));
@@ -562,11 +714,13 @@
                     <div><h1>Commandes</h1><p>Suivi des ventes et livraisons</p></div>
                 </div>
 
-                <div style="display:flex; gap:10px; margin-bottom:25px;">
+                <div style="display:flex; gap:10px; margin-bottom:25px; flex-wrap: wrap;">
                     <button class="action-btn ${filter==='all'?'active':''}" onclick="renderOrders(document.getElementById('section-view'), '', 'all')">Toutes</button>
-                    <button class="action-btn ${filter==='pending'?'active':''}" onclick="renderOrders(document.getElementById('section-view'), '', 'pending')">En attente</button>
-                    <button class="action-btn ${filter==='validated'?'active':''}" onclick="renderOrders(document.getElementById('section-view'), '', 'validated')">En cours</button>
-                    <button class="action-btn ${filter==='delivered'?'active':''}" onclick="renderOrders(document.getElementById('section-view'), '', 'delivered')">Livrées</button>
+                    <button class="action-btn ${filter==='pending'?'active':''}" onclick="renderOrders(document.getElementById('section-view'), '', 'pending')">Nouvelles</button>
+                    <button class="action-btn ${filter==='prep'?'active':''}" onclick="renderOrders(document.getElementById('section-view'), '', 'prep')">Préparation</button>
+                    <button class="action-btn ${filter==='shipping'?'active':''}" onclick="renderOrders(document.getElementById('section-view'), '', 'shipping')">En Transit</button>
+                    <button class="action-btn ${filter==='delivered'?'active':''}" onclick="renderOrders(document.getElementById('section-view'), '', 'delivered')">À Confirmer (Client)</button>
+                    <button class="action-btn ${filter==='finalized'?'active':''}" onclick="renderOrders(document.getElementById('section-view'), '', 'finalized')">Finalisées (Double Val.)</button>
                     <button class="action-btn ${filter==='canceled'?'active':''}" onclick="renderOrders(document.getElementById('section-view'), '', 'canceled')">Annulées</button>
                 </div>
 
@@ -614,13 +768,13 @@
                                 const itemsSummary = (o.items || []).slice(0,3).map(i => `<span style="display:inline-block; background:#1a1a1a; border:1px solid var(--glass-border); border-radius:6px; padding:2px 8px; font-size:0.7rem; margin:2px;">${i.qty}× ${(i.name||'').split(' ').slice(0,3).join(' ')}</span>`).join('') + (o.items && o.items.length > 3 ? `<span style="font-size:0.72rem; color:var(--text-dim);">+${o.items.length-3}</span>` : '');
 
                                 return `
-                                <tr style="${canDelete ? 'background:rgba(255,51,102,0.03)' : ''}">
+                                <tr class="clickable-row" onclick="openOrderModal('${o.id}')" style="${canDelete ? 'background:rgba(255,51,102,0.03)' : ''}">
                                     <td>
-                                        <div style="font-weight:800; font-size:0.85rem;">${o.id}</div>
+                                        <div style="font-weight:800; font-size:0.85rem; color:var(--orange); text-decoration:underline; cursor:pointer;">${o.id}</div>
                                         <div style="font-size:0.72rem; color:var(--text-dim);">${o.date}</div>
                                     </td>
-                                    <td>
-                                        <div style="font-weight:700">${o.username || 'Client #'+o.customerId}</div>
+                                    <td onclick="event.stopPropagation()">
+                                        <div style="font-weight:700; color:var(--orange); text-decoration:underline; cursor:pointer;" onclick="openUserModal(${o.customerId})">${o.username || 'Client #'+o.customerId}</div>
                                         <div style="font-size:0.72rem; color:var(--text-dim);">${o.email || ''}</div>
                                         <div style="font-size:0.72rem; color:var(--text-dim);">${o.city || ''} ${o.postalCode || ''}</div>
                                     </td>
@@ -629,7 +783,7 @@
                                     <td>
                                         <span class="badge ${getStatusBadge(o.status)}">${statusLabel}</span>
                                     </td>
-                                    <td>
+                                    <td onclick="event.stopPropagation()">
                                          <div style="display:flex; gap:8px;">
                                              ${canAdvance ? `<button class="action-btn" onclick="advanceStatus('${o.id}')">✅ ${nextLabel}</button>` : ''}
                                              ${o.status !== 'livree' && o.status !== 'annulee' ? `<button class="action-btn danger" onclick="adminCancelOrder('${o.id}')">✖ Annuler</button>` : ''}
@@ -925,14 +1079,17 @@
                         <thead><tr><th>Badge</th><th>Titre</th><th>Image</th><th>Statut</th><th>Actions</th></tr></thead>
                         <tbody>
                             ${db.heroSlides.map(s => `
-                                <tr>
+                                <tr class="clickable-row" onclick="openAdInfoModal('hero', ${s.id})">
                                     <td>${s.badge}</td>
-                                    <td style="font-weight:700">${s.title.replace(/<[^>]*>?/gm, '')}</td>
+                                    <td style="font-weight:700; color:var(--orange);">${(s.title || '').replace(/<[^>]*>?/gm, '')}</td>
                                     <td><img src="${s.image}" style="width:50px; height:30px; object-fit:cover; border-radius:4px;"></td>
                                     <td><span class="badge ${s.active?'badge-success':'badge-danger'}">${s.active?'Actif':'Inactif'}</span></td>
-                                    <td>
-                                        <button class="action-btn" onclick="db.toggleHeroSlide(${s.id}); renderAds(document.getElementById('section-view'))">👁️</button>
-                                        <button class="action-btn danger" onclick="if(confirm('Supprimer?')){db.deleteHeroSlide(${s.id}); renderAds(document.getElementById('section-view'))}">🗑️</button>
+                                    <td onclick="event.stopPropagation()">
+                                        <div style="display:flex; gap:5px;">
+                                            <button class="action-btn" onclick="openAdInfoModal('hero', ${s.id})" title="Voir">👁️</button>
+                                            <button class="action-btn" onclick="editAd('hero', ${s.id})" title="Modifier">✏️</button>
+                                            <button class="action-btn danger" onclick="if(confirm('Supprimer?')){db.deleteHeroSlide(${s.id}); renderAds(document.getElementById('section-view'))}" title="Supprimer">🗑️</button>
+                                        </div>
                                     </td>
                                 </tr>
                             `).join('')}
@@ -946,14 +1103,17 @@
                         <thead><tr><th>Titre</th><th>Sous-titre</th><th>Image</th><th>Statut</th><th>Actions</th></tr></thead>
                         <tbody>
                             ${db.ads.map(a => `
-                                <tr>
-                                    <td style="font-weight:700">${a.title}</td>
+                                <tr class="clickable-row" onclick="openAdInfoModal('promo', ${a.id})">
+                                    <td style="font-weight:700; color:var(--orange);">${a.title}</td>
                                     <td>${a.subtitle}</td>
                                     <td><img src="${a.bg}" style="width:50px; height:30px; object-fit:cover; border-radius:4px;"></td>
                                     <td><span class="badge ${a.active?'badge-success':'badge-danger'}">${a.active?'Actif':'Inactif'}</span></td>
-                                    <td>
-                                        <button class="action-btn" onclick="db.toggleAd(${a.id}); renderAds(document.getElementById('section-view'))">👁️</button>
-                                        <button class="action-btn danger" onclick="if(confirm('Supprimer?')){db.deleteAd(${a.id}); renderAds(document.getElementById('section-view'))}">🗑️</button>
+                                    <td onclick="event.stopPropagation()">
+                                        <div style="display:flex; gap:5px;">
+                                            <button class="action-btn" onclick="openAdInfoModal('promo', ${a.id})" title="Voir">👁️</button>
+                                            <button class="action-btn" onclick="editAd('promo', ${a.id})" title="Modifier">✏️</button>
+                                            <button class="action-btn danger" onclick="if(confirm('Supprimer?')){db.deleteAd(${a.id}); renderAds(document.getElementById('section-view'))}" title="Supprimer">🗑️</button>
+                                        </div>
                                     </td>
                                 </tr>
                             `).join('')}
@@ -977,6 +1137,7 @@
         }
 
         function saveAd() {
+            const id = document.getElementById('edit-ad-id').value;
             const type = document.getElementById('edit-ad-type').value;
             const title = document.getElementById('ad-title').value;
             const subtitle = document.getElementById('ad-subtitle').value;
@@ -990,15 +1151,54 @@
                 const hl = document.getElementById('ad-hero-hl').value;
                 const t2 = document.getElementById('ad-hero-t2').value;
                 const fullTitle = `${t1} <span class="highlight">${hl}</span> ${t2}`;
-                db.addHeroSlide({ badge: title, title: fullTitle, subtitle, image, cta: 'Voir plus', ctaLink: link });
+                
+                const data = { badge: title, title: fullTitle, subtitle, image, cta: 'Voir plus', ctaLink: link };
+                if(id) db.updateHeroSlide(parseInt(id), data);
+                else db.addHeroSlide(data);
             } else {
-                db.addAd({ title, subtitle, bg: image, color: '#ff6b00' });
+                const data = { title, subtitle, bg: image, color: '#ff6b00' };
+                if(id) db.updateAd(parseInt(id), data);
+                else db.addAd(data);
             }
 
             document.getElementById('ad-form-container').style.display = 'none';
             renderAds(document.getElementById('section-view'));
-            showAdminToast('✅ Publicité ajoutée !', 'success');
+            showAdminToast(id ? '✅ Publicité mise à jour !' : '✅ Publicité ajoutée !', 'success');
         }
+
+        function editAd(type, id) {
+            let ad;
+            if(type === 'hero') ad = db.heroSlides.find(x => x.id === id);
+            else ad = db.ads.find(x => x.id === id);
+            if(!ad) return;
+
+            openAdModal(type);
+            document.getElementById('ad-form-title').textContent = type === 'hero' ? 'Modifier la Bannière' : 'Modifier la Pub';
+            document.getElementById('edit-ad-id').value = ad.id;
+            document.getElementById('ad-title').value = type === 'hero' ? ad.badge : ad.title;
+            document.getElementById('ad-subtitle').value = ad.subtitle || ad.content || '';
+            document.getElementById('ad-image').value = ad.image || ad.bg;
+            document.getElementById('ad-link').value = ad.ctaLink || ad.link || 'shop.html';
+
+            if(type === 'hero') {
+                // Parse the HTML title
+                const div = document.createElement('div');
+                div.innerHTML = ad.title;
+                const highlight = div.querySelector('.highlight');
+                if(highlight) {
+                    const hlText = highlight.textContent;
+                    const parts = ad.title.split(highlight.outerHTML);
+                    document.getElementById('ad-hero-t1').value = parts[0].trim();
+                    document.getElementById('ad-hero-hl').value = hlText.trim();
+                    document.getElementById('ad-hero-t2').value = (parts[1] || '').trim();
+                } else {
+                    document.getElementById('ad-hero-t1').value = ad.title;
+                    document.getElementById('ad-hero-hl').value = '';
+                    document.getElementById('ad-hero-t2').value = '';
+                }
+            }
+        }
+
 
         // --- Helpers & Logic ---
         function getStatusBadge(s) {
