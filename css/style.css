@@ -146,6 +146,42 @@ nav .container {
   gap: 12px;
 }
 
+.logo img {
+  height: 52px;
+  width: auto;
+  object-fit: contain;
+  transition: all 0.4s cubic-bezier(0.175, 0.885, 0.32, 1.275);
+  filter: drop-shadow(0 0 8px rgba(255,107,0,0.2));
+}
+
+.logo:hover img {
+  transform: scale(1.1) rotate(-3deg);
+  filter: drop-shadow(0 0 15px rgba(255,107,0,0.5));
+}
+
+.hero-logo-container {
+  margin-bottom: 30px;
+  animation: logo-entrance 1.2s ease-out;
+}
+
+.hero-logo {
+  width: 120px;
+  height: 120px;
+  object-fit: contain;
+  filter: drop-shadow(0 0 20px rgba(255,107,0,0.4));
+  animation: pulse-glow 3s infinite ease-in-out;
+}
+
+@keyframes logo-entrance {
+  from { opacity: 0; transform: scale(0.5) translateY(-30px); }
+  to { opacity: 1; transform: scale(1) translateY(0); }
+}
+
+@keyframes pulse-glow {
+  0%, 100% { filter: drop-shadow(0 0 20px rgba(255,107,0,0.4)); transform: scale(1); }
+  50% { filter: drop-shadow(0 0 40px rgba(255,107,0,0.7)); transform: scale(1.05); }
+}
+
 .logo span {
   color: var(--orange);
 }

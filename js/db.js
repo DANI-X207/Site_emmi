@@ -58,8 +58,8 @@ const db = {
       id: "ORD-1001",
       customerId: 2,
       username: "user1",
-      items: [{ productId: 1, name: "Figurine Goku Ultra Instinct", qty: 1, price: 49.99, image: "https://i.ebayimg.com/images/g/FqAAAeSwE2Bpvqww/s-l400.webp" }],
-      total: 49.99,
+      items: [{ productId: 1, name: "Figurine Goku Ultra Instinct", qty: 1, price: 50, image: "https://i.ebayimg.com/images/g/FqAAAeSwE2Bpvqww/s-l400.webp" }],
+      total: 50,
       status: "livree",
       createdAt: 1714953600000,
       date: "2026-05-04",
@@ -71,8 +71,8 @@ const db = {
       id: "ORD-1002",
       customerId: 2,
       username: "user1",
-      items: [{ productId: 2, name: "Figurine Tanjiro Kamado", qty: 2, price: 39.99, image: "https://i5.walmartimages.com/seo/Tanjiro-Kamado-Action-Figure-3-63-6-Inch-Demon-Slayer-Anime-Collectible-Figure_0367fc16-0382-41b0-bad8-2a329ffb3dd0.1e9c28a891c7754a20b35b9c688035bd.jpeg?odnHeight=576&odnWidth=576&odnBg=FFFFFF" }],
-      total: 79.98,
+      items: [{ productId: 2, name: "Figurine Tanjiro Kamado", qty: 2, price: 40, image: "https://i5.walmartimages.com/seo/Tanjiro-Kamado-Action-Figure-3-63-6-Inch-Demon-Slayer-Anime-Collectible-Figure_0367fc16-0382-41b0-bad8-2a329ffb3dd0.1e9c28a891c7754a20b35b9c688035bd.jpeg?odnHeight=576&odnWidth=576&odnBg=FFFFFF" }],
+      total: 80,
       status: "en_attente",
       createdAt: 1746000000000,
       date: "2026-05-04",
@@ -197,7 +197,7 @@ const db = {
     this.adminNotifications.unshift({
       id: Date.now(),
       type: 'order_placed',
-      message: `Nouvelle commande ${order.id} de ${order.username} (${order.total} FCFA).`,
+      message: `Nouvelle commande ${order.id} de ${order.username} (${Math.round(order.total)} FCFA).`,
       date: new Date().toLocaleString(),
       read: false
     });

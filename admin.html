@@ -282,7 +282,10 @@
     <!-- Admin Wrapper -->
     <div class="admin-wrapper" id="admin-ui">
         <aside class="admin-sidebar">
-            <div class="logo">SLJ <span style="color:var(--admin-accent)">ADMIN</span></div>
+            <div class="logo">
+                <img src="images/logo.png" alt="SLJ ADMIN" style="height: 35px;">
+                <span style="color:var(--admin-accent); font-size: 0.8rem; margin-left: 5px; font-weight: 900;">ADMIN</span>
+            </div>
             <div class="nav-group">
                 <div class="admin-nav-item" id="nav-dashboard" onclick="showSection('dashboard')">Dashboard</div>
                 <div class="admin-nav-item" id="nav-users" onclick="showSection('users')">Utilisateurs</div>
@@ -338,7 +341,7 @@
                     <div class="stat-label">Commandes</div>
                 </div>
                 <div class="stat-item">
-                    <div class="stat-val" id="m-user-spent">0.00 FCFA</div>
+                    <div class="stat-val" id="m-user-spent">0 FCFA</div>
                     <div class="stat-label">Dépensé</div>
                 </div>
             </div>
