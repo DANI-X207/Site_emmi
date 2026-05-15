@@ -1,4 +1,4 @@
-<!DOCTYPE html>
+﻿<!DOCTYPE html>
 <html lang="fr">
 <head>
     <meta charset="UTF-8">
@@ -7,6 +7,7 @@
     <link href="https://fonts.googleapis.com/css2?family=Outfit:wght@300;400;500;600;700;900&display=swap" rel="stylesheet">
     <link rel="stylesheet" href="css/style.css">
     <link rel="stylesheet" href="css/animations.css">
+    <link rel="stylesheet" href="css/brand.css">
     <style>
         :root {
             --admin-accent: #ff6b00;
@@ -282,10 +283,10 @@
     <!-- Admin Wrapper -->
     <div class="admin-wrapper" id="admin-ui">
         <aside class="admin-sidebar">
-            <div class="logo">
-                <img src="images/logo.png" alt="SLJ ADMIN" style="height: 35px;">
-                <span style="color:var(--admin-accent); font-size: 0.8rem; margin-left: 5px; font-weight: 900;">ADMIN</span>
-            </div>
+            <a href="index.html" class="logo">
+                <img src="images/logo.png" alt="SLJ Otaku Paradise">
+            </a>
+            <span class="admin-badge">ADMIN</span>
             <div class="nav-group">
                 <div class="admin-nav-item" id="nav-dashboard" onclick="showSection('dashboard')">Dashboard</div>
                 <div class="admin-nav-item" id="nav-users" onclick="showSection('users')">Utilisateurs</div>
@@ -461,6 +462,7 @@
     </style>
 
     <script src="js/theme.js"></script>
+    <script src="js/brand.js" defer></script>
     <script src="js/products.js"></script>
     <script src="js/db.js"></script>
     <script>

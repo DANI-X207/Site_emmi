@@ -1,0 +1,373 @@
+/* SLJ Otaku Paradise — Brand & design enhancements */
+
+:root {
+  --brand-glow: rgba(255, 107, 0, 0.45);
+  --brand-ring: rgba(255, 107, 0, 0.35);
+  --surface-elevated: rgba(255, 255, 255, 0.04);
+  --radius-lg: 20px;
+  --radius-xl: 28px;
+}
+
+/* --- Logo navigation --- */
+.brand-logo {
+  gap: 14px !important;
+  padding: 6px 12px 6px 6px;
+  border-radius: 999px;
+  border: 1px solid transparent;
+  transition: var(--transition);
+}
+
+.brand-logo:hover {
+  border-color: var(--brand-ring);
+  background: var(--surface-elevated);
+  box-shadow: 0 0 24px var(--orange-dim);
+}
+
+.brand-logo .logo-mark {
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  width: 58px;
+  height: 58px;
+  border-radius: 16px;
+  background: linear-gradient(145deg, rgba(255, 107, 0, 0.15), rgba(255, 107, 0, 0.03));
+  border: 1px solid var(--brand-ring);
+  box-shadow: 0 0 20px var(--brand-glow), inset 0 1px 0 rgba(255, 255, 255, 0.08);
+  flex-shrink: 0;
+}
+
+.brand-logo .logo-mark img,
+.logo.brand-logo > img:only-child {
+  height: 44px !important;
+  width: auto;
+  filter: drop-shadow(0 2px 12px var(--brand-glow));
+}
+
+nav .brand-logo .logo-mark {
+  width: 64px;
+  height: 64px;
+}
+
+nav .brand-logo .logo-mark img {
+  height: 48px !important;
+}
+
+.brand-logo .logo-text {
+  display: flex;
+  flex-direction: column;
+  line-height: 1.05;
+  gap: 2px;
+}
+
+.brand-logo .logo-text-primary {
+  font-size: 1.15rem;
+  font-weight: 900;
+  letter-spacing: 0.06em;
+  color: var(--white);
+}
+
+.brand-logo .logo-text-secondary {
+  font-size: 0.72rem;
+  font-weight: 800;
+  letter-spacing: 0.28em;
+  color: var(--orange);
+  text-transform: uppercase;
+}
+
+.brand-logo .logo-text-tagline {
+  font-size: 0.65rem;
+  font-weight: 600;
+  color: var(--gray);
+  letter-spacing: 0.12em;
+  text-transform: uppercase;
+}
+
+nav.scrolled .brand-logo .logo-mark {
+  width: 54px;
+  height: 54px;
+}
+
+nav.scrolled .brand-logo .logo-mark img {
+  height: 40px !important;
+}
+
+/* Footer logo */
+.footer-info .logo.brand-logo,
+.footer-info .brand-logo-footer {
+  margin-bottom: 24px;
+  flex-direction: row;
+  align-items: center;
+  gap: 16px;
+  display: flex;
+}
+
+.footer-info .brand-logo .logo-mark,
+.footer-info .brand-logo-footer .logo-mark {
+  width: 72px;
+  height: 72px;
+}
+
+.footer-info .brand-logo .logo-mark img,
+.footer-info .brand-logo-footer img {
+  height: 56px !important;
+}
+
+.footer-info .brand-logo .logo-text-primary {
+  font-size: 1.4rem;
+}
+
+/* Hero logo */
+.hero-logo-container {
+  position: relative;
+  display: inline-flex;
+  padding: 20px;
+  border-radius: 50%;
+  background: radial-gradient(circle, rgba(255, 107, 0, 0.12) 0%, transparent 70%);
+}
+
+.hero-logo-container::before {
+  content: '';
+  position: absolute;
+  inset: 0;
+  border-radius: 50%;
+  border: 2px solid var(--brand-ring);
+  animation: brand-ring-pulse 3s ease-in-out infinite;
+}
+
+.hero-logo {
+  width: 150px !important;
+  height: 150px !important;
+  position: relative;
+  z-index: 1;
+}
+
+@keyframes brand-ring-pulse {
+  0%, 100% { transform: scale(1); opacity: 0.6; }
+  50% { transform: scale(1.08); opacity: 1; }
+}
+
+/* Watermark */
+.brand-watermark {
+  position: fixed;
+  bottom: 24px;
+  right: 24px;
+  width: 120px;
+  height: 120px;
+  pointer-events: none;
+  z-index: 0;
+  opacity: 0.06;
+  background: url('../images/logo.png') center/contain no-repeat;
+  filter: grayscale(20%);
+}
+
+body.theme-blue .brand-watermark {
+  opacity: 0.04;
+}
+
+/* Page strip (inner pages) */
+.brand-page-strip {
+  margin-top: 76px;
+  padding: 28px 0;
+  background: linear-gradient(135deg, rgba(255, 107, 0, 0.08) 0%, transparent 55%),
+              var(--black-light);
+  border-bottom: 1px solid var(--glass-border);
+  position: relative;
+  overflow: hidden;
+}
+
+.brand-page-strip::after {
+  content: '';
+  position: absolute;
+  right: -40px;
+  top: 50%;
+  transform: translateY(-50%);
+  width: 200px;
+  height: 200px;
+  background: url('../images/logo.png') center/contain no-repeat;
+  opacity: 0.07;
+  pointer-events: none;
+}
+
+.brand-page-strip .container {
+  display: flex;
+  align-items: center;
+  gap: 20px;
+  position: relative;
+  z-index: 1;
+}
+
+.brand-page-strip .strip-logo {
+  width: 56px;
+  height: 56px;
+  object-fit: contain;
+  filter: drop-shadow(0 0 16px var(--brand-glow));
+}
+
+.brand-page-strip h1 {
+  font-size: 1.75rem;
+  font-weight: 900;
+  margin: 0;
+}
+
+.brand-page-strip p {
+  margin: 4px 0 0;
+  color: var(--gray);
+  font-size: 0.9rem;
+}
+
+.brand-page-header-logo {
+  display: flex;
+  align-items: center;
+  gap: 16px;
+  margin-bottom: 16px;
+}
+
+.brand-page-header-logo img {
+  width: 48px;
+  height: 48px;
+  object-fit: contain;
+  filter: drop-shadow(0 0 12px var(--brand-glow));
+}
+
+/* Auth mobile logo */
+.auth-mobile-brand {
+  display: none;
+  text-align: center;
+  margin-bottom: 28px;
+}
+
+.auth-mobile-brand img {
+  width: 72px;
+  height: 72px;
+  object-fit: contain;
+  margin: 0 auto 12px;
+  filter: drop-shadow(0 0 20px var(--brand-glow));
+}
+
+.auth-mobile-brand .logo-text-primary {
+  font-size: 1.3rem;
+  font-weight: 900;
+}
+
+.auth-mobile-brand .logo-text-secondary {
+  color: var(--orange);
+  font-size: 0.75rem;
+  letter-spacing: 0.2em;
+  font-weight: 800;
+}
+
+@media (max-width: 768px) {
+  .auth-mobile-brand { display: block; }
+  .brand-logo .logo-text { display: none; }
+  nav .brand-logo .logo-mark {
+    width: 52px;
+    height: 52px;
+  }
+}
+
+/* --- Global design polish --- */
+nav {
+  background: rgba(8, 8, 8, 0.92) !important;
+  border-bottom: 1px solid var(--glass-border);
+  box-shadow: 0 4px 30px rgba(0, 0, 0, 0.35);
+}
+
+.nav-links a {
+  padding: 8px 14px;
+  border-radius: 999px;
+}
+
+.nav-links a:hover,
+.nav-links a.active {
+  background: var(--orange-dim);
+}
+
+.btn-primary {
+  border-radius: 14px;
+  box-shadow: 0 8px 24px rgba(255, 107, 0, 0.25);
+}
+
+.product-card {
+  background: linear-gradient(180deg, var(--black-lighter) 0%, var(--black-light) 100%);
+  box-shadow: 0 8px 32px rgba(0, 0, 0, 0.35);
+}
+
+.product-card:hover {
+  box-shadow: 0 24px 48px rgba(0, 0, 0, 0.5), 0 0 0 1px rgba(255, 107, 0, 0.2);
+}
+
+.filters-wrap,
+.cart-sidebar,
+.modal-container {
+  box-shadow: var(--shadow);
+}
+
+.section-header {
+  position: relative;
+}
+
+.section-header::after {
+  content: '';
+  display: block;
+  width: 60px;
+  height: 4px;
+  background: linear-gradient(90deg, var(--orange), transparent);
+  margin: 16px auto 0;
+  border-radius: 4px;
+}
+
+footer {
+  background: linear-gradient(180deg, var(--black-light) 0%, #050505 100%);
+}
+
+.footer-bottom {
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  gap: 12px;
+  flex-wrap: wrap;
+}
+
+.footer-bottom .footer-mini-logo {
+  width: 28px;
+  height: 28px;
+  object-fit: contain;
+  opacity: 0.85;
+  vertical-align: middle;
+}
+
+/* Admin sidebar brand */
+.admin-sidebar .brand-logo .logo-mark {
+  width: 52px;
+  height: 52px;
+}
+
+.admin-sidebar .brand-logo .logo-text-primary {
+  font-size: 1rem;
+}
+
+.admin-sidebar .admin-badge {
+  display: inline-block;
+  margin: 8px 0 24px 20px;
+  padding: 4px 12px;
+  border-radius: 999px;
+  background: var(--admin-accent-gradient, linear-gradient(135deg, #ff6b00, #ff8c33));
+  color: #fff;
+  font-size: 0.7rem;
+  font-weight: 900;
+  letter-spacing: 0.15em;
+}
+
+body.theme-blue .brand-logo .logo-text-primary {
+  color: var(--white);
+}
+
+body.has-brand-strip > .section-padding:first-of-type,
+body.has-brand-strip > main.section-padding:first-of-type {
+  margin-top: 0 !important;
+  padding-top: 48px;
+}
+
+body.has-brand-strip > .page-header {
+  margin-top: 0 !important;
+}
