@@ -1,23 +1,26 @@
 (function () {
     const applyTheme = () => {
-        const theme = localStorage.getItem('slj_theme') || 'orange';
-        if (theme === 'blue') {
-            document.body.classList.add('theme-blue');
+        const theme = localStorage.getItem('slj_theme') || 'blue';
+
+        document.body.classList.remove('theme-blue'); /* legacy */
+        if (theme === 'orange') {
+            document.body.classList.add('theme-orange');
         } else {
-            document.body.classList.remove('theme-blue');
+            document.body.classList.remove('theme-orange');
         }
     };
 
-    // Apply immediately if DOM is ready, or wait
     if (document.body) {
         applyTheme();
     } else {
         document.addEventListener('DOMContentLoaded', applyTheme);
     }
 
-    // Export to global for settings page
     window.setTheme = (themeName) => {
         localStorage.setItem('slj_theme', themeName);
         applyTheme();
     };
+
+    window.getTheme = () =>
+        document.body.classList.contains('theme-orange') ? 'orange' : 'blue';
 })();

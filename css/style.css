@@ -1,5 +1,58 @@
 /* --- Theme Styles & Scrollbars --- */
+/* Thème principal : Bleu & Blanc (défaut) */
 :root {
+  --orange: #0066ff;
+  --orange-light: #4d94ff;
+  --orange-dim: rgba(0, 102, 255, 0.12);
+  --black: #f8fafc;
+  --black-light: #ffffff;
+  --black-lighter: #f1f5f9;
+  --white: #0f172a;
+  --gray-light: #f1f5f9;
+  --gray: #64748b;
+  --glass: rgba(0, 0, 0, 0.02);
+  --glass-border: rgba(0, 0, 0, 0.1);
+  --shadow: 0 10px 30px rgba(0, 0, 0, 0.08);
+  --font-main: 'Outfit', sans-serif;
+  --transition: all 0.3s cubic-bezier(0.4, 0, 0.2, 1);
+  --scrollbar-track: #f1f5f9;
+  --scrollbar-thumb: #cbd5e1;
+}
+
+/* Scrollbar Global */
+::-webkit-scrollbar { width: 8px; height: 8px; }
+::-webkit-scrollbar-track { background: var(--scrollbar-track); }
+::-webkit-scrollbar-thumb { background: var(--scrollbar-thumb); border-radius: 10px; }
+::-webkit-scrollbar-thumb:hover { background: var(--orange); }
+
+nav {
+  background: rgba(255, 255, 255, 0.92);
+  border-bottom: 1px solid rgba(0, 0, 0, 0.06);
+}
+
+.nav-icon svg,
+.cart-btn svg {
+  color: var(--white);
+}
+
+.modal-container,
+.cart-sidebar {
+  background: #ffffff;
+  color: #0f172a;
+}
+
+.hero::after {
+  background: radial-gradient(circle at 70% 30%, rgba(0, 102, 255, 0.08) 0%, transparent 60%),
+              linear-gradient(135deg, #f8fafc 0%, #eff6ff 100%);
+}
+
+#search-input {
+  background: #fff;
+  color: var(--white);
+}
+
+/* Thème secondaire : Noir & Orange (paramètres) */
+body.theme-orange {
   --orange: #ff6b00;
   --orange-light: #ff954d;
   --orange-dim: rgba(255, 107, 0, 0.2);
@@ -12,58 +65,35 @@
   --glass: rgba(255, 255, 255, 0.05);
   --glass-border: rgba(255, 255, 255, 0.1);
   --shadow: 0 10px 30px rgba(0, 0, 0, 0.5);
-  --font-main: 'Outfit', sans-serif;
-  --transition: all 0.3s cubic-bezier(0.4, 0, 0.2, 1);
   --scrollbar-track: #111;
   --scrollbar-thumb: #333;
 }
 
-/* Scrollbar Global */
-::-webkit-scrollbar { width: 8px; height: 8px; }
-::-webkit-scrollbar-track { background: var(--scrollbar-track); }
-::-webkit-scrollbar-thumb { background: var(--scrollbar-thumb); border-radius: 10px; }
-::-webkit-scrollbar-thumb:hover { background: var(--orange); }
-
-/* Theme Clair (Anciennement Blue) */
-body.theme-blue {
-  --orange: #0066ff;
-  --orange-light: #4d94ff;
-  --orange-dim: rgba(0, 102, 255, 0.1);
-  --black: #f8fafc;
-  --black-light: #ffffff;
-  --black-lighter: #ffffff;
-  --white: #0f172a;
-  --gray-light: #f1f5f9;
-  --gray: #64748b;
-  --glass: rgba(0, 0, 0, 0.02);
-  --glass-border: rgba(0, 0, 0, 0.1);
-  --shadow: 0 10px 30px rgba(0, 0, 0, 0.05);
-  --scrollbar-track: #f1f5f9;
-  --scrollbar-thumb: #cbd5e1;
+body.theme-orange nav {
+  background: rgba(10, 10, 10, 0.92);
+  border-bottom: 1px solid var(--glass-border);
+  box-shadow: 0 4px 30px rgba(0, 0, 0, 0.35);
 }
 
-body.theme-blue nav {
-  background: rgba(255, 255, 255, 0.9);
-  border-bottom: 1px solid rgba(0,0,0,0.05);
+body.theme-orange .nav-icon svg,
+body.theme-orange .cart-btn svg {
+  color: #ffffff;
 }
 
-body.theme-blue .nav-icon svg, 
-body.theme-blue .cart-btn svg,
-body.theme-blue .logo {
-  color: #0f172a !important;
+body.theme-orange .hero::after {
+  background: radial-gradient(circle at 70% 30%, rgba(255, 107, 0, 0.15) 0%, transparent 60%),
+              linear-gradient(135deg, rgba(10, 10, 10, 1) 0%, rgba(10, 10, 10, 0.6) 100%);
 }
 
-body.theme-blue .logo span { color: var(--orange); }
-
-body.theme-blue .hero::after {
-  background: radial-gradient(circle at 70% 30%, rgba(0,102,255,0.05) 0%, transparent 60%),
-              linear-gradient(135deg, #f8fafc 0%, #eff6ff 100%);
+body.theme-orange .modal-container,
+body.theme-orange .cart-sidebar {
+  background: var(--black-light);
+  color: var(--white);
 }
 
-body.theme-blue .modal-container,
-body.theme-blue .cart-sidebar {
-  background: #ffffff;
-  color: #0f172a;
+body.theme-orange #search-input {
+  background: #111;
+  color: white;
 }
 
 
@@ -119,16 +149,17 @@ nav {
   z-index: 1000;
   padding: 20px 0;
   transition: var(--transition);
-  background: rgba(10, 10, 10, 0.85);
   backdrop-filter: blur(10px);
-  border-bottom: 1px solid var(--glass-border);
 }
 
 nav.scrolled {
   padding: 12px 0;
-  background: rgba(10, 10, 10, 0.85);
   backdrop-filter: blur(20px);
-  box-shadow: 0 10px 30px rgba(0,0,0,0.8);
+  box-shadow: var(--shadow);
+}
+
+body.theme-orange nav.scrolled {
+  box-shadow: 0 10px 30px rgba(0, 0, 0, 0.8);
 }
 
 nav .container {
