@@ -550,12 +550,12 @@ function buildTestimonials() {
         <div class="testimonial-avatar">${t.avatar}</div>
         <div>
           <div class="testimonial-name">${t.name}</div>
-          <div class="testimonial-role">${t.anime}</div>
+          <div class="testimonial-role">${t.role || t.anime || ''}</div>
         </div>
         <div class="testimonial-stars">${'★'.repeat(t.rating)}${'☆'.repeat(5 - t.rating)}</div>
       </div>
       <p class="testimonial-text">"${t.text}"</p>
-      <div class="testimonial-date">${t.date}</div>
+      ${t.date ? `<div class="testimonial-date">${t.date}</div>` : ''}
     </div>`).join('');
 }
 

@@ -57,3 +57,8 @@
 [2026-05-15 17:00:00] | File: js/theme.js | Section: Default theme | Previous Content: default orange + class theme-blue | Action: Default blue; class theme-orange for secondary; removed legacy theme-blue.
 [2026-05-15 17:00:00] | File: parametres.html | Section: Theme switcher | Previous Content: Sombre/Claire, default orange | Action: Labels Bleu & Blanc (Principal) / Noir & Orange (Secondaire); default blue; UI boutons améliorée.
 [2026-05-15 17:00:00] | File: css/brand.css | Section: Themes | Previous Content: theme-blue selectors | Action: Aligned with theme-orange / :root (watermark, nav shadow, accents).
+
+[2026-05-15 18:00:00] | File: css/style.css | Section: Light theme contrast | Previous Content: white nav icons, gray-light testimonial text | Action: Added --text-primary/--nav-icon-color; fixed testimonial & comment colors; nav icons !important for light theme.
+[2026-05-15 18:00:00] | File: js/main.js | Section: Testimonials | Previous Content: t.anime, t.date undefined | Action: Use t.role; hide date if missing; fixes "undefined" labels.
+[2026-05-15 18:00:00] | File: parametres.html | Section: Theme buttons | Previous Content: color white on cards | Action: Theme selector uses var(--text-primary) for readability on light background.
+[2026-05-15 18:00:00] | File: index.html, shop.html, settings.html | Section: Nav SVG | Previous Content: inline style color white | Action: Removed inline white on nav icons so light theme CSS applies.

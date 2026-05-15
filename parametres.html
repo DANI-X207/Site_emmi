@@ -1,5 +1,6 @@
 <!DOCTYPE html>
 <html lang="fr">
+
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
@@ -14,8 +15,10 @@
         :root {
             --settings-card: rgba(255, 255, 255, 0.03);
         }
-        
-        body { padding-top: 100px; }
+
+        body {
+            padding-top: 100px;
+        }
 
         .settings-grid {
             display: grid;
@@ -49,8 +52,8 @@
         }
 
         .settings-nav-item:hover {
-            background: rgba(255,255,255,0.05);
-            color: white;
+            background: var(--orange-dim);
+            color: var(--text-primary, var(--white));
             transform: translateX(5px);
         }
 
@@ -66,7 +69,7 @@
             border-radius: 30px;
             padding: 50px;
             border: 1px solid var(--glass-border);
-            box-shadow: 0 20px 60px rgba(0,0,0,0.3);
+            box-shadow: 0 20px 60px rgba(0, 0, 0, 0.3);
         }
 
         .settings-section {
@@ -74,7 +77,9 @@
             animation: fadeIn 0.4s ease;
         }
 
-        .settings-section.active { display: block; }
+        .settings-section.active {
+            display: block;
+        }
 
         .settings-title {
             font-size: 2rem;
@@ -100,10 +105,19 @@
             border-bottom: 1px solid var(--glass-border);
         }
 
-        .setting-row:last-child { border-bottom: none; }
+        .setting-row:last-child {
+            border-bottom: none;
+        }
 
-        .setting-info h4 { margin-bottom: 5px; font-size: 1.1rem; }
-        .setting-info p { color: var(--gray); font-size: 0.85rem; }
+        .setting-info h4 {
+            margin-bottom: 5px;
+            font-size: 1.1rem;
+        }
+
+        .setting-info p {
+            color: var(--gray);
+            font-size: 0.85rem;
+        }
 
         .switch {
             position: relative;
@@ -112,12 +126,19 @@
             height: 32px;
         }
 
-        .switch input { opacity: 0; width: 0; height: 0; }
+        .switch input {
+            opacity: 0;
+            width: 0;
+            height: 0;
+        }
 
         .slider {
             position: absolute;
             cursor: pointer;
-            top: 0; left: 0; right: 0; bottom: 0;
+            top: 0;
+            left: 0;
+            right: 0;
+            bottom: 0;
             background-color: #333;
             transition: .4s;
             border-radius: 34px;
@@ -126,20 +147,38 @@
         .slider:before {
             position: absolute;
             content: "";
-            height: 24px; width: 24px;
-            left: 4px; bottom: 4px;
+            height: 24px;
+            width: 24px;
+            left: 4px;
+            bottom: 4px;
             background-color: white;
             transition: .4s;
             border-radius: 50%;
         }
 
-        input:checked + .slider { background-color: var(--orange); }
-        input:checked + .slider:before { transform: translateX(28px); }
+        input:checked+.slider {
+            background-color: var(--orange);
+        }
+
+        input:checked+.slider:before {
+            transform: translateX(28px);
+        }
 
         /* Form Controls */
-        .settings-form-group { margin-bottom: 25px; }
-        .settings-form-group label { display: block; margin-bottom: 10px; font-weight: 700; font-size: 0.9rem; color: var(--gray); }
-        .settings-form-group input, .settings-form-group select {
+        .settings-form-group {
+            margin-bottom: 25px;
+        }
+
+        .settings-form-group label {
+            display: block;
+            margin-bottom: 10px;
+            font-weight: 700;
+            font-size: 0.9rem;
+            color: var(--gray);
+        }
+
+        .settings-form-group input,
+        .settings-form-group select {
             width: 100%;
             background: #111;
             border: 1px solid var(--glass-border);
@@ -150,36 +189,91 @@
         }
 
         /* Modern Theme Switcher */
-        .theme-selector-modern { display: flex; gap: 15px; }
+        .theme-selector-modern {
+            display: flex;
+            gap: 15px;
+        }
+
         .theme-btn {
-            background: rgba(255,255,255,0.05);
+            background: var(--black-light);
             border: 1px solid var(--glass-border);
             padding: 15px 25px;
             border-radius: 16px;
-            color: var(--white);
+            color: var(--text-primary, var(--white));
             display: flex;
             flex-direction: column;
             align-items: center;
-            gap: 6px;
+            gap: 10px;
             cursor: pointer;
             transition: var(--transition);
+            width: 120px;
+        }
+
+        .theme-btn:hover {
+            border-color: var(--orange);
+            background: var(--orange-dim);
+        }
+
+        .theme-btn.active {
+            border-color: var(--orange);
+            background: var(--orange-dim);
+            color: var(--orange);
+        }
+
+        .theme-btn {
+            flex-direction: column;
+            gap: 6px;
             min-width: 130px;
         }
-        .theme-btn:hover { border-color: var(--orange); background: var(--orange-dim); }
-        .theme-btn.active { border-color: var(--orange); background: var(--orange-dim); color: var(--orange); }
-        .theme-btn small { font-size: 0.7rem; font-weight: 700; color: var(--gray); text-transform: uppercase; letter-spacing: 0.08em; }
-        .theme-btn.active small { color: var(--orange); }
-        .theme-label-main { font-weight: 800; font-size: 0.9rem; }
-        .theme-preview { width: 36px; height: 36px; border-radius: 50%; flex-shrink: 0; }
-        .theme-preview.blue { background: linear-gradient(135deg, #ffffff 50%, #3b82f6 50%) !important; border: 2px solid #cbd5e1 !important; }
-        .theme-preview.dark { background: linear-gradient(135deg, #0a0a0a 50%, #ff6b00 50%) !important; border: 2px solid #ff6b00 !important; box-shadow: 0 0 10px rgba(255,107,0,0.4); }
+
+        .theme-btn small {
+            font-size: 0.7rem;
+            font-weight: 700;
+            color: var(--gray);
+            text-transform: uppercase;
+            letter-spacing: 0.08em;
+        }
+
+        .theme-btn.active small {
+            color: var(--orange);
+        }
+
+        .theme-label-main {
+            font-weight: 800;
+            font-size: 0.9rem;
+        }
+
+        .theme-preview {
+            width: 36px;
+            height: 36px;
+            border-radius: 50%;
+            flex-shrink: 0;
+        }
+
+        .theme-preview.blue {
+            background: linear-gradient(135deg, #ffffff 50%, #3b82f6 50%) !important;
+            border: 2px solid #cbd5e1 !important;
+        }
+
+        .theme-preview.dark {
+            background: linear-gradient(135deg, #0a0a0a 50%, #ff6b00 50%) !important;
+            border: 2px solid #ff6b00 !important;
+            box-shadow: 0 0 10px rgba(255, 107, 0, 0.4);
+        }
 
         @media (max-width: 900px) {
-            .settings-grid { grid-template-columns: 1fr; }
-            .settings-sidebar { position: static; margin-bottom: 20px; }
+            .settings-grid {
+                grid-template-columns: 1fr;
+            }
+
+            .settings-sidebar {
+                position: static;
+                margin-bottom: 20px;
+            }
         }
     </style>
 </head>
+
 <body>
     <script src="js/theme.js"></script>
     <script src="js/brand.js" defer></script>
@@ -200,13 +294,24 @@
             </div>
             <div class="nav-actions">
                 <a href="admin.html" class="nav-icon" id="admin-icon" title="Administration">
-                    <svg width="22" height="22" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M12 22s8-4 8-10V5l-8-3-8 3v7c0 6 8 10 8 10z"></path></svg>
+                    <svg width="22" height="22" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
+                        <path d="M12 22s8-4 8-10V5l-8-3-8 3v7c0 6 8 10 8 10z"></path>
+                    </svg>
                 </a>
                 <a href="profile.html" class="nav-icon" title="Mon Profil">
-                    <svg width="22" height="22" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M20 21v-2a4 4 0 0 0-4-4H8a4 4 0 0 0-4 4v2"></path><circle cx="12" cy="7" r="4"></circle></svg>
+                    <svg width="22" height="22" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
+                        <path d="M20 21v-2a4 4 0 0 0-4-4H8a4 4 0 0 0-4 4v2"></path>
+                        <circle cx="12" cy="7" r="4"></circle>
+                    </svg>
                 </a>
                 <a href="commandes.html" class="nav-icon" title="Mes Commandes">
-                    <svg width="22" height="22" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M16.5 9.4l-9-5.19M21 16V8a2 2 0 0 0-1-1.73l-7-4a2 2 0 0 0-2 0l-7 4A2 2 0 0 0 3 8v8a2 2 0 0 0 1 1.73l7 4a2 2 0 0 0 2 0l7-4A2 2 0 0 0 21 16z"></path><polyline points="3.27 6.96 12 12.01 20.73 6.96"></polyline><line x1="12" y1="22.08" x2="12" y2="12"></line></svg>
+                    <svg width="22" height="22" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
+                        <path
+                            d="M16.5 9.4l-9-5.19M21 16V8a2 2 0 0 0-1-1.73l-7-4a2 2 0 0 0-2 0l-7 4A2 2 0 0 0 3 8v8a2 2 0 0 0 1 1.73l7 4a2 2 0 0 0 2 0l7-4A2 2 0 0 0 21 16z">
+                        </path>
+                        <polyline points="3.27 6.96 12 12.01 20.73 6.96"></polyline>
+                        <line x1="12" y1="22.08" x2="12" y2="12"></line>
+                    </svg>
                 </a>
             </div>
         </div>
@@ -233,7 +338,7 @@
                 <section id="section-pref" class="settings-section active">
                     <h2 class="settings-title">Préférences ⚙️</h2>
                     <p class="settings-subtitle">Personnalisez votre expérience sur SLJ Otaku Paradise.</p>
-                    
+
                     <div class="setting-row">
                         <div class="setting-info">
                             <h4>Thème visuel</h4>
@@ -291,7 +396,7 @@
                 <section id="section-notif" class="settings-section">
                     <h2 class="settings-title">Notifications 🔔</h2>
                     <p class="settings-subtitle">Choisissez comment nous vous contactons.</p>
-                    
+
                     <div class="setting-row">
                         <div class="setting-info">
                             <h4>E-mails de commande</h4>
@@ -318,7 +423,7 @@
                 <section id="section-security" class="settings-section">
                     <h2 class="settings-title">Sécurité 🔒</h2>
                     <p class="settings-subtitle">Protégez votre compte et vos données.</p>
-                    
+
                     <div class="settings-form-group">
                         <label>Nouveau mot de passe</label>
                         <input type="password" placeholder="••••••••">
@@ -335,38 +440,34 @@
 
     <script>
         const user = db.getLoggedUser();
-        
+
         function switchSection(name) {
             document.querySelectorAll('.settings-section').forEach(s => s.classList.remove('active'));
             document.querySelectorAll('.settings-nav-item').forEach(i => i.classList.remove('active'));
-            
+
             document.getElementById('section-' + name).classList.add('active');
             event.currentTarget.classList.add('active');
         }
 
         function initSettings() {
             if (!user) return;
-            
+
             // Load prefs from localStorage
             const theme = localStorage.getItem('slj_theme') || 'blue';
-            updateThemeButtons(theme);
+            document.querySelectorAll('.theme-btn').forEach(b => b.classList.remove('active'));
+            const activeBtn = document.getElementById('theme-' + theme);
+            if (activeBtn) activeBtn.classList.add('active');
 
             const prefs = JSON.parse(localStorage.getItem('slj_user_prefs_' + user.id) || '{}');
             document.getElementById('pref-sounds').checked = prefs.sounds !== false;
             document.getElementById('pref-dark-mode').checked = !!prefs.dark_pure;
         }
 
-        function updateThemeButtons(theme) {
-            document.querySelectorAll('.theme-btn').forEach(b => b.classList.remove('active'));
-            const activeBtn = document.getElementById('theme-' + theme);
-            if (activeBtn) activeBtn.classList.add('active');
-        }
-
         function savePref(key, val) {
             const prefs = JSON.parse(localStorage.getItem('slj_user_prefs_' + user.id) || '{}');
             prefs[key] = val;
             localStorage.setItem('slj_user_prefs_' + user.id, JSON.stringify(prefs));
-            
+
             if (key === 'dark_pure') {
                 const isOrange = document.body.classList.contains('theme-orange');
                 document.body.style.backgroundColor = val
@@ -375,19 +476,12 @@
             }
         }
 
-        // Override setTheme - self-contained, no dependency on theme.js wrapper
-        window.setTheme = function(themeName) {
-            // 1. Save to localStorage
-            localStorage.setItem('slj_theme', themeName);
-            
-            // 2. Apply theme class to body
-            document.body.classList.remove('theme-orange', 'theme-blue');
-            if (themeName === 'orange') {
-                document.body.classList.add('theme-orange');
-            }
-            
-            // 3. Update button active states
-            updateThemeButtons(themeName);
+        // Override setTheme to update UI
+        const _origSetTheme = window.setTheme;
+        window.setTheme = (t) => {
+            _origSetTheme(t);
+            document.querySelectorAll('.theme-btn').forEach(b => b.classList.remove('active'));
+            document.getElementById('theme-' + t).classList.add('active');
         };
 
         function updateAccount(key, val) {
@@ -398,4 +492,5 @@
         initSettings();
     </script>
 </body>
+
 </html>
