@@ -52,3 +52,8 @@
 [2026-05-15 16:30:00] | File: css/style.css | Section: Logo | Previous Content: nav 52px, hero 120px | Action: Increased default logo sizes and glow (nav 56px, hero 140px).
 [2026-05-15 16:30:00] | File: All HTML (12 pages) | Section: Assets | Previous Content: style.css + animations.css only | Action: Linked css/brand.css and js/brand.js on index, vitrine, shop, login, signup, reset-password, panier, commandes, profile, parametres, settings, admin.
 [2026-05-15 16:30:00] | File: admin.html | Section: Sidebar | Previous Content: Small logo + inline ADMIN span | Action: Clickable brand logo link to index + styled admin-badge; enhanced via brand.js wordmark.
+
+[2026-05-15 17:00:00] | File: css/style.css | Section: Themes | Previous Content: :root noir/orange, body.theme-blue clair | Action: Inverted: :root = Bleu & Blanc (principal), body.theme-orange = Noir & Orange (secondaire). Nav, hero, search, sort adaptés.
+[2026-05-15 17:00:00] | File: js/theme.js | Section: Default theme | Previous Content: default orange + class theme-blue | Action: Default blue; class theme-orange for secondary; removed legacy theme-blue.
+[2026-05-15 17:00:00] | File: parametres.html | Section: Theme switcher | Previous Content: Sombre/Claire, default orange | Action: Labels Bleu & Blanc (Principal) / Noir & Orange (Secondaire); default blue; UI boutons améliorée.
+[2026-05-15 17:00:00] | File: css/brand.css | Section: Themes | Previous Content: theme-blue selectors | Action: Aligned with theme-orange / :root (watermark, nav shadow, accents).

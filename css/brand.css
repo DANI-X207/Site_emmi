@@ -160,15 +160,15 @@ nav.scrolled .brand-logo .logo-mark img {
   filter: grayscale(20%);
 }
 
-body.theme-blue .brand-watermark {
-  opacity: 0.04;
+body:not(.theme-orange) .brand-watermark {
+  opacity: 0.05;
 }
 
 /* Page strip (inner pages) */
 .brand-page-strip {
   margin-top: 76px;
   padding: 28px 0;
-  background: linear-gradient(135deg, rgba(255, 107, 0, 0.08) 0%, transparent 55%),
+  background: linear-gradient(135deg, var(--orange-dim) 0%, transparent 55%),
               var(--black-light);
   border-bottom: 1px solid var(--glass-border);
   position: relative;
@@ -266,9 +266,7 @@ body.theme-blue .brand-watermark {
 }
 
 /* --- Global design polish --- */
-nav {
-  background: rgba(8, 8, 8, 0.92) !important;
-  border-bottom: 1px solid var(--glass-border);
+body.theme-orange nav {
   box-shadow: 0 4px 30px rgba(0, 0, 0, 0.35);
 }
 
@@ -284,7 +282,7 @@ nav {
 
 .btn-primary {
   border-radius: 14px;
-  box-shadow: 0 8px 24px rgba(255, 107, 0, 0.25);
+  box-shadow: 0 8px 24px var(--orange-dim);
 }
 
 .product-card {
@@ -358,7 +356,7 @@ footer {
   letter-spacing: 0.15em;
 }
 
-body.theme-blue .brand-logo .logo-text-primary {
+body.theme-orange .brand-logo .logo-text-primary {
   color: var(--white);
 }
 
