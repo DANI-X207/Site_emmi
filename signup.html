@@ -8,6 +8,7 @@
     <link rel="stylesheet" href="css/style.css">
     <link rel="stylesheet" href="css/animations.css">
     <link rel="stylesheet" href="css/brand.css">
+    <link rel="stylesheet" href="css/auth-forms.css">
     <style>
         body { overflow-x: hidden; }
 
@@ -26,13 +27,13 @@
         .auth-visual-bg {
             position: absolute;
             inset: 0;
-            background: url('images/zoro.jpg') center/cover no-repeat;
-            filter: brightness(0.3);
+            background: url('images/elizabeth.jpg') center top/cover no-repeat;
+            filter: brightness(0.45);
         }
         .auth-visual-overlay {
             position: absolute;
             inset: 0;
-            background: linear-gradient(135deg, rgba(10,10,10,0.5) 0%, rgba(255,51,102,0.35) 100%);
+            background: linear-gradient(135deg, rgba(10,10,10,0.55) 0%, rgba(0,102,255,0.35) 50%, rgba(10,10,10,0.75) 100%);
         }
         .auth-visual-content {
             position: relative;
@@ -45,8 +46,8 @@
         }
         .auth-visual-logo { font-size: 1.8rem; font-weight: 900; color: white; }
         .auth-visual-logo span { color: var(--orange); }
-        .auth-visual-body h2 { font-size: 2.8rem; font-weight: 900; line-height: 1.1; margin-bottom: 20px; }
-        .auth-visual-body p { color: rgba(255,255,255,0.72); font-size: 1rem; line-height: 1.7; max-width: 380px; }
+        .auth-visual-body h2 { font-size: 2.8rem; font-weight: 900; line-height: 1.1; margin-bottom: 20px; color: #fff; text-shadow: 0 2px 20px rgba(0,0,0,0.6); }
+        .auth-visual-body p { color: rgba(255,255,255,0.9); font-size: 1rem; line-height: 1.7; max-width: 380px; text-shadow: 0 1px 8px rgba(0,0,0,0.5); }
         .auth-steps { margin-top: 40px; display: flex; flex-direction: column; gap: 18px; }
         .auth-step-item {
             display: flex;
@@ -65,8 +66,9 @@
             font-size: 0.85rem;
             flex-shrink: 0;
         }
-        .auth-step-item h4 { font-size: 0.9rem; font-weight: 700; margin-bottom: 2px; }
-        .auth-step-item p { font-size: 0.8rem; color: rgba(255,255,255,0.6); }
+        .auth-step-item h4 { font-size: 0.9rem; font-weight: 700; margin-bottom: 2px; color: #fff; }
+        .auth-step-item p { font-size: 0.8rem; color: rgba(255,255,255,0.75); }
+        .auth-step-num { color: #fff; }
         .auth-visual-footer { color: rgba(255,255,255,0.4); font-size: 0.8rem; }
 
         /* --- Right Form --- */
@@ -99,7 +101,7 @@
             font-size: 0.82rem;
             font-weight: 700;
             margin-bottom: 7px;
-            color: rgba(255,255,255,0.85);
+            color: var(--text-muted, var(--gray));
         }
         .input-wrap { position: relative; }
         .input-wrap svg {
@@ -107,16 +109,17 @@
             left: 14px;
             top: 50%;
             transform: translateY(-50%);
-            opacity: 0.35;
+            opacity: 0.55;
+            color: var(--text-muted, var(--gray));
             pointer-events: none;
         }
         .input-wrap input {
             width: 100%;
             padding: 13px 14px 13px 42px;
-            background: var(--black-light);
+            background: #fff;
             border: 1.5px solid var(--glass-border);
             border-radius: 11px;
-            color: white;
+            color: var(--text-primary, #0f172a);
             font-family: inherit;
             font-size: 0.9rem;
             transition: var(--transition);

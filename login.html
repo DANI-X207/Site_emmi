@@ -8,6 +8,7 @@
     <link rel="stylesheet" href="css/style.css">
     <link rel="stylesheet" href="css/animations.css">
     <link rel="stylesheet" href="css/brand.css">
+    <link rel="stylesheet" href="css/auth-forms.css">
     <style>
         html, body { height: 100%; overflow: hidden; margin: 0; }
 
@@ -68,7 +69,7 @@
             justify-content: center;
             align-items: center;
             padding: 50px 50px;
-            background: var(--black);
+            background: var(--black-light);
         }
         .auth-form-inner { width: 100%; max-width: 400px; }
 
@@ -91,7 +92,7 @@
             font-size: 0.82rem;
             font-weight: 700;
             margin-bottom: 7px;
-            color: rgba(255,255,255,0.85);
+            color: var(--text-muted, var(--gray));
         }
         .input-wrap { position: relative; }
         .input-icon {
@@ -107,10 +108,10 @@
         .input-wrap input {
             width: 100%;
             padding: 13px 44px 13px 44px;
-            background: var(--black-light);
+            background: #fff;
             border: 1.5px solid var(--glass-border);
             border-radius: 12px;
-            color: white;
+            color: var(--text-primary, #0f172a);
             font-family: inherit;
             font-size: 0.93rem;
             transition: var(--transition);

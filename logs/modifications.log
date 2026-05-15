@@ -62,3 +62,10 @@
 [2026-05-15 18:00:00] | File: js/main.js | Section: Testimonials | Previous Content: t.anime, t.date undefined | Action: Use t.role; hide date if missing; fixes "undefined" labels.
 [2026-05-15 18:00:00] | File: parametres.html | Section: Theme buttons | Previous Content: color white on cards | Action: Theme selector uses var(--text-primary) for readability on light background.
 [2026-05-15 18:00:00] | File: index.html, shop.html, settings.html | Section: Nav SVG | Previous Content: inline style color white | Action: Removed inline white on nav icons so light theme CSS applies.
+
+[2026-05-15 19:00:00] | File: images/elizabeth.jpg | Section: New asset | Previous Content: N/A | Action: Added Elizabeth Liones (Seven Deadly Sins) character image for signup visual panel.
+[2026-05-15 19:00:00] | File: signup.html | Section: auth-visual-bg | Previous Content: images/zoro.jpg | Action: Replaced background with images/elizabeth.jpg; improved overlay and form label contrast for light theme.
+
+[2026-05-15 20:00:00] | File: parametres.html | Section: Theme selector | Previous Content: Git merge conflict markers | Action: Removed <<<<<<< / ======= / >>>>>>>; kept two theme buttons (Bleu & Blanc / Noir & Orange).
+[2026-05-15 20:00:00] | File: css/auth-forms.css | Section: New file | Previous Content: N/A | Action: Shared auth form styles for light/dark themes (labels, inputs, placeholders).
+[2026-05-15 20:00:00] | File: login.html, signup.html, reset-password.html | Section: Auth inputs | Previous Content: white text on light panel | Action: Dark input text, readable labels; linked auth-forms.css.

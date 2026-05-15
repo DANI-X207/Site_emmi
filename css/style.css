@@ -57,7 +57,7 @@ nav {
 
 #search-input {
   background: #fff;
-  color: var(--white);
+  color: var(--text-primary);
 }
 
 /* Thème secondaire : Noir & Orange (paramètres) */
@@ -70,7 +70,7 @@ body.theme-orange {
   --black-lighter: #2a2a2a;
   --white: #ffffff;
   --text-primary: #ffffff;
-  --text-muted: #888888;
+  --text-muted: #aaaaaa;
   --text-on-accent: #ffffff;
   --nav-icon-color: #ffffff;
   --gray-light: #f5f5f5;
@@ -111,12 +111,12 @@ body.theme-orange .cart-sidebar {
 
 body.theme-orange #search-input {
   background: #111;
-  color: white;
+  color: #fff;
 }
 
 body.theme-orange #sort-select {
   background: #111;
-  color: white;
+  color: #fff;
 }
 
 
